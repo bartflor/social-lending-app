@@ -28,7 +28,7 @@ public class AuctionResponse {
     return new AuctionResponse(
         auction.getId(),
         auction.getBorrowerUserName(),
-        2,
+        auction.getBorrowerRating().getRating(),
         params.getLoanAmount().getValue().doubleValue(),
         params.getLoanRate().getRate(),
         params.getLoanStartDate(),

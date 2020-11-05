@@ -43,7 +43,7 @@ public class InMemoryAuctionRepo implements AuctionRepository {
 	
 	@Override
 	public Optional<Auction> findById(Long auctionId) {
-		return Optional.of(repo.get(auctionId));
+		return Optional.ofNullable(repo.get(auctionId));
 	}
 	
 	@Override

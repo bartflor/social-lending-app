@@ -24,16 +24,11 @@ public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	@Override
 	public Optional<Borrower> findBorrowerByUserName(String userName) {
 		if(repository.containsKey(userName)){
-			User user = UserEntity.createDomainUser(repository.get(userName));
+			User user = (repository.get(userName)).createDomainUser();
 			if(user instanceof Borrower)
 			return Optional.of((Borrower)user);
 		}
 		return Optional.empty();
-	}
-	
-	@Override
-	public void addBorrowerAuction(String auctionOwnerId, Long auctionId) {
-	
 	}
 	
 	@Override
@@ -44,7 +39,7 @@ public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	@Override
 	public Optional<Lender> findLenderByUserName(String userName) {
 		if(repository.containsKey(userName)){
-			User user = UserEntity.createDomainUser(repository.get(userName));
+			User user = repository.get(userName).createDomainUser();
 			if(user instanceof Lender)
 				return Optional.of((Lender)user);
 		}

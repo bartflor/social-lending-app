@@ -31,7 +31,7 @@ public class AuctionService {
 	private final AuctionFactory auctionFactory;
 	private final LoanRiskService loanRiskService;
 	
-	public void createNewAuction(String username,
+	public Long createNewAuction(String username,
 								 Period auctionDuration,
 								 double loanAmount,
 								 Period loanDuration,
@@ -52,11 +52,11 @@ public class AuctionService {
 				.loanStartDate(loanStartDate)
 				.loanRisk(loanRisk)
 				.build();
-		Auction auction = auctionFactory.creteAuction( username,  auctionDuration, loanParams);
-		
-		Long auctionId = auctionRepository.save(auction);
-		borrowerRepository.addBorrowerAuction(username, auctionId);
-		
+		Auction auction = auctionFactory.creteAuction( username,
+				borrower.getRating(),
+				auctionDuration,
+				loanParams);
+		return auctionRepository.save(auction);
 	}
 	
 	public boolean allowedToCreateAuction(Borrower auctionOwner){
