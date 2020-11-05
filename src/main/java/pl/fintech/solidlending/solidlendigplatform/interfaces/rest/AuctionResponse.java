@@ -3,13 +3,11 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.LoanParams;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 @Getter
 @Setter
@@ -20,7 +18,7 @@ public class AuctionResponse {
 	private double borrowerRating;
 	private double amount;
 	private double rate;
-	private Date startDate;
+	private LocalDate startDate;
 	private int loanDuration;
 	private String status;
 	private List<OfferResponse> offers;
@@ -28,7 +26,7 @@ public class AuctionResponse {
 	public static AuctionResponse fromAuction(Auction auction){
 		LoanParams params = auction.getLoanParams();
     return new AuctionResponse(
-        1l,
+        auction.getId(),
         auction.getBorrowerUserName(),
         2,
         params.getLoanAmount().getValue().doubleValue(),

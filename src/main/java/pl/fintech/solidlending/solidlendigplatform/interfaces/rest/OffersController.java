@@ -10,23 +10,15 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionService
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/auctions")
 @AllArgsConstructor
-public class AuctionsController {
-	private AuctionService auctionService;
-	
-	@GetMapping
-	public List<AuctionResponse> getAllAuctions(){
-		return auctionService.getPlatformAuctions().stream()
-				.map(AuctionResponse::fromAuction)
-				.collect(Collectors.toList());
-	}
-	
-	@GetMapping("/{username}")
-	public List<AuctionResponse> getUserAuctions(@PathVariable String username){
-		return auctionService.getUserAuctions( username).stream()
-				.map(AuctionResponse::fromAuction)
+@RestController
+@RequestMapping("/offers")
+public class OffersController {
+	AuctionService auctionService;
+	@GetMapping("/{lenderName}")
+	public List<OfferResponse> getAllLenderOffers(@PathVariable String lenderName){
+		return auctionService.getLenderOffers(lenderName).stream()
+				.map(OfferResponse::fromOffer)
 				.collect(Collectors.toList());
 	}
 }

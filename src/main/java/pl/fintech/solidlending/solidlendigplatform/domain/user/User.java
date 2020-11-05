@@ -1,6 +1,5 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.user;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;

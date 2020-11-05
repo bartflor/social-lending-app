@@ -3,12 +3,13 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auct
 import lombok.Builder;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Period;
-import java.util.Date;
 import java.util.List;
 
 @Builder
 public class AuctionEntity {
+	private Long id;
 	private String borrowerName;
 	private Period auctionDuration;
 	private List<OfferEntity> offers;
@@ -16,7 +17,7 @@ public class AuctionEntity {
 	private BigDecimal loanAmount;
 	private int loanRisk;
 	private Period loanDuration;
-	private Date loanStartDate;
+	private LocalDate loanStartDate;
 	private double loanRate;
 	
 }
