@@ -4,11 +4,9 @@ import lombok.extern.java.Log;
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.user.*;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 @Log
 @Repository
 public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
@@ -16,9 +14,6 @@ public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	
 	public InMemoryUserRepo() {
 		this.repository  = new HashMap<>();
-		repository.put("testBorrower",new UserEntity("testBorrower", "borrower@mail", UUID.randomUUID().toString(), BigDecimal.ZERO, UserEntity.Role.BORROWER, 3));
-		repository.put("testLender", new UserEntity("testLender", "lender@mail", UUID.randomUUID().toString(), BigDecimal.TEN, UserEntity.Role.LENDER, 0));
-		log.info(repository.toString());
 	}
 	
 	@Override
@@ -34,6 +29,18 @@ public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	@Override
 	public boolean borrowerExists(String userName) {
 		return findBorrowerByUserName(userName).isPresent();
+	}
+	
+	@Override
+	public String save(Borrower borrower) {
+		String userName = borrower.getUserDetails().getUserName();
+		repository.put(userName, UserEntity.createEntityFrom(borrower));
+		return userName;
+	}
+	public String save(Lender lender) {
+		String userName = lender.getUserDetails().getUserName();
+		repository.put(userName, UserEntity.createEntityFrom(lender));
+		return userName;
 	}
 	
 	@Override

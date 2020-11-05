@@ -1,10 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionService;
 
 import java.util.List;
@@ -16,9 +13,15 @@ import java.util.stream.Collectors;
 public class OffersController {
 	AuctionService auctionService;
 	@GetMapping("/{lenderName}")
-	public List<OfferResponse> getAllLenderOffers(@PathVariable String lenderName){
+	public List<OfferDto> getAllLenderOffers(@PathVariable String lenderName){
 		return auctionService.getLenderOffers(lenderName).stream()
-				.map(OfferResponse::fromOffer)
+				.map(OfferDto::fromOffer)
 				.collect(Collectors.toList());
+	}
+	@PostMapping()
+	public Long addNewOffer(@RequestBody OfferDto offerDto){
+		//TODO: add lender from auth
+		return auctionService.addOffer(offerDto.createDomainOffer());
+	
 	}
 }

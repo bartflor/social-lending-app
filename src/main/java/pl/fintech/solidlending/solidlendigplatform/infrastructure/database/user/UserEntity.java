@@ -44,4 +44,16 @@ public class UserEntity {
 					
 		}
 	}
+	public static UserEntity createEntityFrom(User user){
+		UserDetails details = user.getUserDetails();
+		String userName = details.getUserName();
+		return UserEntity.builder()
+				.accountNumber(details.getAccountNumber())
+				.email(details.getEmail())
+				.role(user instanceof Borrower? Role.BORROWER : Role.LENDER)
+				.ratingValue(user instanceof Borrower? ((Borrower) user).getRating().getRating() : 0)
+				.balanceValue(user.getBalance().getValue())
+				.userName(userName)
+				.build();
+	}
 }

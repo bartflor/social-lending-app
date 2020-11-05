@@ -13,4 +13,6 @@ public interface AuctionRepository {
 	Optional<Auction> findById(Long auctionId);
 	
 	void updateAuction(Long auctionId, Auction auction);
+	
+	List<Offer> findAuctionOffers(Long auctionId);
 }

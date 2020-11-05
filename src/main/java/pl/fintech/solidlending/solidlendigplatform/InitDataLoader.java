@@ -8,10 +8,13 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionService
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.BorrowerRepository;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
+import pl.fintech.solidlending.solidlendigplatform.domain.user.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.UUID;
 
 @Log
 @Component
@@ -19,11 +22,21 @@ import java.time.Period;
 public class InitDataLoader implements CommandLineRunner {
   private AuctionService auctionService;
   private BorrowerRepository borrowerRepository;
-
+  private LenderRepository lenderRepository;
 
   @Override
   public void run(String... args) throws Exception {
     log.info("load init data.");
+	  borrowerRepository.save(Borrower.builder()
+			  .userDetails(new UserDetails("testBorrower", "borrower@mail", UUID.randomUUID().toString()))
+			  .rating(new Rating(3))
+			  .balance(new Money(BigDecimal.ZERO))
+			  .build());
+	  lenderRepository.save(Lender.builder()
+			  .userDetails(new UserDetails("testLender", "lender@mail", UUID.randomUUID().toString()))
+			  .balance(new Money(BigDecimal.TEN))
+			  .build());
+    
     auctionService.createNewAuction(
         "testBorrower",
         Period.ofDays(7),

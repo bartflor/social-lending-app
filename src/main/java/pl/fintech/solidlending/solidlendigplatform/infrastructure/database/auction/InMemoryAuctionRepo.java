@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auct
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository;
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -49,5 +50,12 @@ public class InMemoryAuctionRepo implements AuctionRepository {
 	@Override
 	public void updateAuction(Long auctionId, Auction auction) {
 		repo.put(auctionId, auction);
+	}
+	
+	@Override
+	public List<Offer> findAuctionOffers(Long auctionId) {
+    	Auction auction = findById(auctionId).orElse(Auction.builder().build());
+    	return List.copyOf(auction.getOffers());
+    	
 	}
 }

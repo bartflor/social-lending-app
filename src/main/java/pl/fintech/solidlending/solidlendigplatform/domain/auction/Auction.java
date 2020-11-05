@@ -8,6 +8,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.HashSet;
 import java.util.Set;
 @AllArgsConstructor
 @Builder
@@ -15,13 +16,13 @@ import java.util.Set;
 public class Auction {
 	@Setter
 	private Long id;
-	private String borrowerUserName;
-	private Rating borrowerRating;
-	private LocalDate startDate;
-	private Period auctionDuration;
-	private Set<Offer> offers;
-	private AuctionStatus status;
-	private LoanParams loanParams;
+	private final String borrowerUserName;
+	private final Rating borrowerRating;
+	private final LocalDate startDate;
+	private final Period auctionDuration;
+	@Builder.Default private final Set<Offer> offers = new HashSet<>();
+	@Builder.Default private final AuctionStatus status = AuctionStatus.ACTIVE;
+	private final LoanParams loanParams;
 	
 	public void addNewOffer(Offer offer) {
 		offers.add(offer);

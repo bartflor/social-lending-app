@@ -7,7 +7,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.Auct
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
 import pl.fintech.solidlending.solidlendigplatform.domain.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.user.BorrowerRepository;
@@ -28,7 +27,6 @@ public class AuctionService {
 	private final BorrowerRepository borrowerRepository;
 	private final OfferRepository offerRepository;
 	private final LenderRepository lenderRepository;
-	private final AuctionFactory auctionFactory;
 	private final LoanRiskService loanRiskService;
 	
 	public Long createNewAuction(String username,
@@ -44,18 +42,21 @@ public class AuctionService {
 			throw new AuctionCreationException(String.format(BORROWER_NOT_ALLOWED, username));
 		}
 		Money loanValue = new Money(loanAmount);
-		final Risk loanRisk = loanRiskService.estimateLoanRisk(borrower, loanValue);
 		LoanParams loanParams = LoanParams.builder()
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
 				.loanRate(new Rate(rate))
 				.loanStartDate(loanStartDate)
-				.loanRisk(loanRisk)
+				.loanRisk(loanRiskService.estimateLoanRisk(borrower, loanValue))
 				.build();
-		Auction auction = auctionFactory.creteAuction( username,
-				borrower.getRating(),
-				auctionDuration,
-				loanParams);
+		
+		Auction auction = Auction.builder()
+				.borrowerUserName(username)
+				.startDate(LocalDate.now())
+				.auctionDuration(auctionDuration)
+				.loanParams(loanParams)
+				.borrowerRating(borrower.getRating())
+				.build();
 		return auctionRepository.save(auction);
 	}
 	
@@ -74,7 +75,7 @@ public class AuctionService {
 		return auctionRepository.findAll();
 	}
 	
-	public void addOffer(Offer offer){
+	public Long addOffer(Offer offer){
 		Long auctionId = offer.getAuctionId();
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
@@ -82,6 +83,7 @@ public class AuctionService {
 		Long offerId = offerRepository.save(offer);
 		offer.setId(offerId);
 		auctionRepository.updateAuction(auctionId, auction);
+		return offerId;
 	}
 	
 	public List<Offer> getLenderOffers(String lenderName) {
@@ -89,4 +91,5 @@ public class AuctionService {
 			throw new UserNotFoundException(String.format(LENDER_NOT_FOUND, lenderName));
 		return offerRepository.findAllByUserName(lenderName);
 	}
+
 }
