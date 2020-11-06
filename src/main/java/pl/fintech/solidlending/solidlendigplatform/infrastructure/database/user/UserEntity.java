@@ -3,12 +3,12 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.ToString;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.Borrower;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.Lender;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.User;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.UserDetails;
 
 import java.math.BigDecimal;
 @Builder

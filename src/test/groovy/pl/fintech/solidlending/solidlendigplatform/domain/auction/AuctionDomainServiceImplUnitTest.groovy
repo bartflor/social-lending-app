@@ -2,28 +2,23 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.UserNotFoundException
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService
-import pl.fintech.solidlending.solidlendigplatform.domain.user.Borrower
-import pl.fintech.solidlending.solidlendigplatform.domain.user.BorrowerRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.user.Lender
-import pl.fintech.solidlending.solidlendigplatform.domain.user.LenderRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryAuctionRepo
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryOfferRepo
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.InMemoryUserRepo
+import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.LocalDate
 import java.time.Period
 
-class AuctionServiceUnitTest extends spock.lang.Specification {
+class AuctionDomainServiceImplUnitTest extends Specification {
 
 	@Subject
-	AuctionService auctionService
+	AuctionDomainServiceImpl auctionService
 
 	AuctionRepository auctionRepo
 	BorrowerRepository borrowerRepo
@@ -37,7 +32,7 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 		lenderRepo = borrowerRepo
 		offerRepo = new InMemoryOfferRepo()
 		loanRiskSvc = new LoanRiskService()
-		auctionService = new AuctionService(auctionRepo,
+		auctionService = new AuctionDomainServiceImpl(auctionRepo,
 				borrowerRepo,
 				offerRepo,
 				lenderRepo,
@@ -46,36 +41,13 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 				.userDetails(new UserDetails("borrower_name", "borrower@mail", UUID.randomUUID().toString()))
 				.rating(new Rating(3))
 				.balance(new Money(BigDecimal.ZERO))
-				.build());
+				.build())
 		lenderRepo.save(Lender.builder()
 				.balance(new Money(10))
 				.userDetails(new UserDetails("lender_name", "lender@mail", UUID.randomUUID().toString()))
 				.build())
 	}
 
-	Auction createAuction(String borrowerName) {
-		Auction.builder()
-				.auctionDuration(Period.ofDays(7))
-				.borrowerRating(new Rating(1))
-				.borrowerUserName(borrowerName)
-				.loanParams(LoanParams.builder()
-						.loanAmount(new Money(100))
-						.loanStartDate(LocalDate.now().plus(10))
-						.build())
-				.startDate(LocalDate.now())
-				.status(Auction.AuctionStatus.ACTIVE)
-				.build()
-	}
-
-	Offer createOffer(String lenderName, Long auctionId){
-		Offer.builder()
-				.auctionId(auctionId)
-				.lenderName(lenderName)
-				.amount(new Money(20))
-				.rate(new Rate(2))
-				.duration(Period.of(1, 0, 0))
-				.build()
-	}
 	def "createNewAuction should save new Auction to repository and return new id"() {
 		when:
 			def resultId = auctionService.createNewAuction("borrower_name",
@@ -96,9 +68,9 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 
 	def "addOffer should save new Offer and link to proper Auction"() {
 		given:
-			def auction = createAuction()
+			def auction = AuctionDomainFactory.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = createOffer("lender_name", auctionId)
+			def offer = AuctionDomainFactory.createOffer("lender_name", auctionId)
 		when:
 			auctionService.addOffer(offer)
 		then:
@@ -109,9 +81,9 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 
 	def "addOffer should throw exception if given lender name not found"() {
 		given:
-			def auction = createAuction()
+			def auction = AuctionDomainFactory.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = createOffer("non_existing_lender_name", auctionId)
+			def offer = AuctionDomainFactory.createOffer("non_existing_lender_name", auctionId)
 		when:
 			auctionService.addOffer(offer)
 		then:
@@ -131,9 +103,9 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 
 	def "getPlatformAuction should return all Auction from repository"(){
 		given:
-			def auction1 = createAuction("borrower_name")
+			def auction1 = AuctionDomainFactory.createAuction("borrower_name")
 			auctionRepo.save(auction1)
-			def auction2 = createAuction("different_borrower_name")
+			def auction2 = AuctionDomainFactory.createAuction("different_borrower_name")
 			auctionRepo.save(auction2)
 		when:
 			def resultList = auctionService.getPlatformAuctions()
@@ -146,9 +118,9 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 
 	def "getUserAuction should return all Auction with given userName from repository"(){
 		given:
-			def auction1 = createAuction("borrower_name")
+			def auction1 = AuctionDomainFactory.createAuction("borrower_name")
 			auctionRepo.save(auction1)
-			def auction2 = createAuction("different_borrower_name")
+			def auction2 = AuctionDomainFactory.createAuction("different_borrower_name")
 			auctionRepo.save(auction2)
 		when:
 			def resultList = auctionService.getUserAuctions("borrower_name")
@@ -160,9 +132,9 @@ class AuctionServiceUnitTest extends spock.lang.Specification {
 
 	def "getLendersOffers should return all Offers with given LenderName"(){
 		given:
-			def offer1 = createOffer("lender_name", 1)
+			def offer1 = AuctionDomainFactory.createOffer("lender_name", 1)
 			offerRepo.save(offer1)
-			def offer2= createOffer("different_lender_name", 1)
+			def offer2= AuctionDomainFactory.createOffer("different_lender_name", 1)
 			offerRepo.save(offer2)
 		when:
 			def result = auctionService.getLenderOffers("lender_name")

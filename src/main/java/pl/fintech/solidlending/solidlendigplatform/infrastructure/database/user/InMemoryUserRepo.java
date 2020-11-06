@@ -2,7 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user
 
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Repository;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 
 import java.util.HashMap;
 import java.util.Map;

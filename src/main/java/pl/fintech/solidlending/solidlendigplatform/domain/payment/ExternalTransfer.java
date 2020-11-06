@@ -1,7 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
-import pl.fintech.solidlending.solidlendigplatform.domain.user.User;
 
 class ExternalTransfer<T extends User> {
 	private T user;

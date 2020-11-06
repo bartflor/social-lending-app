@@ -1,9 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common.values;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

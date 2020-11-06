@@ -1,15 +1,11 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 
-@Setter
-@Getter
-@AllArgsConstructor
+@Value
 public class OfferDto {
     Long offerId;
     Long auctionId;

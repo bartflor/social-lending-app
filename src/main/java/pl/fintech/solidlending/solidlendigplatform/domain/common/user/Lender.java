@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.domain.user;
+package pl.fintech.solidlending.solidlendigplatform.domain.common.user;
 
 import lombok.experimental.SuperBuilder;
 

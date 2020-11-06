@@ -1,15 +1,14 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;
+@ToString
+@EqualsAndHashCode
 @AllArgsConstructor
 @Builder
 @Getter
