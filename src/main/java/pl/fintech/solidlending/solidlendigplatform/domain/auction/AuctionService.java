@@ -76,6 +76,8 @@ public class AuctionService {
 	}
 	
 	public Long addOffer(Offer offer){
+		if(!lenderRepository.lenderExist(offer.getLenderName()))
+			throw new UserNotFoundException(String.format(LENDER_NOT_FOUND, offer.getLenderName()));
 		Long auctionId = offer.getAuctionId();
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
