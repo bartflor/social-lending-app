@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Data
 public class Money {
+	public static final Money ZERO = new Money(0);
 	private BigDecimal value;
 	
 	public Money(double loanAmount) {
@@ -16,5 +17,12 @@ public class Money {
 	
 	public boolean isMoreThan(Money amount) {
 		return value.compareTo(amount.getValue()) > 0;
+	}
+	
+	public Money divide(int num){
+		return new Money(value.divide(BigDecimal.valueOf(num)));
+	}
+	public static Money sum(Money money1, Money money2) {
+		return new Money(money1.getValue().add(money2.getValue()));
 	}
 }

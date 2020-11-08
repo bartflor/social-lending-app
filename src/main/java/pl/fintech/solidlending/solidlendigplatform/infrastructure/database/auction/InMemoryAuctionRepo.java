@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction.AuctionStatus.ARCHIVED;
+
 @Repository
 public class InMemoryAuctionRepo implements AuctionRepository {
 	private Map<Long, Auction> repo;
@@ -56,6 +59,16 @@ public class InMemoryAuctionRepo implements AuctionRepository {
 	public List<Offer> findAuctionOffers(Long auctionId) {
     	Auction auction = findById(auctionId).orElse(Auction.builder().build());
     	return List.copyOf(auction.getOffers());
-    	
+	}
+	
+	@Override
+	public void delete(Long auctionId) {
+		repo.remove(auctionId);
+	}
+	
+	@Override
+	public void archive(Long auctionId) {
+		repo.get(auctionId).updateStatus(ARCHIVED);
+		
 	}
 }

@@ -21,7 +21,7 @@ class AuctionDomainFactory {
 				.startDate(LocalDate.now())
 				.auctionDuration(auctionDuration)
 				.borrowerRating(new Rating(rating))
-				.loanParams(LoanParams.builder()
+				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanStartDate(loanStart)
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)

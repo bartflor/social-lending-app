@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.time.LocalDate;
@@ -20,11 +21,22 @@ public class Auction {
 	private final LocalDate startDate;
 	private final Period auctionDuration;
 	@Builder.Default private final Set<Offer> offers = new HashSet<>();
-	@Builder.Default private final AuctionStatus status = AuctionStatus.ACTIVE;
-	private final LoanParams loanParams;
+	@Builder.Default private AuctionStatus status = AuctionStatus.ACTIVE;
+	private final AuctionLoanParams auctionLoanParams;
 	
 	public void addNewOffer(Offer offer) {
 		offers.add(offer);
+		Money offersSum = offers.stream()
+				.map(Offer::getAmount)
+				.reduce(Money::sum)
+				.orElse(Money.ZERO);
+		if(offersSum.isMoreThan(auctionLoanParams.getLoanAmount())){
+			updateStatus(AuctionStatus.ACTIVE_COMPLETE);
+		}
+	}
+	
+	public void updateStatus(AuctionStatus status) {
+		this.status = status;
 	}
 	
 	public enum AuctionStatus {

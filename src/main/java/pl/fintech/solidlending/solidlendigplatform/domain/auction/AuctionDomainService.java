@@ -23,4 +23,5 @@ public interface AuctionDomainService {
 	Long addOffer(Offer offer);
 	
 	List<Offer> getLenderOffers(String lenderName);
+	Auction endAuction(Long auctionId, OffersSelectionPolicy offersSelectionPolicy);
 }

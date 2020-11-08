@@ -28,7 +28,12 @@ public class InitDataLoader implements CommandLineRunner {
   public void run(String... args) throws Exception {
     log.info("load init data.");
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("testBorrower", "borrower@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("testBorrower1", "borrower@mail", UUID.randomUUID().toString()))
+			  .rating(new Rating(3))
+			  .balance(new Money(BigDecimal.ZERO))
+			  .build());
+	  borrowerRepository.save(Borrower.builder()
+			  .userDetails(new UserDetails("testBorrower2", "borrower@mail", UUID.randomUUID().toString()))
 			  .rating(new Rating(3))
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
@@ -38,28 +43,28 @@ public class InitDataLoader implements CommandLineRunner {
 			  .build());
     
     auctionDomainServiceImpl.createNewAuction(
-        "testBorrower",
+        "testBorrower1",
         Period.ofDays(7),
         20,
         Period.of(1, 0, 0),
         10,
         LocalDate.now().plus(Period.ofDays(7)));
     auctionDomainServiceImpl.createNewAuction(
-        "testBorrower",
+        "testBorrower2",
         Period.ofDays(7),
         50,
         Period.of(2, 0, 0),
         15,
         LocalDate.now().plus(Period.ofDays(30)));
 	  auctionDomainServiceImpl.createNewAuction(
-			  "testBorrower",
+			  "testBorrower1",
 			  Period.ofDays(7),
 			  120,
 			  Period.of(3, 0, 0),
 			  22,
 			  LocalDate.now().plus(Period.ofDays(15)));
 	  auctionDomainServiceImpl.createNewAuction(
-			  "testBorrower",
+			  "testBorrower2",
 			  Period.ofDays(7),
 			  2000,
 			  Period.of(2, 0, 0),
@@ -70,7 +75,6 @@ public class InitDataLoader implements CommandLineRunner {
 			  .lenderName("testLender")
 			  .amount(new Money(20))
 			  .rate(new Rate(2))
-			  .duration(Period.of(1,0,0))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
@@ -78,7 +82,6 @@ public class InitDataLoader implements CommandLineRunner {
 			  .lenderName("testLender")
 			  .amount(new Money(10))
 			  .rate(new Rate(12))
-			  .duration(Period.of(2,0,0))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
@@ -86,7 +89,6 @@ public class InitDataLoader implements CommandLineRunner {
 			  .lenderName("testLender")
 			  .amount(new Money(13))
 			  .rate(new Rate(7))
-			  .duration(Period.of(1,0,0))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
   }

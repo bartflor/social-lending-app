@@ -12,7 +12,7 @@ import java.time.Period;
 @AllArgsConstructor
 @Builder
 @Getter
-public class LoanParams {
+public class AuctionLoanParams {
 	private Money loanAmount;
 	private Risk loanRisk;
 	private Period loanDuration;

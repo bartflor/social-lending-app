@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.domain.auction.exception;
+package pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception;
 
 public class UserNotFoundException extends RuntimeException {
 	
