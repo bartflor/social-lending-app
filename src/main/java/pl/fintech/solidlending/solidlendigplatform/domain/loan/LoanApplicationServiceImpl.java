@@ -52,6 +52,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	@Override
 	public Long activateLoan(Long loanId){
 		return domainService.activateLoan(loanId);
+		//TODO:payment
 	}
 	
 	

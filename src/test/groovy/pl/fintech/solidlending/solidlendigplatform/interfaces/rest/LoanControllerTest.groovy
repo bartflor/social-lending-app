@@ -2,27 +2,27 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 
 import io.restassured.RestAssured
 import io.restassured.specification.RequestSpecification
+import org.apache.tools.ant.types.Environment
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import spock.genesis.Gen
 import spock.lang.Specification
 
-@Import(AddStubRepositoriesToContext)
+@Import(AddMockedServiceToContext)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class AuctionControllerIntegrationTest extends Specification {
+class LoanControllerTest extends Specification {
 
 	@LocalServerPort
 	int serverPort
 	@Autowired
-	AuctionRepository auctionRepository
-	@Autowired
-	LoanRepository loanRepository
+	LoanApplicationService loanServiceMock
 
 	RequestSpecification restClient
 
@@ -34,20 +34,14 @@ class AuctionControllerIntegrationTest extends Specification {
 				.log().all()
 	}
 
-	def "GET /auctions/{auctionId}/create-loan should create new loan in repository"() {
+	def "GET /loans/{loanId}/activate should call loanApplicationService with proper id"(){
 		given:
-			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
-			def auction = AuctionDomainFactory.createAuctionWithAmount(amount)
-			def id = auctionRepository.save(auction)
-			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
-
+			def randID = Gen.long.first()
 		when:
-			def response = restClient.when().get("/auctions/" + id + "/create-loan")
+			def response = restClient.when().get("/loans/"+randID+"/activate")
 		then:
 			response.statusCode() == 201
 		and:
-			loanRepository.findAll().size() == 1
+			1*loanServiceMock.activateLoan(randID)
 	}
-
-
 }

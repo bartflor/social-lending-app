@@ -25,11 +25,7 @@ public class LoanDto {
 	int duration;
 	Set<InvestmentDto> investments;
 	String status;
-	
-	
-	public enum LoanStatus {
-		ACTIVE, CLOSED, UNCONFIRMED
-	}
+
 	static LoanDto from(Loan loan){
     return LoanDto.builder()
         .id(loan.getId())

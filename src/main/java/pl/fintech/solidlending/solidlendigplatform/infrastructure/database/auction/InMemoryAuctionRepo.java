@@ -17,13 +17,11 @@ import static pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
 public class InMemoryAuctionRepo implements AuctionRepository {
 	private Map<Long, Auction> repo;
 	private static Long lastId;
-	
-	static {
-		lastId = 0l;
-	}
+
 	
 	public InMemoryAuctionRepo() {
 		this.repo = new HashMap<>();
+		lastId = 0L;
 	}
 	
 	@Override

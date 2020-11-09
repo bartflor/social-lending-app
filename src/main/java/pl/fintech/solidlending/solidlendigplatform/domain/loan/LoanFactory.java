@@ -45,7 +45,7 @@ public class LoanFactory {
 			schedule.addRepayment(loanStartDate.plusMonths(i),
 					Repayment.builder().value(singleRepaymentAmount).build());
 		}
-		return new RepaymentSchedule();
+		return schedule;
 	}
 	
 	private Rate calculateAvgRate(Set<Investment> investments) {
