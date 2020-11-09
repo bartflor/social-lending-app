@@ -10,7 +10,7 @@ public abstract class User {
 	private Money balance;
 	
 	public boolean hasEnoughFundsToPay(Money amount){
-		return balance.isMoreThan(amount);
+		return balance.isMoreOrEqual(amount);
 	}
 	
 	public boolean hasBankAccount(){

@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
@@ -40,8 +41,10 @@ class AuctionControllerIntegrationTest extends Specification {
 
 	def "GET /auctions/{auctionId}/create-loan should create new loan in repository"() {
 		given:
-			def auction = AuctionDomainFactory.createAuction()
+			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
+			def auction = AuctionDomainFactory.createAuctionWithAmount(amount)
 			def id = auctionRepository.save(auction)
+			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
 
 		when:
 			def response = restClient.when().get("/auctions/" + id + "/create-loan")

@@ -15,11 +15,11 @@ public class Money {
 		//TODO implement
 	}
 	
-	public boolean isMoreThan(Money amount) {
-		return value.compareTo(amount.getValue()) > 0;
+	public boolean isMoreOrEqual(Money amount) {
+		return value.compareTo(amount.getValue()) >= 0;
 	}
 	
-	public Money divide(int num){
+	public Money divide(long num){
 		return new Money(value.divide(BigDecimal.valueOf(num)));
 	}
 	public static Money sum(Money money1, Money money2) {

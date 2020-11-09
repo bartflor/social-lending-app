@@ -42,28 +42,28 @@ public class InitDataLoader implements CommandLineRunner {
 			  .balance(new Money(BigDecimal.TEN))
 			  .build());
     
-    auctionDomainServiceImpl.createNewAuction(
+    long auction1Id = auctionDomainServiceImpl.createNewAuction(
         "testBorrower1",
         Period.ofDays(7),
         20,
         Period.of(1, 0, 0),
         10,
         LocalDate.now().plus(Period.ofDays(7)));
-    auctionDomainServiceImpl.createNewAuction(
+	  long auction2Id =auctionDomainServiceImpl.createNewAuction(
         "testBorrower2",
         Period.ofDays(7),
         50,
         Period.of(2, 0, 0),
         15,
         LocalDate.now().plus(Period.ofDays(30)));
-	  auctionDomainServiceImpl.createNewAuction(
+	  long auction3Id =auctionDomainServiceImpl.createNewAuction(
 			  "testBorrower1",
 			  Period.ofDays(7),
 			  120,
 			  Period.of(3, 0, 0),
 			  22,
 			  LocalDate.now().plus(Period.ofDays(15)));
-	  auctionDomainServiceImpl.createNewAuction(
+	  long auction4Id =auctionDomainServiceImpl.createNewAuction(
 			  "testBorrower2",
 			  Period.ofDays(7),
 			  2000,
@@ -71,21 +71,21 @@ public class InitDataLoader implements CommandLineRunner {
 			  7,
 			  LocalDate.now().plus(Period.ofDays(10)));
 	  Offer offer = Offer.builder()
-			  .auctionId(1l)
+			  .auctionId(auction1Id)
 			  .lenderName("testLender")
 			  .amount(new Money(20))
 			  .rate(new Rate(2))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
-			  .auctionId(1l)
+			  .auctionId(auction1Id)
 			  .lenderName("testLender")
 			  .amount(new Money(10))
 			  .rate(new Rate(12))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
-			  .auctionId(2l)
+			  .auctionId(auction2Id)
 			  .lenderName("testLender")
 			  .amount(new Money(13))
 			  .rate(new Rate(7))

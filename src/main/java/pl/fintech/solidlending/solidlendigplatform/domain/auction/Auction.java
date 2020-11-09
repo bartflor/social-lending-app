@@ -30,7 +30,7 @@ public class Auction {
 				.map(Offer::getAmount)
 				.reduce(Money::sum)
 				.orElse(Money.ZERO);
-		if(offersSum.isMoreThan(auctionLoanParams.getLoanAmount())){
+		if(offersSum.isMoreOrEqual(auctionLoanParams.getLoanAmount())){
 			updateStatus(AuctionStatus.ACTIVE_COMPLETE);
 		}
 	}

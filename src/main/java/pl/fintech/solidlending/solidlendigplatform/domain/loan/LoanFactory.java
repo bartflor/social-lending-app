@@ -38,7 +38,7 @@ public class LoanFactory {
 	
 	private RepaymentSchedule prepareRepaymentSchedule(Money repayment, LocalDate loanStartDate, Period loanDuration) {
 		RepaymentSchedule schedule = new RepaymentSchedule();
-		int repaymentMonths = loanDuration.getDays() < 30 ? 1 : loanDuration.getMonths();
+		long repaymentMonths = loanDuration.toTotalMonths() == 0 ? 1 : loanDuration.toTotalMonths();
 		Money singleRepaymentAmount = repayment.divide(repaymentMonths);
 		//Request repayment after 1 month;
 		for(int i=1; i<=repaymentMonths; i++){

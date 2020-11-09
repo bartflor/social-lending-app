@@ -69,16 +69,16 @@ class AuctionDomainFactory {
 				.build()
 	}
 
-	static Offer createOfferWithAmount(int amount){
+	static Offer createOfferWithAmount(int amount, long id){
 		Offer.builder()
-				.auctionId(Gen.getLong().first())
+				.auctionId(id)
 				.lenderName(Gen.string.first())
 				.amount(new Money(amount))
 				.rate(new Rate(Gen.double.first()))
 				.build()
 	}
 
-	static Auction createAuctionWithAmount(int amount) {
+	static Auction createAuctionWithAmount(Integer amount) {
 		createAuction(Gen.string.first(),
 				Period.ofDays(Gen.integer.first()),
 				amount,
