@@ -38,13 +38,13 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 				lenderRepo,
 				loanRiskSvc)
 		borrowerRepo.save(Borrower.builder()
-				.userDetails(new UserDetails("borrower_name", "borrower@mail", UUID.randomUUID().toString()))
+				.userDetails(new UserDetails("borrower_name", "name", "borrower@mail", UUID.randomUUID().toString()))
 				.rating(new Rating(3))
 				.balance(new Money(BigDecimal.ZERO))
 				.build())
 		lenderRepo.save(Lender.builder()
 				.balance(new Money(10))
-				.userDetails(new UserDetails("lender_name", "lender@mail", UUID.randomUUID().toString()))
+				.userDetails(new UserDetails("lender_name", "name", "lender@mail", UUID.randomUUID().toString()))
 				.build())
 	}
 
@@ -70,7 +70,7 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 		given:
 			def auction = AuctionDomainFactory.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = AuctionDomainFactory.createOffer("lender_name", auctionId)
+			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId("lender_name", auctionId)
 		when:
 			auctionService.addOffer(offer)
 		then:
@@ -83,7 +83,7 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 		given:
 			def auction = AuctionDomainFactory.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = AuctionDomainFactory.createOffer("non_existing_lender_name", auctionId)
+			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId("non_existing_lender_name", auctionId)
 		when:
 			auctionService.addOffer(offer)
 		then:
@@ -132,9 +132,9 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 
 	def "getLendersOffers should return all Offers with given LenderName"(){
 		given:
-			def offer1 = AuctionDomainFactory.createOffer("lender_name", 1)
+			def offer1 = AuctionDomainFactory.createOfferWithLenderNameAuctionId("lender_name", 1)
 			offerRepo.save(offer1)
-			def offer2= AuctionDomainFactory.createOffer("different_lender_name", 1)
+			def offer2= AuctionDomainFactory.createOfferWithLenderNameAuctionId("different_lender_name", 1)
 			offerRepo.save(offer2)
 		when:
 			def result = auctionService.getLenderOffers("lender_name")

@@ -49,7 +49,7 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 			throw new LoanCreationException(String.format(LOAN_STATUS_FORBID_ACTIVATION, loan.getStatus()));
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
-		//TODO: Transfer service -> internal payment: lenders --borrower
+		//TODO: Transfer service -> internal payment: lenders --> borrower
 		//Repayment schedule action??
 		return loanId;
 	}

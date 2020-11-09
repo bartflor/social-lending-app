@@ -1,14 +1,11 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 
 import java.util.Comparator;
-
+@ToString
 @AllArgsConstructor
 @Getter
 @Builder

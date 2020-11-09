@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 public class UserEntity {
 	private String userName;
 	private String email;
+	private String name;
 	private String accountNumber;
 	private BigDecimal balanceValue;
 	private Role role;
@@ -26,7 +27,7 @@ public class UserEntity {
 		LENDER, BORROWER
 	}
 	public User createDomainUser(){
-		UserDetails details = new UserDetails(userName, email, accountNumber);
+		UserDetails details = new UserDetails(userName, name,email, accountNumber);
 		Money balance = new Money(balanceValue);
 		if(role == Role.LENDER){
 			return Lender.builder()

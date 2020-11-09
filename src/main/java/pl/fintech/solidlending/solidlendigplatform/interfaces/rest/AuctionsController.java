@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy;
@@ -18,6 +19,7 @@ public class AuctionsController {
 	private AuctionApplicationService auctionApplicationService;
 	private LoanApplicationService loanApplicationService;
 	
+	@ResponseStatus(HttpStatus.OK)
 	@GetMapping
 	public List<AuctionDto> getAllAuctions(){
 		return auctionApplicationService.getPlatformAuctions().stream()
@@ -25,6 +27,7 @@ public class AuctionsController {
 				.collect(Collectors.toList());
 	}
 	
+	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/borrower/{borrowerName}")
 	public List<AuctionDto> getUserAuctions(@PathVariable String borrowerName){
 		return auctionApplicationService.getUserAuctions( borrowerName).stream()
@@ -32,6 +35,7 @@ public class AuctionsController {
 				.collect(Collectors.toList());
 	}
 	
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping()
 	public Long addNewAuction(@RequestBody AuctionDto auctionDto){
 		return auctionApplicationService.createNewAuction(auctionDto.getBorrower(), //TODO: from auth
@@ -41,6 +45,8 @@ public class AuctionsController {
 				auctionDto.getRate(),
 				auctionDto.getLoanStartDate());
 	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
 	@GetMapping("/{auctionId}/create-loan")
 	public LoanDto endAuctionCreateLoan(@PathVariable Long auctionId){
 		Long newLoanId = auctionApplicationService.createLoanFromEndingAuction(auctionId,
