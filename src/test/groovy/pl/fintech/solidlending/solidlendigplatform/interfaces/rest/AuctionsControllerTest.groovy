@@ -42,7 +42,7 @@ class AuctionsControllerTest extends Specification {
 				.log().all()
 	}
 
-	def "GET /auctions/{auctionId}/create-loan should return created loanDto"(){
+	def "GET /api/auctions/{auctionId}/create-loan should return created loanDto"(){
 		given:
 			def randID = Gen.integer.first()
 			def loan = LoanDomainFactory.crateLoan(randID)
@@ -50,7 +50,7 @@ class AuctionsControllerTest extends Specification {
 			auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
 			loanServiceMock.findLoanById(randID) >> loan
 		when:
-			def response = restClient.when().get("/auctions/"+randID+"/create-loan")
+			def response = restClient.when().get("/api/auctions/"+randID+"/create-loan")
 		then:
 			response.statusCode() == 201
 		and:

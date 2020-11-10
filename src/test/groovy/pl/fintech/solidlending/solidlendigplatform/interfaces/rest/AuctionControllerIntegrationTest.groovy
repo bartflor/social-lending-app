@@ -34,7 +34,7 @@ class AuctionControllerIntegrationTest extends Specification {
 				.log().all()
 	}
 
-	def "GET /auctions/{auctionId}/create-loan should create new loan in repository"() {
+	def "GET /api/auctions/{auctionId}/create-loan should create new loan in repository"() {
 		given:
 			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
 			def auction = AuctionDomainFactory.createAuctionWithAmount(amount)
@@ -42,7 +42,7 @@ class AuctionControllerIntegrationTest extends Specification {
 			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
 
 		when:
-			def response = restClient.when().get("/auctions/" + id + "/create-loan")
+			def response = restClient.when().get("/api/auctions/" + id + "/create-loan")
 		then:
 			response.statusCode() == 201
 		and:

@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/investments")
+@RequestMapping("/api/investments")
 @AllArgsConstructor
 public class InvestmentController {
 	LoanApplicationService loanApplicationService;

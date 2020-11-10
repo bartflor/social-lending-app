@@ -34,11 +34,11 @@ class LoanControllerTest extends Specification {
 				.log().all()
 	}
 
-	def "GET /loans/{loanId}/activate should call loanApplicationService with proper id"(){
+	def "GET /api/loans/{loanId}/activate should call loanApplicationService with proper id"(){
 		given:
 			def randID = Gen.long.first()
 		when:
-			def response = restClient.when().get("/loans/"+randID+"/activate")
+			def response = restClient.when().get("/api/loans/"+randID+"/activate")
 		then:
 			response.statusCode() == 201
 		and:
