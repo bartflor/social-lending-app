@@ -19,11 +19,11 @@ class AuctionApplicationServiceImplTest extends Specification {
 		given:
 			def randId = Gen.integer.first()
 			def policy = new BestOfferRatePolicy()
-			def auction = AuctionDomainFactory.createAuction()
+			def event = AuctionDomainFactory.createEndAuctionEvent()
 		when:
 			auctionApplicationService.createLoanFromEndingAuction(randId, policy)
 		then:
-			1*domainService.endAuction(randId, policy) >> auction
-			1*loanService.createLoan(auction)
+			1*domainService.endAuction(randId, policy) >> event
+			1*loanService.createLoan(event)
 	}
 }

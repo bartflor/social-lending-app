@@ -64,9 +64,4 @@ public class InMemoryAuctionRepo implements AuctionRepository {
 		repo.remove(auctionId);
 	}
 	
-	@Override
-	public void archive(Long auctionId) {
-		repo.get(auctionId).updateStatus(ARCHIVED);
-		
-	}
 }

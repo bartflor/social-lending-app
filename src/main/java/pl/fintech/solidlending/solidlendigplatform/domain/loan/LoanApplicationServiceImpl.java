@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 
 import java.time.Period;
 import java.util.List;
@@ -24,14 +25,14 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	 * @return - new loan id
 	 */
 	@Override
-	public Long createLoan(Auction auction) {
-		AuctionLoanParams auctionLoanParams = auction.getAuctionLoanParams();
-		Set<Investment> investments = auction.getOffers().stream()
+	public Long createLoan(EndAuctionEvent endAuctionEvent) {
+		AuctionLoanParams auctionLoanParams = endAuctionEvent.getAuctionLoanParams();
+		Set<Investment> investments = endAuctionEvent.getOffers().stream()
 				.map(offer -> createInvestmentFromOffer(offer,
 														auctionLoanParams.getLoanDuration()))
 				.collect(Collectors.toSet());
 		LoanParams loanParams = LoanParams.builder()
-				.borrowerUserName(auction.getBorrowerUserName())
+				.borrowerUserName(endAuctionEvent.getBorrowerUserName())
 				.investments(investments)
 				.loanAmount(auctionLoanParams.getLoanAmount())
 				.loanDuration(auctionLoanParams.getLoanDuration())

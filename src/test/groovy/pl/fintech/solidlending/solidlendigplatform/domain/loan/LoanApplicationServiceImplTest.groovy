@@ -11,18 +11,18 @@ class LoanApplicationServiceImplTest extends Specification {
 	@Subject
 	def loanAppSvc = new LoanApplicationServiceImpl(loanDomainSvcMock)
 
-	def "createLoan should crate new loan from given auction"(){
+	def "createLoan should crate new loan from given endAuctionEvent"(){
 		given:
-			def auction = AuctionDomainFactory.createAuction()
+			def event = AuctionDomainFactory.createEndAuctionEvent()
 			def loanParams = LoanParams.builder()
-					.borrowerUserName(auction.getBorrowerUserName())
+					.borrowerUserName(event.getBorrowerUserName())
 					.investments(Collections.emptySet())
-					.loanAmount(auction.getAuctionLoanParams().getLoanAmount())
-					.loanDuration(auction.getAuctionLoanParams().getLoanDuration())
-					.loanStartDate(auction.getAuctionLoanParams().getLoanStartDate())
+					.loanAmount(event.getAuctionLoanParams().getLoanAmount())
+					.loanDuration(event.getAuctionLoanParams().getLoanDuration())
+					.loanStartDate(event.getAuctionLoanParams().getLoanStartDate())
 					.build()
 		when:
-			loanAppSvc.createLoan(auction)
+			loanAppSvc.createLoan(event)
 		then:
 			1*loanDomainSvcMock.createLoan(loanParams)
 	}
