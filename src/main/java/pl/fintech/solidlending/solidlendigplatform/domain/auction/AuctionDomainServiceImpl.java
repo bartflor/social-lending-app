@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddOfferException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
@@ -25,7 +26,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private static final String BORROWER_NOT_ALLOWED = "Borrower with username:%s is not allowed to create new auction.";
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	private static final String LENDER_NOT_FOUND = "Lender with username:%s not found.";
-	private static final String INCORRECT_AUCTION_STATUS = "Can not create loan from auction with status: %s";
 	
 	private final AuctionRepository auctionRepository;
 	private final BorrowerRepository borrowerRepository;
@@ -117,23 +117,13 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	 * @return Auction with selected offers
 	 */
 	@Override
-	public Auction endAuction(Long auctionId, OffersSelectionPolicy selectionPolicy){
+	public EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy selectionPolicy){
 		Auction auction = auctionRepository.findById(auctionId)
 				.orElseThrow(() -> new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
-		if(!auction.getStatus().equals(Auction.AuctionStatus.ACTIVE_COMPLETE))
-			throw new LoanCreationException(String.format(INCORRECT_AUCTION_STATUS, auction.getStatus()));
-		auctionRepository.archive(auctionId);
-		return Auction.builder()
-				.id(auctionId)
-				.status(auction.getStatus())
-				.borrowerRating(auction.getBorrowerRating())
-				.startDate(auction.getStartDate())
-				.borrowerUserName(auction.getBorrowerUserName())
-				.auctionDuration(auction.getAuctionDuration())
-				.auctionLoanParams(auction.getAuctionLoanParams())
-				.offers(selectionPolicy.selectOffers(auction.getOffers(), auction.getAuctionLoanParams()))
-				.build();
-		 }
+		EndAuctionEvent endEvent = auction.end(selectionPolicy);
+		auctionRepository.updateAuction(auctionId, auction);
+		return endEvent;
+	}
 	
 
 }

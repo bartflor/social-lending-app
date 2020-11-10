@@ -2,6 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
 import java.time.LocalDate;
@@ -15,8 +16,8 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 	
 	@Override
 	public Long createLoanFromEndingAuction(Long auctionId, OffersSelectionPolicy selectionPolicy){
-		Auction auction = domainService.endAuction(auctionId, selectionPolicy);
-		return loanService.createLoan(auction);
+		EndAuctionEvent endAuctionEvent = domainService.endAuction(auctionId, selectionPolicy);
+		return loanService.createLoan(endAuctionEvent);
 	}
 	
 	@Override

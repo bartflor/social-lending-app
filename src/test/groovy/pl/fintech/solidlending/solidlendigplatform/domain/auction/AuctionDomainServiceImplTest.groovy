@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService
@@ -17,21 +18,22 @@ class AuctionDomainServiceImplTest extends Specification {
 	@Subject
 	def domainSvc = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, loanRiskSvc)
 
-	def "endAuction should archive auction having ACTIVE_COMPLETE status with given id and \
-		return auction with offers selected"(){
+	def "endAuction should call end() on auction with given id and \
+		update repository and\
+		return EndAuctionEvent with offers selected"(){
 		given:
 			def randId = Gen.integer.first()
-			def auction = AuctionDomainFactory.createAuction(randId)
-			auction.updateStatus(Auction.AuctionStatus.ACTIVE_COMPLETE)
+			def auction = Mock(Auction)
 			auctionRepo.findById(randId) >> Optional.of(auction)
 			def policy = Mock(OffersSelectionPolicy)
+			def event = GroovyMock(EndAuctionEvent)
 		when:
 			def result = domainSvc.endAuction(randId, policy)
 		then:
-			1*auctionRepo.archive(randId)
+			1*auction.end(policy) >> event
+			1*auctionRepo.updateAuction(randId, auction)
 		and:
-			1*policy.selectOffers(auction.getOffers(), auction.getAuctionLoanParams()) >> Collections.emptySet()
-			result == auction
+			result == event
 
 	}
 }

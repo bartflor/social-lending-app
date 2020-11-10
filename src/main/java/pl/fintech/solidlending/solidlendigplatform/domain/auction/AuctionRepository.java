@@ -18,5 +18,4 @@ public interface AuctionRepository {
 	
 	void delete(Long auctionId);
 	
-	void archive(Long auctionId);
 }
