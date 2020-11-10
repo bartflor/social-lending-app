@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
 
 import java.util.List;
 import java.util.Set;
@@ -49,6 +50,7 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 			throw new LoanCreationException(String.format(LOAN_STATUS_FORBID_ACTIVATION, loan.getStatus()));
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
+
 		return loanId;
 	}
 	

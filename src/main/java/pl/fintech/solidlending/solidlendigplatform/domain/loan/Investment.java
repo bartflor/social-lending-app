@@ -16,10 +16,13 @@ public class Investment {
   Long loanId;
   String lenderName;
   Money value;
+  Money startAmount;
   Rate rate;
   Period duration;
   @Builder.Default Status status = Status.UNCONFIRMED;
   RepaymentSchedule schedule;
+  
+
   
   public enum Status {
     UNCONFIRMED,

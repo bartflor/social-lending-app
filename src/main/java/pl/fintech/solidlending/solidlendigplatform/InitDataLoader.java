@@ -28,7 +28,7 @@ public class InitDataLoader implements CommandLineRunner {
   public void run(String... args) throws Exception {
     log.info("load init data.");
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("testBorrower1", "Bilbo Baggins", "borrower@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("testBorrower1", "Bilbo Baggins", "borrower@mail", "d474cb1d-35b6-4d32-b290-0ab36317cdfc"))
 			  .rating(new Rating(3))
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
@@ -38,7 +38,7 @@ public class InitDataLoader implements CommandLineRunner {
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
 	  lenderRepository.save(Lender.builder()
-			  .userDetails(new UserDetails("testLender", "Samwise Gamgee", "lender@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("testLender", "Samwise Gamgee", "lender@mail", "e0c30b15-02e1-423f-9fa3-2a9cf411980d"))
 			  .balance(new Money(BigDecimal.TEN))
 			  .build());
     

@@ -25,4 +25,10 @@ public class Money {
 	public static Money sum(Money money1, Money money2) {
 		return new Money(money1.getValue().add(money2.getValue()));
 	}
+	
+	public Money addReturnRate(Rate rate) {
+		return new Money(value.add(
+				value.multiply(BigDecimal.valueOf(rate.getRateValue()))));
+		//TODO: correct!
+	}
 }
