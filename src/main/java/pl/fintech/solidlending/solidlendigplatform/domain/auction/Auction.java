@@ -43,6 +43,7 @@ public class Auction {
 		if(!status.equals(Auction.AuctionStatus.ACTIVE_COMPLETE))
 			throw new LoanCreationException(String.format(INCORRECT_AUCTION_STATUS, status));
 		Set<Offer> bestOffers = selectionPolicy.selectOffers(offers, auctionLoanParams);
+		status = AuctionStatus.ARCHIVED;
 		return EndAuctionEvent.builder()
 				.BorrowerUserName(borrowerUserName)
 				.offers(bestOffers)
