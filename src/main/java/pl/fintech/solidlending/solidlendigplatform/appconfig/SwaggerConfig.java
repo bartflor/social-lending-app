@@ -10,6 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+	//TODO: swagger3, endpoint description
 	@Bean
 	public Docket get(){
 		return new Docket(DocumentationType.SWAGGER_2)

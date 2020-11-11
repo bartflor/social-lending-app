@@ -19,7 +19,7 @@ public class OfferDto {
               offer.getAuctionId(),
               offer.getLenderName(),
               offer.getAmount().getValue().doubleValue(),
-              offer.getRate().getRate());
+              offer.getRate().getRateValue());
     }
     
     public Offer createDomainOffer(){

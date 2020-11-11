@@ -2,7 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.LoanParams;
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,18 +23,20 @@ public class AuctionDto {
     List<OfferDto> offers;
   
     public static AuctionDto fromAuction(Auction auction) {
-        LoanParams params = auction.getLoanParams();
+        AuctionLoanParams params = auction.getAuctionLoanParams();
         return new AuctionDto(
             auction.getId(),
             auction.getBorrowerUserName(),
             auction.getBorrowerRating().getRating(),
             params.getLoanAmount().getValue().doubleValue(),
-            params.getLoanRate().getRate(),
+            params.getLoanRate().getRateValue(),
             params.getLoanStartDate(),
             params.getLoanDuration().getMonths(),
             auction.getStartDate(),
             auction.getAuctionDuration().getDays(),
             auction.getStatus().toString(),
-            auction.getOffers().stream().map(OfferDto::fromOffer).collect(Collectors.toList()));
+            auction.getOffers().stream()
+                    .map(OfferDto::fromOffer)
+                    .collect(Collectors.toList()));
     }
 }

@@ -10,5 +10,5 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 public class Rate {
-	double rate;
+	double rateValue;
 }

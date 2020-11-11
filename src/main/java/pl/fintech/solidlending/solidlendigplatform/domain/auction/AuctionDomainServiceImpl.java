@@ -4,17 +4,21 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddOfferException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.UserNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class AuctionDomainServiceImpl implements AuctionDomainService {
@@ -43,7 +47,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 			throw new AuctionCreationException(String.format(BORROWER_NOT_ALLOWED, username));
 		}
 		Money loanValue = new Money(loanAmount);
-		LoanParams loanParams = LoanParams.builder()
+		AuctionLoanParams auctionLoanParams = AuctionLoanParams.builder()
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
 				.loanRate(new Rate(rate))
@@ -55,7 +59,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.borrowerUserName(username)
 				.startDate(LocalDate.now())
 				.auctionDuration(auctionDuration)
-				.loanParams(loanParams)
+				.auctionLoanParams(auctionLoanParams)
 				.borrowerRating(borrower.getRating())
 				.build();
 		return auctionRepository.save(auction);
@@ -88,6 +92,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		auction.addNewOffer(offer);
 		Long offerId = offerRepository.save(offer);
 		offer.setId(offerId);
+		
 		auctionRepository.updateAuction(auctionId, auction);
 		return offerId;
 	}
@@ -103,4 +108,22 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 			throw new UserNotFoundException(String.format(LENDER_NOT_FOUND, lenderName));
 	}
 	
+	/**
+	 * While ending auction <code>OfferSelectionPolicy</code> selects
+	 * from all offers list in <code>Auction</Code> object, only these offers
+	 * that will be transformed in investment (if Borrower confirm loan creation)
+	 * @param auctionId - auction selected to be closed
+	 * @param selectionPolicy - offers choosing policy
+	 * @return Auction with selected offers
+	 */
+	@Override
+	public EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy selectionPolicy){
+		Auction auction = auctionRepository.findById(auctionId)
+				.orElseThrow(() -> new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
+		EndAuctionEvent endEvent = auction.end(selectionPolicy);
+		auctionRepository.updateAuction(auctionId, auction);
+		return endEvent;
+	}
+	
+
 }

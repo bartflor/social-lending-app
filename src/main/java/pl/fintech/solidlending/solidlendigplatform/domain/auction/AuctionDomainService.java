@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 
 import java.time.LocalDate;
@@ -23,4 +24,5 @@ public interface AuctionDomainService {
 	Long addOffer(Offer offer);
 	
 	List<Offer> getLenderOffers(String lenderName);
+	EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy offersSelectionPolicy);
 }

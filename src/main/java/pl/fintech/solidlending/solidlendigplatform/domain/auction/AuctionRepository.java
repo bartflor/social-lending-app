@@ -15,4 +15,7 @@ public interface AuctionRepository {
 	void updateAuction(Long auctionId, Auction auction);
 	
 	List<Offer> findAuctionOffers(Long auctionId);
+	
+	void delete(Long auctionId);
+	
 }
