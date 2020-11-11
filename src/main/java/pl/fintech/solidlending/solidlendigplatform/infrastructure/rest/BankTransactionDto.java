@@ -1,11 +1,18 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest;
 
+import lombok.*;
+
 import java.time.LocalDate;
 
-public class BankTransaction {
+@NoArgsConstructor
+@Data
+@ToString
+@EqualsAndHashCode
+public class BankTransactionDto {
 	String id;
 	String type;
 	double amount;
 	String referenceId;
-	String timestamp;
+	LocalDate timestamp;
+	
 }

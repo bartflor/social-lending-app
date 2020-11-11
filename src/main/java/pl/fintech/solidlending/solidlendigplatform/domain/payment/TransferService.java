@@ -5,13 +5,11 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.InMemoryUserRepo;
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.BankClientAdapter;
 
 @Component
 @AllArgsConstructor
 public class TransferService {
-	BankClientAdapter bankClient;
+	BankClient bankClient;
 	LenderRepository lenderRepository;
 	BorrowerRepository borrowerRepository;
 	
