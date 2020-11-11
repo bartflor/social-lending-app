@@ -10,12 +10,14 @@ public class OfferEntity {
 	private String lenderName;
 	private BigDecimal amount;
 	private double rate;
+	private String status;
 	
 	public static OfferEntity createFromOffer(Offer offer){
 		return OfferEntity.builder()
 				.amount(offer.getAmount().getValue())
 				.lenderName(offer.getLenderName())
 				.rate(offer.getRate().getRateValue())
+				.status(offer.getStatus().toString())
 				.build();
 	}
 }

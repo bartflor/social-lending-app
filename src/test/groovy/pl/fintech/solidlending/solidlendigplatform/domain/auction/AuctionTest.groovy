@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
 import spock.genesis.Gen
 import spock.lang.Specification
 
@@ -34,4 +35,25 @@ class AuctionTest extends Specification {
 		and:
 			auction.getStatus() == Auction.AuctionStatus.ACTIVE
 	}
+
+	def "Auction.end() should change status to ARCHIVED, and \
+		return EndAuctionEvent"(){
+		given:
+			def randInt = Gen.integer.first()
+			def auction = AuctionDomainFactory.createActiveCompleteAuction(randInt)
+			def policy = Mock(OffersSelectionPolicy)
+			def selectedOffers = Set.of(AuctionDomainFactory.createOfferWithAmount(randInt, randInt))
+		when:
+			def result = auction.end(policy)
+		then:
+			1* policy.selectOffers(auction.getOffers(), auction.getAuctionLoanParams()) >> selectedOffers
+			auction.getStatus() == Auction.AuctionStatus.ARCHIVED
+		and:
+			result == EndAuctionEvent.builder()
+					.BorrowerUserName(auction.getBorrowerUserName())
+					.offers(selectedOffers)
+					.auctionLoanParams(auction.getAuctionLoanParams())
+					.build();
+	}
+
 }

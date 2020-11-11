@@ -31,7 +31,6 @@ public class InMemoryOfferRepo implements OfferRepository {
 	public List<Offer> findAllByUserName(String userName) {
 		return repository.values().stream().filter((offer -> offer.getLenderName().equals(userName)))
 				.collect(Collectors.toList());
-		
 	}
 	
 	@Override
@@ -40,7 +39,12 @@ public class InMemoryOfferRepo implements OfferRepository {
 	}
 	
 	@Override
-	public Optional<Offer> findById(Long auctionId) {
-		return Optional.of(repository.get(auctionId));
+	public Optional<Offer> findById(Long offerId) {
+		return Optional.of(repository.get(offerId));
+	}
+	
+	@Override
+	public void update(Long id, Offer offer) {
+		repository.put(id, offer);
 	}
 }
