@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/auctions")
+@RequestMapping("/api/auctions")
 @AllArgsConstructor
 public class AuctionsController {
 	private AuctionApplicationService auctionApplicationService;

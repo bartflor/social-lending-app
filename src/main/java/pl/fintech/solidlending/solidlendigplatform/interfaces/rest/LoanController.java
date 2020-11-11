@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/loans")
+@RequestMapping("/api/loans")
 @AllArgsConstructor
 public class LoanController {
 	LoanApplicationService loanApplicationService;

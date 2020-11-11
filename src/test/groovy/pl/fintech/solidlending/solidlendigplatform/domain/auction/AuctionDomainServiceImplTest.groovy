@@ -32,6 +32,7 @@ class AuctionDomainServiceImplTest extends Specification {
 		then:
 			1*auction.end(policy) >> event
 			1*auctionRepo.updateAuction(randId, auction)
+			1*auctionRepo.findAuctionOffers(randId) >> Collections.emptyList()
 		and:
 			result == event
 

@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/offers")
+@RequestMapping("/api/offers")
 public class OffersController {
 	AuctionApplicationService auctionApplicationService;
 	@GetMapping("/{lenderName}")

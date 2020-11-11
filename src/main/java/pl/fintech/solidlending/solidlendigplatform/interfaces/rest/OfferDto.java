@@ -12,6 +12,7 @@ public class OfferDto {
     String lenderUserName;
     double amount;
     double rate;
+    String status;
 
     public static OfferDto fromOffer(Offer offer) {
         return new OfferDto(
@@ -19,7 +20,8 @@ public class OfferDto {
               offer.getAuctionId(),
               offer.getLenderName(),
               offer.getAmount().getValue().doubleValue(),
-              offer.getRate().getRateValue());
+              offer.getRate().getRateValue(),
+                offer.getStatus().toString());
     }
     
     public Offer createDomainOffer(){

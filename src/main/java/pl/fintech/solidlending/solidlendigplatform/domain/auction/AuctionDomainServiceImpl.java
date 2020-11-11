@@ -122,6 +122,9 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.orElseThrow(() -> new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
 		EndAuctionEvent endEvent = auction.end(selectionPolicy);
 		auctionRepository.updateAuction(auctionId, auction);
+		auctionRepository.findAuctionOffers(auctionId).stream()
+		.forEach(offer -> { offer.archive();
+									offerRepository.update(offer.getId(), offer);});
 		return endEvent;
 	}
 	
