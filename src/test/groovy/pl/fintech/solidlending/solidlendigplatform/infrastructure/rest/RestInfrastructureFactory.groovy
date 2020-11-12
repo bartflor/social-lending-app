@@ -1,8 +1,11 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest
 
 import org.json.JSONObject
+import spock.genesis.Gen
 
-class ApiResponseFactory {
+import java.time.LocalDate
+
+class RestInfrastructureFactory {
 
 	static String notEnoughBalanceResponse() {
 		new JSONObject("{\"code\": 404," +
@@ -44,10 +47,49 @@ class ApiResponseFactory {
 		new TransactionRequest(source, target, amount)
 	}
 
-	static String paymentRequest(String number, double amount) {
+	static String paymentRequestJson(String number, double amount) {
 		"{\n" +
 		"\"accountNumber\": \""+number+"\",\n" +
 		"\"amount\": "+amount+
 		"\n}"
+	}
+
+	static AccountDetailsDto createAccountDetailsDto(String account, BigDecimal balance) {
+		AccountDetailsDto.builder()
+				.number(account)
+				.accountBalance(balance.doubleValue())
+				.name(Gen.string(20).first())
+				.transactions(List.of(BankTransactionDto.builder()
+										.id(Gen.long.first())
+										.type("CREDIT")
+										.amount(Gen.double.first())
+										.referenceId(UUID.randomUUID().toString())
+										.timestamp(LocalDate.ofYearDay(Gen.integer(1900..2020).first(), Gen.integer(1..365).first()))
+										.build()))
+				.build()
+	}
+
+	static AccountDetailsDto createAccountDetailsDtoWithTransactions(String account,
+	                                                                BigDecimal balance,
+	                                                                List<BankTransactionDto> transactions) {
+		AccountDetailsDto.builder()
+				.number(account)
+				.accountBalance(balance.doubleValue())
+				.name(Gen.string(20).first())
+				.transactions(transactions)
+				.build()
+	}
+
+	static BankTransactionDto createTransactionDto(double amount, String referenceId) {
+		BankTransactionDto.builder()
+				.id(Gen.long.first())
+				.type("CREDIT")
+				.amount(amount)
+				.referenceId(referenceId)
+				.build()
+	}
+
+	static PaymentRequest createPaymentRequest(String accountNumber, double amount) {
+		new PaymentRequest(accountNumber, amount)
 	}
 }

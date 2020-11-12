@@ -21,16 +21,16 @@ class FeignBankClientTest extends Specification {
 	@Autowired
 	WireMockServer wireMockServer
 
-	def "Transfer should call api POST: /transactions wit given transaction details \
+	def "Transfer should call api POST: /transactions with given transaction details \
 		and return location header when response status 201"() {
 		given:
 			def sourceAccount = UUID.randomUUID().toString()
 			def targetAccount = UUID.randomUUID().toString()
 			def amount = Gen.double.first()
-			def dto = ApiResponseFactory.createTransactionsDto(sourceAccount,targetAccount,amount)
+			def dto = RestInfrastructureFactory.createTransactionsDto(sourceAccount,targetAccount,amount)
 			wireMockServer.stubFor(post("/transactions")
 					.withBasicAuth("usr", "pass")
-					.withRequestBody(equalToJson(ApiResponseFactory.transactionRequestBody(sourceAccount,targetAccount,amount)))
+					.withRequestBody(equalToJson(RestInfrastructureFactory.transactionRequestBody(sourceAccount,targetAccount,amount)))
 					.willReturn(aResponse().withStatus(201)
 							.withHeader("Location",
 									"transactions/76def15f-1dd8-4b8a-a4ec-45b951fddc90")
@@ -46,12 +46,12 @@ class FeignBankClientTest extends Specification {
 	def "Transfer should call api POST: /transactions with given transactionDetails \
 		and throw exception, given response with status 422"() {
 		given:
-			def dto = ApiResponseFactory.createTransactionsDto(UUID.randomUUID().toString(),
+			def dto = RestInfrastructureFactory.createTransactionsDto(UUID.randomUUID().toString(),
 					UUID.randomUUID().toString(), Gen.double.first())
 			wireMockServer.stubFor(post("/transactions")
 					.withBasicAuth("usr", "pass")
 					.willReturn(aResponse().withStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
-					.withBody(ApiResponseFactory.notEnoughBalanceResponse())))
+					.withBody(RestInfrastructureFactory.notEnoughBalanceResponse())))
 
 		when:
 			feign.transfer(dto)
@@ -68,7 +68,7 @@ class FeignBankClientTest extends Specification {
 					.withBasicAuth("usr", "pass")
 					.willReturn(aResponse()
 							.withStatus(HttpStatus.OK.value())
-							.withBody(ApiResponseFactory.accountDetailsResponse(accountNumber, balance))
+							.withBody(RestInfrastructureFactory.accountDetailsResponse(accountNumber, balance))
 							.withHeader("Content-Type", "application/json")))
 		when:
 			def resp = feign.accountDetails(accountNumber).getBody()
@@ -84,7 +84,7 @@ class FeignBankClientTest extends Specification {
 			def amount = Gen.double.first()
 			wireMockServer.stubFor(post("/payments")
 					.withBasicAuth("usr","pass")
-					.withRequestBody(equalToJson(ApiResponseFactory.paymentRequest(accountNumber, amount)))
+					.withRequestBody(equalToJson(RestInfrastructureFactory.paymentRequestJson(accountNumber, amount)))
 					.willReturn(aResponse()
 							.withStatus(HttpStatus.CREATED.value())))
 		when:

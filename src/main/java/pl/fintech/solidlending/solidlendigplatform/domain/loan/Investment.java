@@ -21,9 +21,7 @@ public class Investment {
   Period duration;
   @Builder.Default Status status = Status.UNCONFIRMED;
   RepaymentSchedule schedule;
-  
 
-  
   public enum Status {
     UNCONFIRMED,
     ACTIVE,

@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class HltechBankClient implements BankClient {
 	private static final String ACCOUNT_DETAILS_NOT_PROVIDED = "Can not provide account details. Cause: %s";
+	private static final String ACCOUNT_NOT_CREATED = "Account not created. Cause: %s";
+	private static final String PAYMENT_FAILED = "Payment failed. Cause: %s";
 	private HltechBankApiFeignClient apiFeignClient;
 	
 	@Override
@@ -34,24 +36,29 @@ public class HltechBankClient implements BankClient {
 	
 	@Override
 	public void createAccount(String userName) {
-		apiFeignClient.createAccount(userName);
-	
+		ResponseEntity<String> response = apiFeignClient.createAccount(userName);
+		if(!response.getStatusCode().is2xxSuccessful()){
+			throw new WrongBankCommunicationException(String.format(ACCOUNT_NOT_CREATED, response.toString()));
+		}
 	}
 	
 	@Override
 	public void payment(String accountNumber, double amount) {
-		apiFeignClient.payment(new PaymentRequest(accountNumber, amount));
+		ResponseEntity<String> response = apiFeignClient.payment(new PaymentRequest(accountNumber, amount));
+		if(!response.getStatusCode().is2xxSuccessful()){
+			throw new WrongBankCommunicationException(String.format(PAYMENT_FAILED, response.toString()));
+		}
 	}
 	
 	@Override
 	public BigDecimal getAccountBalance(String accountNumber) {
-		AccountDetailsDto detailsDto = validateBankResponse(accountNumber);
+		AccountDetailsDto detailsDto = getValidAccountDetailsResponse(accountNumber);
 		return BigDecimal.valueOf(detailsDto.getAccountBalance());
 	}
 	
 	@Override
 	public List<TransactionDetails> getAccountTransactions(String accountNumber) {
-		AccountDetailsDto detailsDto = validateBankResponse(accountNumber);
+		AccountDetailsDto detailsDto = getValidAccountDetailsResponse(accountNumber);
 		return detailsDto.getTransactions().stream()
 				.map(transactionDto -> TransactionDetails.builder()
 						.amount(transactionDto.amount)
@@ -62,7 +69,7 @@ public class HltechBankClient implements BankClient {
 				.collect(Collectors.toList());
 	}
 	
-	private AccountDetailsDto validateBankResponse(String accountNumber) {
+	private AccountDetailsDto getValidAccountDetailsResponse(String accountNumber) {
 		ResponseEntity<AccountDetailsDto> dtoResponseEntity = apiFeignClient.accountDetails(accountNumber);
 		if(!dtoResponseEntity.getStatusCode().is2xxSuccessful() || !dtoResponseEntity.hasBody())
 			throw new WrongBankCommunicationException(String.format(ACCOUNT_DETAILS_NOT_PROVIDED, dtoResponseEntity.toString()));

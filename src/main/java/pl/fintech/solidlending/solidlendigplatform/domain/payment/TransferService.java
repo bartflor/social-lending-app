@@ -2,27 +2,38 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException;
+
+import java.util.Optional;
 
 @Component
 @AllArgsConstructor
 public class TransferService {
-	BankClient bankClient;
-	LenderRepository lenderRepository;
-	BorrowerRepository borrowerRepository;
+	private static final String USER_NOT_FOUND = "User with username:%s not found.";
+	private static final String USERS_HAVE_NO_ACCOUNT = "Users with provided user names: %s, %s has no bank account number specified";
+	private BankClient bankClient;
+	private LenderRepository lenderRepository;
+	private BorrowerRepository borrowerRepository;
 	
-	public void  makeInternalTransfer(String sourceUserName, String targetUserName, double amount){
-			bankClient.transfer(findUser(sourceUserName).getUserDetails().getAccountNumber(),
-					findUser(targetUserName).getUserDetails().getAccountNumber(),
+	public String makeInternalTransfer(String sourceUserName, String targetUserName, double amount){
+		User sourceUser = findUser(sourceUserName);
+		User targetUser = findUser(targetUserName);
+		if(sourceUser.hasBankAccount() && targetUser.hasBankAccount()){
+			return bankClient.transfer(sourceUser.getBankAccount(),
+					targetUser.getBankAccount(),
 					amount);
+		} else {
+		    throw new TransferFailException(String.format(USERS_HAVE_NO_ACCOUNT, sourceUser, targetUser));
+		}
 	}
 	
-	public User findUser(String userName){
-		if(lenderRepository.lenderExist(userName))
-			return lenderRepository.findLenderByUserName(userName).get();
-		else
-			return borrowerRepository.findBorrowerByUserName(userName).get();
-	}
+	private User findUser(String userName){
+		Optional<Lender> lender = lenderRepository.findLenderByUserName(userName);
+		Optional<Borrower> borrower = borrowerRepository.findBorrowerByUserName(userName);
+		return borrower.isPresent() ? borrower.get() : lender.orElseThrow(()
+				-> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
+		}
+	
 }

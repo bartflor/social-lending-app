@@ -58,13 +58,8 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		//TODO:payment
 		//TODO: Transfer service -> internal payment: lenders --borrower
 		//Repayment schedule action??
-//		loan.getInvestments().stream()
-//				.forEach(investment -> transferService.makeInternalTransfer(investment.lenderName,
-//						loan.borrowerUserName,
-//						investment.getStartAmount().getValue().doubleValue()));
 		return domainService.activateLoan(loanId);
 	}
-	
 	
 	@Override
 	public Loan findLoanById(Long loanId) {

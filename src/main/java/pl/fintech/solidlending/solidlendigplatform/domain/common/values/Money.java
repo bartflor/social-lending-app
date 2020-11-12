@@ -12,7 +12,6 @@ public class Money {
 	
 	public Money(double loanAmount) {
 		value = new BigDecimal(loanAmount);
-		//TODO implement
 	}
 	
 	public boolean isMoreOrEqual(Money amount) {
