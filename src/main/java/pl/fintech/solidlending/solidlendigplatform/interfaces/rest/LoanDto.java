@@ -32,7 +32,7 @@ public class LoanDto {
         .borrowerUserName(loan.getBorrowerUserName())
         .amount(loan.getAmount().getValue().doubleValue())
         .repayment(loan.getRepayment().getValue().doubleValue())
-        .rate(loan.getAverageRate().getRateValue())
+        .rate(loan.getAverageRate().getPercentValue().doubleValue())
         .startDate(loan.getStartDate())
         .duration(loan.getDuration().getMonths())
         .investments(

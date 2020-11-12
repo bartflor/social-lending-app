@@ -24,7 +24,7 @@ public class InvestmentDto {
         .loanId(investment.getLoanId())
         .lenderName(investment.getLenderName())
 		.value(investment.getValue().getValue().doubleValue())
-		.rate(investment.getRate().getRateValue())
+		.rate(investment.getRate().getPercentValue().doubleValue())
 		.duration(investment.getDuration().getMonths())
 		.status(investment.getStatus().toString())
         .build();

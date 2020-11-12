@@ -26,9 +26,7 @@ public class Money {
 		return new Money(money1.getValue().add(money2.getValue()));
 	}
 	
-	public Money addReturnRate(Rate rate) {
-		return new Money(value.add(
-				value.multiply(BigDecimal.valueOf(rate.getRateValue()))));
-		//TODO: correct!
+	public Money calculateValueWithReturnRate(Rate rate) {
+		return new Money(value.add(value.multiply(rate.getDecimalValue())));
 	}
 }

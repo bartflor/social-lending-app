@@ -29,7 +29,7 @@ public class AuctionDto {
             auction.getBorrowerUserName(),
             auction.getBorrowerRating().getRating(),
             params.getLoanAmount().getValue().doubleValue(),
-            params.getLoanRate().getRateValue(),
+            params.getLoanRate().getPercentValue().doubleValue(),
             params.getLoanStartDate(),
             params.getLoanDuration().getMonths(),
             auction.getStartDate(),

@@ -1,11 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.AccountDetailsDto;
+import java.math.BigDecimal;
+import java.util.List;
 
 public interface BankClient {
 	
 	String transfer(String sourceAccountNumber, String TargetAccountNumber, Double amount);
 	void createAccount(String userName);
 	void payment(String accountNumber, double amount);
-	AccountDetailsDto getAccountDetails(String accountNumber);
+	BigDecimal getAccountBalance(String accountNumber);
+	List<TransactionDetails> getAccountTransactions(String accountNumber);
 }

@@ -74,21 +74,21 @@ public class InitDataLoader implements CommandLineRunner {
 			  .auctionId(auction1Id)
 			  .lenderName("testLender")
 			  .amount(new Money(20))
-			  .rate(new Rate(2))
+			  .rate(Rate.fromPercentDouble(5.))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
 			  .auctionId(auction1Id)
 			  .lenderName("testLender")
 			  .amount(new Money(10))
-			  .rate(new Rate(12))
+			  .rate(Rate.fromPercentDouble(12.))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
 			  .auctionId(auction2Id)
 			  .lenderName("testLender")
 			  .amount(new Money(13))
-			  .rate(new Rate(7))
+			  .rate(Rate.fromPercentDouble(7.))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
   }

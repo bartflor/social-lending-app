@@ -68,11 +68,13 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	
 	@Override
 	public List<Loan> getUserLoans(String userName) {
+		//TODO:check if usr is borrower
 		return loanRepository.findAllByUsername(userName);
 	}
 	
 	@Override
 	public List<Investment> getUserInvestments(String userName) {
+		//TODO:check if usr is lender
 		return investmentRepository.findAllByUsername(userName);
 	}
 	

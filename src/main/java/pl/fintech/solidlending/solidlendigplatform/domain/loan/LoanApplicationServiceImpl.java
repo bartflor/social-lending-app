@@ -2,7 +2,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
@@ -43,7 +42,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	}
 	
 	private static Investment createInvestmentFromOffer(Offer offer, Period duration){
-		Money value = offer.getAmount().addReturnRate(offer.getRate());
+		Money value = offer.getAmount().calculateValueWithReturnRate(offer.getRate());
 		return Investment.builder()
 				.lenderName(offer.getLenderName())
 				.startAmount(offer.getAmount())
