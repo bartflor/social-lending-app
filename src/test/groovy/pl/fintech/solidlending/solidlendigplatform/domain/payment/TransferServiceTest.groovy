@@ -1,12 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment
 
-import org.mockito.Mock
+
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -18,7 +19,7 @@ class TransferServiceTest extends Specification {
 
 
 	@Subject
-	def transferService = new TransferService(bankClientMock, lenderRepoMock, borrowerRepoMock)
+	def transferService = new TransferServiceImpl(bankClientMock, lenderRepoMock, borrowerRepoMock)
 
 	def "MakeInternalTransfer should find users and \
 		return BankClient transfer reference id, given users name"() {
@@ -26,7 +27,7 @@ class TransferServiceTest extends Specification {
 			def sourceUserAccount = UUID.randomUUID().toString()
 			def targetUserAccount = UUID.randomUUID().toString()
 			def refId = UUID.randomUUID().toString()
-			def amount= Gen.integer(0, 10000).first()
+			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 			def sourceUser = Lender.builder()
@@ -48,7 +49,7 @@ class TransferServiceTest extends Specification {
 		when:
 			def result = transferService.makeInternalTransfer(sourceUserName, targetUserName, amount)
 		then:
-			1 * bankClientMock.transfer(sourceUserAccount, targetUserAccount, amount) >> refId
+			1 * bankClientMock.transfer(sourceUserAccount, targetUserAccount, amount.getValue().doubleValue()) >> refId
 			1 * borrowerRepoMock.findBorrowerByUserName(targetUserName) >> Optional.of(targetUser)
 			1 * borrowerRepoMock.findBorrowerByUserName(sourceUserName) >> Optional.empty()
 			1 * lenderRepoMock.findLenderByUserName(sourceUserName) >> Optional.of(sourceUser)
@@ -62,7 +63,7 @@ class TransferServiceTest extends Specification {
 		given:
 			def targetUserAccount = UUID.randomUUID().toString()
 			def refId = UUID.randomUUID().toString()
-			def amount= Gen.integer(0, 10000).first()
+			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 
@@ -89,7 +90,7 @@ class TransferServiceTest extends Specification {
 	def "MakeInternalTransfer should throw exception, when sourceUser not found with given users name"() {
 		given:
 			def refId = UUID.randomUUID().toString()
-			def amount= Gen.integer(0, 10000).first()
+			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 

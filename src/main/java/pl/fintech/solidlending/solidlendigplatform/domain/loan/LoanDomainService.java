@@ -7,11 +7,15 @@ public interface LoanDomainService {
 	
 	Long activateLoan(Long loanId);
 	
-	void repay(Long loanId);
+	String repay(Long loanId);
+	
+	Repayment findNextRepayment(Long loanId);
 	
 	Loan findLoanById(Long loanId);
 	
 	List<Loan> getUserLoans(String userName);
 	
 	List<Investment> getUserInvestments(String userName);
+	
+	RepaymentSchedule findLoanRepaymentSchedule(Long loanId);
 }

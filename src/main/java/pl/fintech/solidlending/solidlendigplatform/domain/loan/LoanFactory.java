@@ -40,8 +40,7 @@ public class LoanFactory {
 		Money singleRepaymentAmount = repayment.divide(repaymentMonths);
 		//Request repayment after 1 month;
 		for(int i=1; i<=repaymentMonths; i++){
-			schedule.addRepayment(loanStartDate.plusMonths(i),
-					Repayment.builder().value(singleRepaymentAmount).build());
+			schedule.addRepayment(loanStartDate.plusMonths(i),singleRepaymentAmount);
 		}
 		return schedule;
 	}

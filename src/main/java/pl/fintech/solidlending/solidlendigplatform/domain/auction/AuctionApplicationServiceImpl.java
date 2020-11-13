@@ -27,6 +27,7 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 	
 	@Override
 	public Long addOffer(Offer domainOffer) {
+		//TODO:check if lender has enough money
 		return domainService.addOffer(domainOffer);
 	}
 	

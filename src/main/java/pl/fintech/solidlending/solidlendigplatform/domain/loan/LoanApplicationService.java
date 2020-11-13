@@ -11,6 +11,10 @@ public interface LoanApplicationService {
 	
 	Long activateLoan(Long loanId);
 	
+	RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId);
+	
+	String repayLoan(Long loanId);
+	
 	Loan findLoanById(Long loanId);
 	
 	Collection<Loan> getUserLoans(String userName);

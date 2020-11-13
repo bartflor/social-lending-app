@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 @Component
 @AllArgsConstructor
 public class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
 	private static final String LOAN_STATUS_FORBID_ACTIVATION = "Can not activate loan with status: %s";
+	private static final String NO_SCHEDULE_FOR_LOAN_ID = "Repayment schedule for loan with id:%s, not found";
 	
 	
 	private LoanRepository loanRepository;
@@ -40,7 +42,6 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	
 	/**
 	 * update loan and investment status
-	 * and make money transfer
 	 */
 	@Override
 	public Long activateLoan(Long loanId){
@@ -50,13 +51,22 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 			throw new LoanCreationException(String.format(LOAN_STATUS_FORBID_ACTIVATION, loan.getStatus()));
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
-
 		return loanId;
 	}
 	
 	@Override
-	public void repay(Long loanId){
-		//TODO: transfer, update schedule
+	public String repay(Long loanId) {
+		return //TODO: maybe only update schedule?
+	}
+	
+	@Override
+	public Repayment findNextRepayment(Long loanId){
+		RepaymentSchedule schedule = findLoanRepaymentSchedule(loanId);
+		if(schedule.hasPaidAllScheduledRepayment()){
+			return Optional.empty() // TODO: maby anoder result?
+		}
+		Optional<Repayment> repayment = schedule.findNextRepayment();
+		return repayment;
 	}
 	
 	
@@ -76,6 +86,12 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	public List<Investment> getUserInvestments(String userName) {
 		//TODO:check if usr is lender
 		return investmentRepository.findAllByUsername(userName);
+	}
+	
+	@Override
+	public RepaymentSchedule findLoanRepaymentSchedule(Long loanId) {
+		return scheduleRepository.findRepaymentScheduleByLoanId(loanId)
+				.orElseThrow(() -> new ScheduleNotFoundException(String.format(NO_SCHEDULE_FOR_LOAN_ID, loanId)));
 	}
 	
 }

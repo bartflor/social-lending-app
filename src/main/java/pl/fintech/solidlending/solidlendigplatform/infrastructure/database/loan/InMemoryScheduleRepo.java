@@ -25,8 +25,8 @@ public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 		repo.put(++lastId, schedule);
 		return lastId;
 	}
-	
-	public Optional<RepaymentSchedule> getRepaymentScheduleByLoanId(Long loanId){
+	@Override
+	public Optional<RepaymentSchedule> findRepaymentScheduleByLoanId(Long loanId){
 		return repo.values().stream()
 				.filter(schedule -> schedule.getLoanId().equals(loanId))
 				.findAny();

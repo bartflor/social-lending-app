@@ -6,6 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanPar
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
 
 import java.time.Period;
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class LoanApplicationServiceImpl implements LoanApplicationService {
 	private LoanDomainService domainService;
-	
+	private TransferService transferService;
 	
 	/**
 	 * this method create Loan, combining auctionLoanParam - proposed by borrower
@@ -52,13 +53,35 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 				.build();
 	}
 	
+	/**
+	 * Activate loan with @param loanId
+	 * make money transfer lenders -> borrower
+	 */
 	@Override
 	public Long activateLoan(Long loanId){
-		
-		//TODO:payment
-		//TODO: Transfer service -> internal payment: lenders --borrower
-		//Repayment schedule action??
+		Loan loan = findLoanById(loanId);
+		loan.getInvestments().stream()
+				.forEach(investment -> transferService.makeInternalTransfer(
+						investment.getLenderName(),
+						loan.getBorrowerUserName(),
+						investment.getStartAmount()));
 		return domainService.activateLoan(loanId);
+	}
+	@Override
+	public RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId){
+		return domainService.findLoanRepaymentSchedule(loanId);
+	}
+	@Override
+	public String repayLoan(Long loanId){
+		Loan loan = findLoanById(loanId);
+		Money amount = //TODO get from schedule
+		
+		loan.getInvestments().stream()
+				.forEach(investment -> transferService.makeInternalTransfer(
+						loan.getBorrowerUserName(),
+						investment.getLenderName(),
+						amount));
+		return domainService.repay(loanId);
 	}
 	
 	@Override
