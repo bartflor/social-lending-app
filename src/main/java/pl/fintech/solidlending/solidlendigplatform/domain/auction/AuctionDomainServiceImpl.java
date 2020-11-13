@@ -50,7 +50,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		AuctionLoanParams auctionLoanParams = AuctionLoanParams.builder()
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
-				.loanRate(new Rate(rate))
+				.loanRate(Rate.fromPercentDouble(rate))
 				.loanStartDate(loanStartDate)
 				.loanRisk(loanRiskService.estimateLoanRisk(borrower, loanValue))
 				.build();

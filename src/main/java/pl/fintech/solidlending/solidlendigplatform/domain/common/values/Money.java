@@ -12,7 +12,6 @@ public class Money {
 	
 	public Money(double loanAmount) {
 		value = new BigDecimal(loanAmount);
-		//TODO implement
 	}
 	
 	public boolean isMoreOrEqual(Money amount) {
@@ -24,5 +23,9 @@ public class Money {
 	}
 	public static Money sum(Money money1, Money money2) {
 		return new Money(money1.getValue().add(money2.getValue()));
+	}
+	
+	public Money calculateValueWithReturnRate(Rate rate) {
+		return new Money(value.add(value.multiply(rate.getDecimalValue())));
 	}
 }

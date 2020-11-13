@@ -4,6 +4,7 @@ import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 
+import java.math.BigDecimal;
 import java.util.Comparator;
 @ToString
 @AllArgsConstructor
@@ -21,6 +22,10 @@ public class Offer {
     status = OfferStatus.ARCHIVED;
   }
   
+  public BigDecimal getRatePercentValue(){
+    return rate.getPercentValue();
+  }
+  
   public enum OfferStatus{
     ACTIVE, ARCHIVED
   }
@@ -28,7 +33,7 @@ public class Offer {
   public static class OfferRateComparator implements Comparator<Offer> {
     @Override
     public int compare(Offer offer1, Offer offer2) {
-      return Double.compare(offer1.getRate().getRateValue(), offer2.getRate().getRateValue());
+      return offer1.getRatePercentValue().compareTo(offer2.getRatePercentValue());
     }
   }
 }

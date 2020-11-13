@@ -16,4 +16,8 @@ public abstract class User {
 	public boolean hasBankAccount(){
 		return userDetails.getAccountNumber() != null;
 	}
+	
+	public String getBankAccount(){
+		return userDetails.getAccountNumber();
+	}
 }

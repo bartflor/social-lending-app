@@ -16,7 +16,7 @@ public class OfferEntity {
 		return OfferEntity.builder()
 				.amount(offer.getAmount().getValue())
 				.lenderName(offer.getLenderName())
-				.rate(offer.getRate().getRateValue())
+				.rate(offer.getRate().getPercentValue().doubleValue())
 				.status(offer.getStatus().toString())
 				.build();
 	}

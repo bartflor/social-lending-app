@@ -20,7 +20,7 @@ public class OfferDto {
               offer.getAuctionId(),
               offer.getLenderName(),
               offer.getAmount().getValue().doubleValue(),
-              offer.getRate().getRateValue(),
+              offer.getRate().getPercentValue().doubleValue(),
                 offer.getStatus().toString());
     }
     
@@ -30,7 +30,7 @@ public class OfferDto {
                 .id(offerId)
                 .lenderName(lenderUserName)
                 .amount(new Money(amount))
-                .rate(new Rate(rate))
+                .rate(Rate.fromPercentDouble(rate))
                 .build();
     }
   

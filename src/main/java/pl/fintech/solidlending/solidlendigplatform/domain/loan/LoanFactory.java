@@ -3,18 +3,22 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.exception.ValueNotAllowedException;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Set;
-import java.util.stream.DoubleStream;
+
 @Component
 public class LoanFactory {
+	private static final String EMPTY_INVESTMENTS_SET_NOT_ALLOWED = "Empty investment set not allowed. Can not calculate average rate from empty investment set.";
+	
 	public Loan createLoan(LoanParams params){
 		Set<Investment> investments = params.getInvestments();
-		Rate rate = calculateAvgRate(investments);
-		Money repayment = calculateTotalRepayment(rate, params.getLoanAmount());
+		Rate avgLoanRate = calculateAvgRate(investments);
+		Money repayment = params.getLoanAmount().calculateValueWithReturnRate(avgLoanRate);
 		RepaymentSchedule schedule = prepareRepaymentSchedule(repayment,
 				params.getLoanStartDate(),
 				params.getLoanDuration());
@@ -22,18 +26,12 @@ public class LoanFactory {
 					.borrowerUserName(params.getBorrowerUserName())
 					.amount(params.getLoanAmount())
 					.repayment(repayment)
-					.averageRate(rate)
+					.averageRate(avgLoanRate)
 					.startDate(params.getLoanStartDate())
 					.duration(params.getLoanDuration())
 					.investments(investments)
 					.schedule(schedule)
 					.build();
-	}
-	
-	private Money calculateTotalRepayment(Rate rate, Money loanAmount) {
-		BigDecimal amount = loanAmount.getValue();
-		BigDecimal interest = amount.multiply(BigDecimal.valueOf(rate.getRateValue()));
-		return new Money(amount.add(interest));
 	}
 	
 	private RepaymentSchedule prepareRepaymentSchedule(Money repayment, LocalDate loanStartDate, Period loanDuration) {
@@ -49,11 +47,15 @@ public class LoanFactory {
 	}
 	
 	private Rate calculateAvgRate(Set<Investment> investments) {
-		double rateValue = investments.stream()
+		if(investments.size() == 0){
+			throw new ValueNotAllowedException(EMPTY_INVESTMENTS_SET_NOT_ALLOWED);
+		}
+		BigDecimal rateValue = investments.stream()
 				.map(Investment::getRate)
-				.flatMapToDouble(rate -> DoubleStream.of(rate.getRateValue()))
-				.average()
-				.getAsDouble();
+				.map(Rate::getPercentValue)
+				.reduce(BigDecimal::add)
+				.orElse(BigDecimal.ZERO);
+		rateValue = rateValue.divide(BigDecimal.valueOf(investments.size()), MathContext.DECIMAL32);
 		return new Rate(rateValue);
 	}
 	
