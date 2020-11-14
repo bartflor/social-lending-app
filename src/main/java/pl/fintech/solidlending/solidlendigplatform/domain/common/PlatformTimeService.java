@@ -1,10 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common;
 
-import java.util.Date;
+import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.util.Date;
+@Component
 public class PlatformTimeService implements TimeService {
 	@Override
-	public Date currentDate() {
-		return new Date();
+	public Instant now() {
+		return Instant.now();
 	}
 }

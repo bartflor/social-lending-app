@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
@@ -8,6 +9,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Set;
@@ -21,7 +23,8 @@ public class LoanDto {
 	double amount;
 	double repayment;
 	double rate;
-	LocalDate startDate;
+	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Warsaw")
+	Instant startDate;
 	int duration;
 	Set<InvestmentDto> investments;
 	String status;

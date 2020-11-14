@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService
@@ -14,9 +15,10 @@ class AuctionDomainServiceImplTest extends Specification {
 	def offerRepo = Mock(OfferRepository)
 	def lenderRepo = Mock(LenderRepository)
 	def loanRiskSvc = Mock(LoanRiskService)
+	def timeSvc = Mock(TimeService)
 
 	@Subject
-	def domainSvc = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, loanRiskSvc)
+	def domainSvc = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, loanRiskSvc, timeSvc)
 
 	def "endAuction should call end() on auction with given id and \
 		update repository and\

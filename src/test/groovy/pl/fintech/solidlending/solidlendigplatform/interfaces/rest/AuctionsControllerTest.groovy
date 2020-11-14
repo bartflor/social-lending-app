@@ -9,15 +9,15 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import spock.genesis.Gen
 import spock.lang.Specification
 
-import java.time.Period
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+
+import static org.hamcrest.Matchers.equalTo
 
 @Import(AddMockedServiceToContext)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -49,12 +49,23 @@ class AuctionsControllerTest extends Specification {
 
 			auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
 			loanServiceMock.findLoanById(randID) >> loan
+			def dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+					.withZone(ZoneId.systemDefault())
+
 		when:
 			def response = restClient.when().get("/api/auctions/"+randID+"/create-loan")
 		then:
 			response.statusCode() == 201
+		response.toString()
 		and:
-			response.body().as(LoanDto) == LoanDto.from(loan)
+			response.then()
+					.assertThat()
+					.body("borrowerUserName", equalTo(loan.getBorrowerUserName()))
+					.body("status", equalTo(loan.getStatus().toString()))
+					.body("rate", equalTo(loan.getAverageRate().getPercentValue().floatValue()))
+					.body("startDate", equalTo(dateFormatter.format(loan.getStartDate())))
+
+
 	}
 
 

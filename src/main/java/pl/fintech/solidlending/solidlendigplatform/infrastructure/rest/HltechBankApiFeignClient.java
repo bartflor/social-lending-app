@@ -5,6 +5,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @FeignClient(name = "HltechBank", url = "${bank.api.url}", decode404 = true, configuration = RestCommunicationConfig.class)
 public interface HltechBankApiFeignClient {
 	String API_TRANSACTIONS_ENDPOINT = "/transactions";
@@ -17,7 +19,7 @@ public interface HltechBankApiFeignClient {
 	
 	@RequestMapping(method = RequestMethod.GET, value = API_ACCOUNTS_ENDPOINT,
 			produces = MediaType.APPLICATION_JSON_VALUE)
-	ResponseEntity<AccountDetailsDto> accountDetails(@PathVariable("accountNumber") String accountNumber);
+	ResponseEntity<AccountDetailsDto> accountDetails(@PathVariable("accountNumber") UUID accountNumber);
 	
 	@RequestMapping(method = RequestMethod.POST, value = API_PAYMENTS_ENDPOINT,
 			produces = MediaType.APPLICATION_JSON_VALUE)

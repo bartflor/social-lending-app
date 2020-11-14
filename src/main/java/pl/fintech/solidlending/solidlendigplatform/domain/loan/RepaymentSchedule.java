@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.Value;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,13 +12,13 @@ import java.util.Map;
 @Data
 public class RepaymentSchedule {
 	Long loanId;
-	Map<LocalDate, Repayment> schedule;
+	Map<Instant, Repayment> schedule;
 	
 	public RepaymentSchedule() {
 		schedule = new HashMap<>();
 	}
 	
-	public void addRepayment(LocalDate date, Repayment value) {
+	public void addRepayment(Instant date, Repayment value) {
 		schedule.put(date, value);
 	}
 }

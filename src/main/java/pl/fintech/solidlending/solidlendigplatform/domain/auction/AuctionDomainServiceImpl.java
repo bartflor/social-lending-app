@@ -6,6 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddO
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
@@ -15,6 +16,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -32,6 +34,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private final OfferRepository offerRepository;
 	private final LenderRepository lenderRepository;
 	private final LoanRiskService loanRiskService;
+	private final TimeService timeService;
 	
 	@Override
 	public Long createNewAuction(String username,
@@ -39,7 +42,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 								 double loanAmount,
 								 Period loanDuration,
 								 double rate,
-								 LocalDate loanStartDate){
+								 Instant loanStartDate){
 		
 		Borrower borrower = borrowerRepository.findBorrowerByUserName(username)
 				.orElseThrow(() -> new AuctionCreationException(String.format(BORROWER_NOT_FOUND_MSG, username)));
@@ -57,7 +60,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		
 		Auction auction = Auction.builder()
 				.borrowerUserName(username)
-				.startDate(LocalDate.now())
+				.startDate(timeService.now())
 				.auctionDuration(auctionDuration)
 				.auctionLoanParams(auctionLoanParams)
 				.borrowerRating(borrower.getRating())

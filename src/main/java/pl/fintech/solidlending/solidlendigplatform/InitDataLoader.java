@@ -12,6 +12,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
@@ -48,28 +49,28 @@ public class InitDataLoader implements CommandLineRunner {
         20,
         Period.of(1, 0, 0),
         10,
-        LocalDate.now().plus(Period.ofDays(7)));
+        Instant.now().plus(Period.ofDays(7)));
 	  long auction2Id =auctionDomainServiceImpl.createNewAuction(
         "Frodo_Baggins",
         Period.ofDays(7),
         50,
         Period.of(2, 0, 0),
         15,
-        LocalDate.now().plus(Period.ofDays(30)));
+			  Instant.now().plus(Period.ofDays(30)));
 	  long auction3Id =auctionDomainServiceImpl.createNewAuction(
 			  "Bilbo_Baggins",
 			  Period.ofDays(7),
 			  120,
 			  Period.of(3, 0, 0),
 			  22,
-			  LocalDate.now().plus(Period.ofDays(15)));
+			  Instant.now().plus(Period.ofDays(15)));
 	  long auction4Id =auctionDomainServiceImpl.createNewAuction(
 			  "Frodo_Baggins",
 			  Period.ofDays(7),
 			  2000,
 			  Period.of(2, 0, 0),
 			  7,
-			  LocalDate.now().plus(Period.ofDays(10)));
+			  Instant.now().plus(Period.ofDays(10)));
 	  Offer offer = Offer.builder()
 			  .auctionId(auction1Id)
 			  .lenderName("Samwise_Gamgee")

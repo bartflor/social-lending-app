@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -20,5 +21,5 @@ public interface AuctionApplicationService {
 						  double amount,
 						  Period ofDays,
 						  double rate,
-						  LocalDate loanStartDate);
+						  Instant loanStartDate);
 }

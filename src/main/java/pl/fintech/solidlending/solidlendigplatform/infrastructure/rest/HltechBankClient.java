@@ -6,11 +6,12 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.BankClient;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransactionDetails;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.TransferNotCreatedException;
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.WrongBankCommunicationException;
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.BankCommunicationFailedException;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -38,7 +39,7 @@ public class HltechBankClient implements BankClient {
 	public void createAccount(String userName) {
 		ResponseEntity<String> response = apiFeignClient.createAccount(userName);
 		if(!response.getStatusCode().is2xxSuccessful()){
-			throw new WrongBankCommunicationException(String.format(ACCOUNT_NOT_CREATED, response.toString()));
+			throw new BankCommunicationFailedException(String.format(ACCOUNT_NOT_CREATED, response.toString()));
 		}
 	}
 	
@@ -46,33 +47,33 @@ public class HltechBankClient implements BankClient {
 	public void payment(String accountNumber, double amount) {
 		ResponseEntity<String> response = apiFeignClient.payment(new PaymentRequest(accountNumber, amount));
 		if(!response.getStatusCode().is2xxSuccessful()){
-			throw new WrongBankCommunicationException(String.format(PAYMENT_FAILED, response.toString()));
+			throw new BankCommunicationFailedException(String.format(PAYMENT_FAILED, response.toString()));
 		}
 	}
 	
 	@Override
-	public BigDecimal getAccountBalance(String accountNumber) {
+	public BigDecimal getAccountBalance(UUID accountNumber) {
 		AccountDetailsDto detailsDto = getValidAccountDetailsResponse(accountNumber);
-		return BigDecimal.valueOf(detailsDto.getAccountBalance());
+		return detailsDto.getAccountBalance();
 	}
 	
 	@Override
-	public List<TransactionDetails> getAccountTransactions(String accountNumber) {
+	public List<TransactionDetails> getAccountTransactions(UUID accountNumber) {
 		AccountDetailsDto detailsDto = getValidAccountDetailsResponse(accountNumber);
 		return detailsDto.getTransactions().stream()
 				.map(transactionDto -> TransactionDetails.builder()
-						.amount(transactionDto.amount)
+						.amount(BigDecimal.valueOf(transactionDto.amount))
 						.referenceId(transactionDto.referenceId)
 						.timestamp(transactionDto.timestamp)
-						.type(transactionDto.type)
+						.type(TransactionDetails.TransactionType.valueOf(transactionDto.type))
 						.build())
 				.collect(Collectors.toList());
 	}
 	
-	private AccountDetailsDto getValidAccountDetailsResponse(String accountNumber) {
+	private AccountDetailsDto getValidAccountDetailsResponse(UUID accountNumber) {
 		ResponseEntity<AccountDetailsDto> dtoResponseEntity = apiFeignClient.accountDetails(accountNumber);
 		if(!dtoResponseEntity.getStatusCode().is2xxSuccessful() || !dtoResponseEntity.hasBody())
-			throw new WrongBankCommunicationException(String.format(ACCOUNT_DETAILS_NOT_PROVIDED, dtoResponseEntity.toString()));
+			throw new BankCommunicationFailedException(String.format(ACCOUNT_DETAILS_NOT_PROVIDED, dtoResponseEntity.toString()));
 		AccountDetailsDto detailsDto = dtoResponseEntity.getBody();
 		return detailsDto;
 	}
