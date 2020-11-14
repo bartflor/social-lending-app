@@ -7,8 +7,12 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.exceptio
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Set;
 
 @Component
@@ -34,13 +38,13 @@ public class LoanFactory {
 					.build();
 	}
 	
-	private RepaymentSchedule prepareRepaymentSchedule(Money repayment, LocalDate loanStartDate, Period loanDuration) {
+	private RepaymentSchedule prepareRepaymentSchedule(Money repayment, Instant loanStartDate, Period loanDuration) {
 		RepaymentSchedule schedule = new RepaymentSchedule();
 		long repaymentMonths = loanDuration.toTotalMonths() == 0 ? 1 : loanDuration.toTotalMonths();
 		Money singleRepaymentAmount = repayment.divide(repaymentMonths);
 		//Request repayment after 1 month;
 		for(int i=1; i<=repaymentMonths; i++){
-			schedule.addRepayment(loanStartDate.plusMonths(i),
+			schedule.addRepayment(loanStartDate.plus(Period.ofDays(i*30)),
 					Repayment.builder().value(singleRepaymentAmount).build());
 		}
 		return schedule;

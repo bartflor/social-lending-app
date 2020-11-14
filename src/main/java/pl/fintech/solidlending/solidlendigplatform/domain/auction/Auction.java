@@ -6,6 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
@@ -22,7 +23,7 @@ public class Auction {
 	private Long id;
 	private final String borrowerUserName;
 	private final Rating borrowerRating;
-	private final LocalDate startDate;
+	private final Instant startDate;
 	private final Period auctionDuration;
 	@Builder.Default private Set<Offer> offers = new HashSet<>();
 	@Builder.Default private AuctionStatus status = AuctionStatus.ACTIVE;

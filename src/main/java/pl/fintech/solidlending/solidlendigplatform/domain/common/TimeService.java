@@ -1,7 +1,8 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common;
 
+import java.time.Instant;
 import java.util.Date;
 
-interface TimeService {
-	Date currentDate();
+public interface TimeService {
+	Instant now();
 }

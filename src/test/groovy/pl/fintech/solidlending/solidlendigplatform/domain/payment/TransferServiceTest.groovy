@@ -83,7 +83,8 @@ class TransferServiceTest extends Specification {
 			def exception = thrown(UserNotFoundException)
 			exception.getMessage() == "User with username:"+sourceUserName+" not found."
 	}
-	private Borrower createBorrower(String targetUserAccount, String targetUserName) {
+
+	private static Borrower createBorrower(String targetUserAccount, String targetUserName) {
 		Borrower.builder()
 				.userDetails(UserDetails.builder()
 						.accountNumber(targetUserAccount)
@@ -94,7 +95,7 @@ class TransferServiceTest extends Specification {
 				.build()
 	}
 
-	private Lender createLender(String sourceUserAccount, String sourceUserName) {
+	private static Lender createLender(String sourceUserAccount, String sourceUserName) {
 		Lender.builder()
 				.userDetails(UserDetails.builder()
 						.accountNumber(sourceUserAccount)

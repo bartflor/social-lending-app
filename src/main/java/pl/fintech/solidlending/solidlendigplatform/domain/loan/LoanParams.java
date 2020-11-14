@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Set;
@@ -16,7 +17,7 @@ public class LoanParams {
   String borrowerUserName;
   Money loanAmount;
   Period loanDuration;
-  LocalDate loanStartDate;
+  Instant loanStartDate;
   Set<Investment> investments;
 
 }

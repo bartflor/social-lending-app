@@ -9,6 +9,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class Loan {
 	Money amount;
 	Money repayment;
 	Rate averageRate;
-	LocalDate startDate;
+	Instant startDate;
 	Period duration;
 	Set<Investment> investments;
 	@Builder.Default LoanStatus status = LoanStatus.UNCONFIRMED;
