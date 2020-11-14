@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Rate {
 	private static final String VALUE_NOT_ALLOWED = "Value not allowed. Percent value must be in range (0; 100). Provided: %s";
-	BigDecimal percentValue;// 0 <= percentValue <= 100
+	private BigDecimal percentValue;// 0 <= percentValue <= 100
 	
 	public static Rate fromPercentDouble(Double doubleValue){
 		if(doubleValue > 100 || doubleValue < 0){

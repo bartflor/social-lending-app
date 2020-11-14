@@ -20,8 +20,7 @@ class TransferServiceTest extends Specification {
 	@Subject
 	def transferService = new TransferService(bankClientMock, lenderRepoMock, borrowerRepoMock)
 
-	def "MakeInternalTransfer should find users and \
-		return BankClient transfer reference id, given users name"() {
+	def "MakeInternalTransfer should find users and return BankClient transfer reference id, given users name"() {
 		given:
 			def sourceUserAccount = UUID.randomUUID().toString()
 			def targetUserAccount = UUID.randomUUID().toString()
@@ -29,22 +28,8 @@ class TransferServiceTest extends Specification {
 			def amount= Gen.integer(0, 10000).first()
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
-			def sourceUser = Lender.builder()
-					.userDetails(UserDetails.builder()
-							.accountNumber(sourceUserAccount)
-							.name(Gen.string(20).first())
-							.email(Gen.string(20).first())
-							.userName(sourceUserName)
-							.build())
-					.build()
-			def targetUser = Borrower.builder()
-					.userDetails(UserDetails.builder()
-							.accountNumber(targetUserAccount)
-							.name(Gen.string(20).first())
-							.email(Gen.string(20).first())
-							.userName(targetUserName)
-							.build())
-					.build()
+			def sourceUser = createLender(sourceUserAccount, sourceUserName)
+			def targetUser = createBorrower(targetUserAccount, targetUserName)
 		when:
 			def result = transferService.makeInternalTransfer(sourceUserName, targetUserName, amount)
 		then:
@@ -66,14 +51,7 @@ class TransferServiceTest extends Specification {
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 
-			def sourceUser = Borrower.builder()
-					.userDetails(UserDetails.builder()
-							.accountNumber(targetUserAccount)
-							.name(Gen.string(20).first())
-							.email(Gen.string(20).first())
-							.userName(targetUserName)
-							.build())
-					.build()
+			def sourceUser = createBorrower(targetUserAccount, targetUserName)
 		when:
 			transferService.makeInternalTransfer(sourceUserName, targetUserName, amount)
 		then:
@@ -83,7 +61,8 @@ class TransferServiceTest extends Specification {
 			1 * lenderRepoMock.findLenderByUserName(targetUserName) >> Optional.empty()
 			1 * borrowerRepoMock.findBorrowerByUserName(targetUserName) >> Optional.empty()
 		and:
-			thrown(UserNotFoundException)
+			def exception = thrown(UserNotFoundException)
+			exception.getMessage() == "User with username:"+targetUserName+" not found."
 	}
 
 	def "MakeInternalTransfer should throw exception, when sourceUser not found with given users name"() {
@@ -101,6 +80,30 @@ class TransferServiceTest extends Specification {
 			1 * lenderRepoMock.findLenderByUserName(sourceUserName) >> Optional.empty()
 
 		and:
-			thrown(UserNotFoundException)
+			def exception = thrown(UserNotFoundException)
+			exception.getMessage() == "User with username:"+sourceUserName+" not found."
+	}
+	private Borrower createBorrower(String targetUserAccount, String targetUserName) {
+		Borrower.builder()
+				.userDetails(UserDetails.builder()
+						.accountNumber(targetUserAccount)
+						.name(Gen.string(20).first())
+						.email(Gen.string(20).first())
+						.userName(targetUserName)
+						.build())
+				.build()
+	}
+
+	private Lender createLender(String sourceUserAccount, String sourceUserName) {
+		Lender.builder()
+				.userDetails(UserDetails.builder()
+						.accountNumber(sourceUserAccount)
+						.name(Gen.string(20).first())
+						.email(Gen.string(20).first())
+						.userName(sourceUserName)
+						.build())
+				.build()
 	}
 }
+
+

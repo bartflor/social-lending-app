@@ -3,7 +3,9 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest
 import org.json.JSONObject
 import spock.genesis.Gen
 
+import java.time.Instant
 import java.time.LocalDate
+import java.time.temporal.TemporalAccessor
 
 class RestInfrastructureFactory {
 
@@ -14,7 +16,7 @@ class RestInfrastructureFactory {
 				"}")
 	}
 
-	static String accountDetailsResponse(String number, double balance){
+	static String accountDetailsResponse(UUID number, double balance){
 		new JSONObject(
 				"{\"name\": \"SLP_USR testLender\"," +
 						"\"number\": \""+number+"\"," +
@@ -54,33 +56,33 @@ class RestInfrastructureFactory {
 		"\n}"
 	}
 
-	static AccountDetailsDto createAccountDetailsDto(String account, BigDecimal balance) {
+	static AccountDetailsDto createAccountDetailsDto(UUID account, BigDecimal balance) {
 		AccountDetailsDto.builder()
 				.number(account)
-				.accountBalance(balance.doubleValue())
+				.accountBalance(balance)
 				.name(Gen.string(20).first())
 				.transactions(List.of(BankTransactionDto.builder()
 										.id(Gen.long.first())
 										.type("CREDIT")
 										.amount(Gen.double.first())
-										.referenceId(UUID.randomUUID().toString())
-										.timestamp(LocalDate.ofYearDay(Gen.integer(1900..2020).first(), Gen.integer(1..365).first()))
+										.referenceId(UUID.randomUUID())
+										.timestamp(Gen.getDate().first().toInstant())
 										.build()))
 				.build()
 	}
 
-	static AccountDetailsDto createAccountDetailsDtoWithTransactions(String account,
+	static AccountDetailsDto createAccountDetailsDtoWithTransactions(UUID account,
 	                                                                BigDecimal balance,
 	                                                                List<BankTransactionDto> transactions) {
 		AccountDetailsDto.builder()
 				.number(account)
-				.accountBalance(balance.doubleValue())
+				.accountBalance(balance)
 				.name(Gen.string(20).first())
 				.transactions(transactions)
 				.build()
 	}
 
-	static BankTransactionDto createTransactionDto(double amount, String referenceId) {
+	static BankTransactionDto createTransactionDto(double amount, UUID referenceId) {
 		BankTransactionDto.builder()
 				.id(Gen.long.first())
 				.type("CREDIT")

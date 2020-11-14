@@ -3,7 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest
 
 import org.springframework.http.ResponseEntity
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransactionDetails
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.WrongBankCommunicationException
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.BankCommunicationFailedException
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -38,7 +38,7 @@ class HltechBankClientTest extends Specification {
 	def "GetAccountBalance should check if api response is valid and\
 		return account balance"() {
 		given:
-			def accountNumber = UUID.randomUUID().toString()
+			def accountNumber = UUID.randomUUID()
 			def amount = BigDecimal.valueOf(Gen.double.first())
 			def response = ResponseEntity.ok(RestInfrastructureFactory.createAccountDetailsDto(accountNumber, amount))
 		when:
@@ -53,11 +53,11 @@ class HltechBankClientTest extends Specification {
 	def "getAccountTransactions should check if api response is valid and\
 		return list of transactions from response"(){
 		given:
-			def accountNumber = UUID.randomUUID().toString()
-			def refId1 = UUID.randomUUID().toString()
+			def accountNumber = UUID.randomUUID()
+			def refId1 = UUID.randomUUID()
 			def amount1 = BigDecimal.valueOf(Gen.double.first())
 			def transaction1 = RestInfrastructureFactory.createTransactionDto(amount1, refId1)
-			def refId2 = UUID.randomUUID().toString()
+			def refId2 = UUID.randomUUID()
 			def amount2 = BigDecimal.valueOf(Gen.double.first())
 			def transaction2 = RestInfrastructureFactory.createTransactionDto(amount2, refId2)
 			def response = ResponseEntity.ok(RestInfrastructureFactory.createAccountDetailsDtoWithTransactions(
@@ -70,8 +70,8 @@ class HltechBankClientTest extends Specification {
 			1* apiClientMock.accountDetails(accountNumber) >> response
 		and:
 			result.size() == 2
-			result.contains(TransactionDetails.builder().referenceId(refId1).amount(amount1).type("CREDIT").build())
-			result.contains(TransactionDetails.builder().referenceId(refId2).amount(amount2).type("CREDIT").build())
+			result.contains(TransactionDetails.builder().referenceId(refId1).amount(amount1).type(TransactionDetails.TransactionType.CREDIT).build())
+			result.contains(TransactionDetails.builder().referenceId(refId2).amount(amount2).type(TransactionDetails.TransactionType.CREDIT).build())
 	}
 
 	def "CreateAccount should throw exception getting response with error status code"(){
@@ -83,7 +83,7 @@ class HltechBankClientTest extends Specification {
 		then:
 			1 * apiClientMock.createAccount(userName) >> response
 		and:
-			thrown WrongBankCommunicationException
+			thrown BankCommunicationFailedException
 	}
 
 	def "Payment should throw exception getting response with error status code"(){
@@ -97,6 +97,6 @@ class HltechBankClientTest extends Specification {
 		then:
 			1 * apiClientMock.payment(paymentRequest) >> response
 		and:
-			thrown WrongBankCommunicationException
+			thrown BankCommunicationFailedException
 	}
 }

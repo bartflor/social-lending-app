@@ -47,7 +47,7 @@ public class LoanFactory {
 	}
 	
 	private Rate calculateAvgRate(Set<Investment> investments) {
-		if(investments.size() == 0){
+		if(investments.isEmpty()){
 			throw new ValueNotAllowedException(EMPTY_INVESTMENTS_SET_NOT_ALLOWED);
 		}
 		BigDecimal rateValue = investments.stream()
