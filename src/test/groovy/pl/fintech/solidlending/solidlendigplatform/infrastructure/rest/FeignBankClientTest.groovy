@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.test.context.ContextConfiguration
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.NotEnoughBalanceException
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.UnprocessableRequestException
 import spock.genesis.Gen
 import spock.lang.Specification
 
@@ -56,13 +56,13 @@ class FeignBankClientTest extends Specification {
 		when:
 			feign.transfer(dto)
 		then:
-			thrown(NotEnoughBalanceException)
+			thrown(UnprocessableRequestException)
 	}
 
 	def "accountDetails should call api POST:/accounts/{accountNumber} \
 		and return proper accountDetailsDto"(){
 		given:
-			def accountNumber = UUID.randomUUID().toString()
+			def accountNumber = UUID.randomUUID()
 			def balance = Gen.double.first()
 			wireMockServer.stubFor(get("/accounts/"+accountNumber)
 					.withBasicAuth("usr", "pass")

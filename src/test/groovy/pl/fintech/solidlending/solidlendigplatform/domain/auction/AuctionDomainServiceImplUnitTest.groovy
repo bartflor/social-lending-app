@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
@@ -9,6 +10,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryAuctionRepo
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryOfferRepo
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.InMemoryUserRepo
+import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -25,18 +27,21 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 	LenderRepository lenderRepo
 	OfferRepository offerRepo
 	LoanRiskService loanRiskSvc
-
+	TimeService timeService
 	def setup() {
 		auctionRepo = new InMemoryAuctionRepo()
 		borrowerRepo = new InMemoryUserRepo()
 		lenderRepo = borrowerRepo
 		offerRepo = new InMemoryOfferRepo()
 		loanRiskSvc = new LoanRiskService()
+		timeService = Mock(TimeService)
+
 		auctionService = new AuctionDomainServiceImpl(auctionRepo,
 				borrowerRepo,
 				offerRepo,
 				lenderRepo,
-				loanRiskSvc)
+				loanRiskSvc,
+				timeService)
 		borrowerRepo.save(Borrower.builder()
 				.userDetails(new UserDetails("borrower_name", "name", "borrower@mail", UUID.randomUUID().toString()))
 				.rating(new Rating(3))
@@ -50,17 +55,20 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 
 	def "createNewAuction should save new Auction to repository and return new id"() {
 		when:
+			def loanStartDate = Gen.date.first().toInstant()
+			def loanDuration = Period.ofYears(2)
+			def auctionDuration	= Period.of(0, 1, 15)
 			def resultId = auctionService.createNewAuction("borrower_name",
-					Period.of(0, 1, 15),
-					1200.0, Period.ofYears(2),
-					15.4, LocalDate.now())
+					auctionDuration,
+					1200.0, loanDuration,
+					15.4, loanStartDate)
 		then:
 			auctionRepo.findAll().size() == 1
 		and:
 			def resultAuction = auctionRepo.findById(resultId).get()
 			resultAuction.getBorrowerUserName() == "borrower_name"
-			resultAuction.getAuctionDuration() == Period.of(0, 1, 15)
-			resultAuction.getStartDate() == LocalDate.now()
+			resultAuction.getAuctionDuration() == auctionDuration
+			resultAuction.getAuctionLoanParams().getLoanStartDate() == loanStartDate
 			resultAuction.getStatus() == Auction.AuctionStatus.ACTIVE
 			resultAuction.getOffers().isEmpty()
 
@@ -95,7 +103,7 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 			auctionService.createNewAuction("non_existing_borrower_name",
 					Period.of(0, 1, 15),
 					1200.0, Period.ofYears(2),
-					15.4, LocalDate.now())
+					15.4, Gen.date.first().toInstant())
 		then:
 			thrown(AuctionCreationException)
 

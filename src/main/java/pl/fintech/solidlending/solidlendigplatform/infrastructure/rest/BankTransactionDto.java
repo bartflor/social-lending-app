@@ -2,18 +2,18 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest;
 
 import lombok.*;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@ToString
-@EqualsAndHashCode
 @Builder
 public class BankTransactionDto {
 	Long id;
 	String type;
 	double amount;
-	String referenceId;
-	LocalDate timestamp;
+	UUID referenceId;
+	Instant timestamp;
 	
 }

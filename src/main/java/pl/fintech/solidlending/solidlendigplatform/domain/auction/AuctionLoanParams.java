@@ -5,6 +5,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 @ToString
@@ -16,7 +17,6 @@ public class AuctionLoanParams {
 	private Money loanAmount;
 	private Risk loanRisk;
 	private Period loanDuration;
-	private LocalDate loanStartDate;
 	private Rate loanRate;
 	
 }

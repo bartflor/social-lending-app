@@ -1,9 +1,11 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,9 +17,9 @@ public class AuctionDto {
     double borrowerRating;
     double amount;
     double rate;
-    LocalDate loanStartDate;
     int loanDuration;//in months
-    LocalDate auctionStartDate;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Warsaw")
+    Instant auctionStartDate;
     int auctionDuration;//in days
     String status;
     List<OfferDto> offers;
@@ -30,7 +32,6 @@ public class AuctionDto {
             auction.getBorrowerRating().getRating(),
             params.getLoanAmount().getValue().doubleValue(),
             params.getLoanRate().getPercentValue().doubleValue(),
-            params.getLoanStartDate(),
             params.getLoanDuration().getMonths(),
             auction.getStartDate(),
             auction.getAuctionDuration().getDays(),

@@ -42,8 +42,7 @@ public class AuctionsController {
 				Period.ofMonths(auctionDto.getAuctionDuration()),
 				auctionDto.getAmount(),
 				Period.ofDays(auctionDto.getAuctionDuration()),
-				auctionDto.getRate(),
-				auctionDto.getLoanStartDate());
+				auctionDto.getRate());
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)

@@ -18,7 +18,7 @@ class LoanDomainServiceImplTest extends Specification {
 	def "CreateLoan should save loan, loan investments and schedule to repositories"() {
 		given:
 		def randId = Gen.long.first()
-		def params = GroovyMock(LoanParams)
+		def params = GroovyMock(NewLoanParams)
 		def loan = LoanDomainFactory.crateLoan(randId)
 		def investment = LoanDomainFactory.createInvestment()
 		loan.setInvestments(Set.of(investment))

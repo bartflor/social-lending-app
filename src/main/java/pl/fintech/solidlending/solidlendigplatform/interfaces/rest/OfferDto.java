@@ -13,7 +13,8 @@ public class OfferDto {
     double amount;
     double rate;
     String status;
-
+    //TODO: add :borrowername, day left, risk, rate, loan_duratton
+    // add flag allow_division
     public static OfferDto fromOffer(Offer offer) {
         return new OfferDto(
               offer.getId(),

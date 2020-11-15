@@ -14,7 +14,7 @@ class LoanApplicationServiceImplTest extends Specification {
 	def "createLoan should crate new loan from given endAuctionEvent"(){
 		given:
 			def event = AuctionDomainFactory.createEndAuctionEvent()
-			def loanParams = LoanParams.builder()
+			def loanParams = NewLoanParams.builder()
 					.borrowerUserName(event.getBorrowerUserName())
 					.investments(Collections.emptySet())
 					.loanAmount(event.getAuctionLoanParams().getLoanAmount())

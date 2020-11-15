@@ -1,9 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public interface LoanApplicationService {
@@ -13,7 +11,9 @@ public interface LoanApplicationService {
 	
 	RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId);
 	
-	String repayLoan(Long loanId);
+	RepaymentSchedule getInvestmentScheduleByLoanId(Long investmentId);
+	
+	void repayLoan(Long loanId);
 	
 	Loan findLoanById(Long loanId);
 	

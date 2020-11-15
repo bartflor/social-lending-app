@@ -43,7 +43,7 @@ public class LoanController {
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@GetMapping("/loans/{loanId}/repayment-schedule")
+	@GetMapping("/loans/{loanId}/repay")
 	public void repayLoanWithId(@PathVariable long loanId){
 		loanApplicationService.repayLoan(loanId);
 	}

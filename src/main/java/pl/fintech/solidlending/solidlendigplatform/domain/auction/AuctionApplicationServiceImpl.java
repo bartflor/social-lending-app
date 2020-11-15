@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -46,13 +47,11 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 								 Period ofMonths,
 								 double amount,
 								 Period ofDays,
-								 double rate,
-								 LocalDate loanStartDate) {
-		return domainService.createNewAuction( borrower,
+								 double rate) {
+		return domainService.createNewAuction(borrower,
 				ofMonths,
 				amount,
 				ofDays,
-				rate,
-				loanStartDate);
+				rate);
 	}
 }

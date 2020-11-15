@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
@@ -12,8 +13,7 @@ public interface AuctionDomainService {
 						  Period auctionDuration,
 						  double loanAmount,
 						  Period loanDuration,
-						  double rate,
-						  LocalDate loanStartDate);
+						  double rate);
 	
 	boolean allowedToCreateAuction(Borrower auctionOwner);
 	

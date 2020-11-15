@@ -2,10 +2,8 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
 import spock.genesis.Gen
 
-import java.time.LocalDate
 import java.time.Period
 
 class LoanDomainFactory {
@@ -19,7 +17,7 @@ class LoanDomainFactory {
 				.averageRate(Rate.fromPercentDouble(Gen.integer(0, 100).first()))
 				.repayment(new Money(Gen.double.first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
-				.startDate(LocalDate.ofYearDay(Gen.integer(1900..2020).first(), Gen.integer(1..365).first()))
+				.startDate(Gen.date.first().toInstant())
 				.schedule(new RepaymentSchedule())
 				.build()
 	}

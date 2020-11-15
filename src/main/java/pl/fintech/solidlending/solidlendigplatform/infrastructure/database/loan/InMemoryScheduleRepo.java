@@ -27,8 +27,23 @@ public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 	}
 	@Override
 	public Optional<RepaymentSchedule> findRepaymentScheduleByLoanId(Long loanId){
+		return getScheduleOfTypeById(loanId, RepaymentSchedule.Type.LOAN);
+	}
+	
+	@Override
+	public Optional<RepaymentSchedule> findRepaymentScheduleByInvestmentId(Long loanId){
+		return getScheduleOfTypeById(loanId, RepaymentSchedule.Type.INVESTMENT);
+	}
+	
+	@Override
+	public void update(Long id, RepaymentSchedule schedule) {
+		repo.put(id, schedule);
+	}
+	
+	private Optional<RepaymentSchedule> getScheduleOfTypeById(Long loanId, RepaymentSchedule.Type investment) {
 		return repo.values().stream()
-				.filter(schedule -> schedule.getLoanId().equals(loanId))
+				.filter(schedule -> schedule.getType().equals(investment))
+				.filter(schedule -> schedule.getOwnerId().equals(loanId))
 				.findAny();
 	}
 }

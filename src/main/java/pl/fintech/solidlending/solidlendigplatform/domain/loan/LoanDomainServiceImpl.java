@@ -13,14 +13,14 @@ import java.util.Set;
 @AllArgsConstructor
 public class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
-	private static final String LOAN_STATUS_FORBID_ACTIVATION = "Can not activate loan with status: %s";
+	private static final String INVALID_LOAN_STATUS = "Can not activate loan with status: %s";
 	private static final String NO_SCHEDULE_FOR_LOAN_ID = "Repayment schedule for loan with id:%s, not found";
+	private static final String NO_SCHEDULE_FOR_INVESTMENT_ID = "Repayment schedule for loan with id:%s, not found";
 	
-	
-	private LoanRepository loanRepository;
-	private RepaymentScheduleRepository scheduleRepository;
-	private LoanFactory loanFactory;
-	private InvestmentRepository investmentRepository;
+	private final LoanRepository loanRepository;
+	private final RepaymentScheduleRepository scheduleRepository;
+	private final LoanFactory loanFactory;
+	private final InvestmentRepository investmentRepository;
 	
 	/**
 	 * Create loan and investments with UNCONFIRMED status
@@ -28,15 +28,19 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	 * @return loan id
 	 */
 	@Override
-	public Long createLoan(LoanParams params){
+	public Long createLoan(NewLoanParams params){
 		Loan loan = loanFactory.createLoan(params);
 		Long loanId = loanRepository.save(loan);
 		Set<Investment> investments = loan.getInvestments();
-		investments.forEach(investment -> investment.setLoanId(loanId));
-		investments.forEach(investmentRepository::save);
-		RepaymentSchedule schedule = loan.getSchedule();
-		schedule.setLoanId(loanId);
-		scheduleRepository.save(schedule);
+		for(Investment investment : investments){
+			investment.setLoanId(loanId);
+			Long id = investmentRepository.save(investment);
+			RepaymentSchedule schedule = investment.getSchedule();
+			schedule.setOwnerId(id);
+			scheduleRepository.save(schedule);
+		}
+		loan.getSchedule().setOwnerId(loanId);
+		scheduleRepository.save(loan.getSchedule());
 		return loan.getId();
 	}
 	
@@ -48,25 +52,28 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 		Loan loan = loanRepository.findById(loanId)
 				.orElseThrow(() -> new LoanNotFoundException(String.format(LOAN_WITH_ID_NOT_FOUND, loanId)));
 		if(!loan.getStatus().equals(Loan.LoanStatus.UNCONFIRMED))
-			throw new LoanCreationException(String.format(LOAN_STATUS_FORBID_ACTIVATION, loan.getStatus()));
+			throw new LoanCreationException(String.format(INVALID_LOAN_STATUS, loan.getStatus()));
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
 		return loanId;
 	}
 	
 	@Override
-	public String repay(Long loanId) {
-		return //TODO: maybe only update schedule?
+	public void reportRepayment(Long loanId) {
+		Loan loan = findLoanById(loanId);
+		RepaymentSchedule loanRepaymentSchedule = findLoanRepaymentSchedule(loanId);
+		loanRepaymentSchedule.reportRepayment();
+		scheduleRepository.update(loanRepaymentSchedule.getId(), loanRepaymentSchedule);
+		loan.getInvestments().stream()
+				.map(Investment::getSchedule)
+				.forEach(schedule ->{schedule.reportRepayment();
+											scheduleRepository.update(schedule.getId(), schedule);});
 	}
 	
 	@Override
-	public Repayment findNextRepayment(Long loanId){
+	public Optional<Repayment> findNextRepayment(Long loanId){
 		RepaymentSchedule schedule = findLoanRepaymentSchedule(loanId);
-		if(schedule.hasPaidAllScheduledRepayment()){
-			return Optional.empty() // TODO: maby anoder result?
-		}
-		Optional<Repayment> repayment = schedule.findNextRepayment();
-		return repayment;
+		return schedule.findNextRepayment();
 	}
 	
 	
@@ -92,6 +99,12 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	public RepaymentSchedule findLoanRepaymentSchedule(Long loanId) {
 		return scheduleRepository.findRepaymentScheduleByLoanId(loanId)
 				.orElseThrow(() -> new ScheduleNotFoundException(String.format(NO_SCHEDULE_FOR_LOAN_ID, loanId)));
+	}
+	
+	@Override
+	public RepaymentSchedule findInvestmentRepaymentSchedule(Long investmentId) {
+		return scheduleRepository.findRepaymentScheduleByInvestmentId(investmentId)
+				.orElseThrow(() -> new ScheduleNotFoundException(String.format(NO_SCHEDULE_FOR_INVESTMENT_ID, investmentId)));
 	}
 	
 }

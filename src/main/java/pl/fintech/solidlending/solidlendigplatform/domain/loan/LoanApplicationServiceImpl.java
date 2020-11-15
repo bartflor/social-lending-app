@@ -3,85 +3,101 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
 
-import java.time.Period;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class LoanApplicationServiceImpl implements LoanApplicationService {
+	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
+	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
 	private LoanDomainService domainService;
 	private TransferService transferService;
+	private TimeService timeService;
 	
 	/**
 	 * this method create Loan, combining auctionLoanParam - proposed by borrower
-	 * and selected offer/investment params - proposed by lenders.
-	 * First implementation assumes, that all auctionLoanParams will be selected,
-	 * except rate and value.
+	 * and selected offer params - proposed by lenders.
+	 *
 	 * @return - new loan id
 	 */
 	@Override
 	public Long createLoan(EndAuctionEvent endAuctionEvent) {
 		AuctionLoanParams auctionLoanParams = endAuctionEvent.getAuctionLoanParams();
-		Set<Investment> investments = endAuctionEvent.getOffers().stream()
-				.map(offer -> createInvestmentFromOffer(offer,
-														auctionLoanParams.getLoanDuration()))
-				.collect(Collectors.toSet());
-		LoanParams loanParams = LoanParams.builder()
+		Instant loanStartDate = timeService.now();
+		List<NewInvestmentParams> investmentsParamsList = endAuctionEvent.getOffers().stream()
+				.map(offer -> NewInvestmentParams.builder()
+						.LenderUserName(offer.getLenderName())
+						.investedMoney(offer.getAmount())
+						.returnRate(offer.getRate())
+						.investmentDuration(auctionLoanParams.getLoanDuration())
+						.investmentStartDate(loanStartDate)
+						.build())
+				.collect(Collectors.toList());
+		NewLoanParams newLoanParams = NewLoanParams.builder()
 				.borrowerUserName(endAuctionEvent.getBorrowerUserName())
-				.investments(investments)
+				.investmentsParams(investmentsParamsList)
 				.loanAmount(auctionLoanParams.getLoanAmount())
 				.loanDuration(auctionLoanParams.getLoanDuration())
-				.loanStartDate(auctionLoanParams.getLoanStartDate())
+				.loanStartDate(loanStartDate)
 				.build();
-		return domainService.createLoan(loanParams);
-	}
-	
-	private static Investment createInvestmentFromOffer(Offer offer, Period duration){
-		Money value = offer.getAmount().calculateValueWithReturnRate(offer.getRate());
-		return Investment.builder()
-				.lenderName(offer.getLenderName())
-				.startAmount(offer.getAmount())
-				.value(value)
-				.rate(offer.getRate())
-				.duration(duration)
-				.build();
+		return domainService.createLoan(newLoanParams);
 	}
 	
 	/**
 	 * Activate loan with @param loanId
-	 * make money transfer lenders -> borrower
+	 * request money transfer lenders -> borrower
 	 */
 	@Override
 	public Long activateLoan(Long loanId){
 		Loan loan = findLoanById(loanId);
-		loan.getInvestments().stream()
-				.forEach(investment -> transferService.makeInternalTransfer(
-						investment.getLenderName(),
-						loan.getBorrowerUserName(),
-						investment.getStartAmount()));
+		List<TransferOrderEvent> transferOrderEventsList = loan.getInvestments().stream()
+				.map(investment -> TransferOrderEvent.builder()
+						.targetUserName(loan.getBorrowerUserName())
+						.sourceUserName(investment.lenderName)
+						.amount(investment.getLoanAmount())
+						.build())
+				.collect(Collectors.toList());
+		transferService.execute(transferOrderEventsList);
 		return domainService.activateLoan(loanId);
 	}
 	@Override
 	public RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId){
 		return domainService.findLoanRepaymentSchedule(loanId);
 	}
+	
 	@Override
-	public String repayLoan(Long loanId){
+	public RepaymentSchedule getInvestmentScheduleByLoanId(Long investmentId){
+		return domainService.findInvestmentRepaymentSchedule(investmentId);
+	}
+	
+	@Override
+	public void repayLoan(Long loanId){
 		Loan loan = findLoanById(loanId);
-		Money amount = //TODO get from schedule
-		
-		loan.getInvestments().stream()
-				.forEach(investment -> transferService.makeInternalTransfer(
-						loan.getBorrowerUserName(),
-						investment.getLenderName(),
-						amount));
-		return domainService.repay(loanId);
+		if(loan.getSchedule().hasPaidAllScheduledRepayment()){
+			throw new RepaymentNotExecuted(String.format(LOAN_REPAID, loanId));
+		}
+		Set<Investment> investments = loan.getInvestments();
+		for(Investment investment : investments){
+			Repayment repayment = investment.getSchedule().findNextRepayment()
+					.orElseThrow(() -> new RepaymentNotExecuted(String.format(INVESTMENT_REPAID, investment.getInvestmentId())));
+			
+			TransferOrderEvent transferOrder = TransferOrderEvent.builder()
+					.targetUserName(investment.lenderName)
+					.sourceUserName(loan.getBorrowerUserName())
+					.amount(repayment.getValue())
+					.build();
+			transferService.execute(transferOrder);
+		}
+		//TODO:confirm repayment
+		domainService.reportRepayment(loanId);
 	}
 	
 	@Override
