@@ -39,9 +39,9 @@ public class AuctionsController {
 	@PostMapping()
 	public Long addNewAuction(@RequestBody AuctionDto auctionDto){
 		return auctionApplicationService.createNewAuction(auctionDto.getBorrower(), //TODO: from auth
-				Period.ofMonths(auctionDto.getAuctionDuration()),
-				auctionDto.getAmount(),
 				Period.ofDays(auctionDto.getAuctionDuration()),
+				auctionDto.getAmount(),
+				Period.ofMonths(auctionDto.getLoanDuration()),
 				auctionDto.getRate());
 	}
 	

@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 @AllArgsConstructor
 @Data
 public class Money {
@@ -18,8 +20,12 @@ public class Money {
 		return value.compareTo(amount.getValue()) >= 0;
 	}
 	
+	public boolean isMoreThan(Money amount) {
+		return value.compareTo(amount.getValue()) > 0;
+	}
+	
 	public Money divide(long num){
-		return new Money(value.divide(BigDecimal.valueOf(num)));
+		return new Money(value.divide(BigDecimal.valueOf(num), 2,RoundingMode.HALF_UP));
 	}
 	public static Money sum(Money money1, Money money2) {
 		return new Money(money1.getValue().add(money2.getValue()));

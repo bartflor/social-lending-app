@@ -18,28 +18,33 @@ import java.util.stream.Collectors;
 public class LoanApplicationServiceImpl implements LoanApplicationService {
 	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
 	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
+	private static final String LOAN_NOT_ACTIVE = "Can not repay not ACTIVE loan with id: %s";
 	private LoanDomainService domainService;
 	private TransferService transferService;
 	private TimeService timeService;
 	
 	/**
-	 * this method create Loan, combining auctionLoanParam - proposed by borrower
+	 * this method create newLoanParams, combining auctionLoanParam - proposed by borrower
 	 * and selected offer params - proposed by lenders.
-	 *
+	 * Domain service creates new loan using composed newLoanParams.
 	 * @return - new loan id
 	 */
 	@Override
 	public Long createLoan(EndAuctionEvent endAuctionEvent) {
 		AuctionLoanParams auctionLoanParams = endAuctionEvent.getAuctionLoanParams();
 		Instant loanStartDate = timeService.now();
-		List<NewInvestmentParams> investmentsParamsList = endAuctionEvent.getOffers().stream()
-				.map(offer -> NewInvestmentParams.builder()
-						.LenderUserName(offer.getLenderName())
-						.investedMoney(offer.getAmount())
-						.returnRate(offer.getRate())
-						.investmentDuration(auctionLoanParams.getLoanDuration())
-						.investmentStartDate(loanStartDate)
-						.build())
+		List<NewInvestmentParams> investmentsParamsList =
+			endAuctionEvent.getOffers().stream()
+				.map(offer ->
+						NewInvestmentParams.builder()
+							.LenderUserName(offer.getLenderName())
+							.BorrowerName(endAuctionEvent.getBorrowerUserName())
+							.investedMoney(offer.getAmount())
+							.returnRate(offer.getRate())
+							.risk(auctionLoanParams.getLoanRisk())
+							.investmentDuration(auctionLoanParams.getLoanDuration())
+							.investmentStartDate(loanStartDate)
+							.build())
 				.collect(Collectors.toList());
 		NewLoanParams newLoanParams = NewLoanParams.builder()
 				.borrowerUserName(endAuctionEvent.getBorrowerUserName())
@@ -74,13 +79,16 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	}
 	
 	@Override
-	public RepaymentSchedule getInvestmentScheduleByLoanId(Long investmentId){
+	public RepaymentSchedule getInvestmentSchedule(Long investmentId){
 		return domainService.findInvestmentRepaymentSchedule(investmentId);
 	}
 	
 	@Override
 	public void repayLoan(Long loanId){
 		Loan loan = findLoanById(loanId);
+		if(!loan.isActive()){
+			throw new RepaymentNotExecuted(String.format(LOAN_NOT_ACTIVE, loanId));
+		}
 		if(loan.getSchedule().hasPaidAllScheduledRepayment()){
 			throw new RepaymentNotExecuted(String.format(LOAN_REPAID, loanId));
 		}

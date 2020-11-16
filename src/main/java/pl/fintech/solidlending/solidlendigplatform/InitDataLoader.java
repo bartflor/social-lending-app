@@ -12,8 +12,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
 
@@ -29,7 +27,7 @@ public class InitDataLoader implements CommandLineRunner {
   public void run(String... args) throws Exception {
     log.info("load init data.");
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("Bilbo_Baggins", "Bilbo Baggins", "borrower@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("Bilbo_Baggins", "Bilbo Baggins", "borrower@mail", "d474cb1d-35b6-4d32-b290-0ab36317cdfc"))
 			  .rating(new Rating(3))
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
@@ -39,7 +37,7 @@ public class InitDataLoader implements CommandLineRunner {
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
 	  lenderRepository.save(Lender.builder()
-			  .userDetails(new UserDetails("Samwise_Gamgee", "Samwise Gamgee", "lender@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("Samwise_Gamgee", "Samwise Gamgee", "lender@mail", "e0c30b15-02e1-423f-9fa3-2a9cf411980d"))
 			  .balance(new Money(BigDecimal.TEN))
 			  .build());
     
@@ -71,19 +69,19 @@ public class InitDataLoader implements CommandLineRunner {
 			  .auctionId(auction1Id)
 			  .lenderName("Samwise_Gamgee")
 			  .amount(new Money(20))
-			  .rate(Rate.fromPercentDouble(5.))
+			  .rate(Rate.fromPercentValue(5.))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
 			  .auctionId(auction1Id)
 			  .lenderName("Samwise_Gamgee")
 			  .amount(new Money(20))
-			  .rate(Rate.fromPercentDouble(12.))
+			  .rate(Rate.fromPercentValue(12.))
 			  .build();
 	  auctionDomainServiceImpl.addOffer(offer);
 	  offer = Offer.builder()
 			  .auctionId(auction2Id)
-			  .rate(Rate.fromPercentDouble(7.))
+			  .rate(Rate.fromPercentValue(7.))
 			  .lenderName("Samwise_Gamgee")
 			  .amount(new Money(50))
 			  .build();

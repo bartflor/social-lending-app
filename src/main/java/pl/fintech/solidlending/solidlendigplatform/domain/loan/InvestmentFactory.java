@@ -15,14 +15,17 @@ public class InvestmentFactory {
 		Money value = params.getInvestedMoney().calculateValueWithReturnRate(params.getReturnRate());
 		Period investmentDuration = params.getInvestmentDuration();
 		Instant startDate = params.getInvestmentStartDate();
-		investments.add(Investment.builder()
-				.lenderName(params.getLenderUserName())
-				.loanAmount(params.getInvestedMoney())
-				.value(value)
-				.rate(params.getReturnRate())
-				.duration(investmentDuration)
-				.schedule(prepareRepaymentSchedule(investmentDuration, value, startDate))
-				.build());
+      investments.add(
+          Investment.builder()
+              .lenderName(params.getLenderUserName())
+              .borrowerName(params.getBorrowerName())
+              .risk(params.getRisk())
+              .loanAmount(params.getInvestedMoney())
+              .value(value)
+              .rate(params.getReturnRate())
+              .duration(investmentDuration)
+              .schedule(prepareRepaymentSchedule(investmentDuration, value, startDate))
+              .build());
 		}
 		return investments;
 	}

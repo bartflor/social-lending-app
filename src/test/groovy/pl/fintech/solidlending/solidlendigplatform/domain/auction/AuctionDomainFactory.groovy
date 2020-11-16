@@ -26,7 +26,7 @@ class AuctionDomainFactory {
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentDouble(rate))
+						.loanRate(Rate.fromPercentValue(rate))
 						.build())
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
@@ -42,7 +42,7 @@ class AuctionDomainFactory {
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(Gen.double.first()))
 						.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-						.loanRate(Rate.fromPercentDouble(Gen.integer(0..100).first()))
+						.loanRate(Rate.fromPercentValue(Gen.integer(0..100).first()))
 						.build())
 				.offers(Collections.emptySet())
 				.status(Auction.AuctionStatus.ACTIVE)
@@ -77,7 +77,7 @@ class AuctionDomainFactory {
 		AuctionLoanParams.builder()
 				.loanAmount(new Money(amount))
 				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-				.loanRate(Rate.fromPercentDouble(Gen.integer(0, 100).first()))
+				.loanRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
 
@@ -87,7 +87,7 @@ class AuctionDomainFactory {
 				.auctionId(auctionId)
 				.lenderName(lenderName)
 				.amount(new Money(Gen.double.first()))
-				.rate(Rate.fromPercentDouble(Gen.integer(0, 100).first()))
+				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
 
@@ -96,7 +96,7 @@ class AuctionDomainFactory {
 				.auctionId(id)
 				.lenderName(Gen.string.first())
 				.amount(new Money(amount))
-				.rate(Rate.fromPercentDouble(Gen.integer(0, 100).first()))
+				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
 
@@ -132,7 +132,7 @@ class AuctionDomainFactory {
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentDouble(rate))
+						.loanRate(Rate.fromPercentValue(rate))
 						.build())
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()

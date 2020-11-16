@@ -3,8 +3,10 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import java.math.BigDecimal;
+import java.time.Period;
 import java.util.Comparator;
 @ToString
 @AllArgsConstructor
@@ -14,8 +16,12 @@ public class Offer {
   @Setter private Long id;
   @Setter private Long auctionId;
   private String lenderName;
+  private String borrowerName;
   private Money amount;
+  private Risk risk;
   private Rate rate;
+  private Period duration;
+  private Boolean allowAmountSplit;
   @Builder.Default private OfferStatus status = OfferStatus.ACTIVE;
   
   public void archive() {

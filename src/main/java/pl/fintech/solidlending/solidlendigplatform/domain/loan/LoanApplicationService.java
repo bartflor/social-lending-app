@@ -11,7 +11,7 @@ public interface LoanApplicationService {
 	
 	RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId);
 	
-	RepaymentSchedule getInvestmentScheduleByLoanId(Long investmentId);
+	RepaymentSchedule getInvestmentSchedule(Long investmentId);
 	
 	void repayLoan(Long loanId);
 	

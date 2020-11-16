@@ -2,5 +2,6 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exceptio
 
 public class TransferNotCreatedException extends RuntimeException {
 	public TransferNotCreatedException(String msg) {
+		super(msg);
 	}
 }

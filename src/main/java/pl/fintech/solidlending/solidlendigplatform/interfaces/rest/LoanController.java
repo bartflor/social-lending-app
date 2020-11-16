@@ -17,7 +17,7 @@ public class LoanController {
 	LoanApplicationService loanApplicationService;
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/{userName}")
+	@GetMapping("/borrower/{userName}")
 	public List<LoanDto> getUserLoans(@PathVariable String userName){
 		return loanApplicationService.getUserLoans(userName).stream()
 				.map(LoanDto::from)
@@ -31,25 +31,15 @@ public class LoanController {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/loans/{loanId}")
-	public Loan getLoanWithId(@PathVariable long loanId){
-		return loanApplicationService.findLoanById(loanId);
-	}
-	
-	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/loans/{loanId}/repayment-schedule")
-	public RepaymentSchedule getLoanScheduleWithId(@PathVariable long loanId){
-		return loanApplicationService.getRepaymentScheduleByLoanId(loanId);
+	@GetMapping("/{loanId}")
+	public LoanDto getLoanWithId(@PathVariable long loanId){
+		return LoanDto.from(loanApplicationService.findLoanById(loanId));
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
-	@GetMapping("/loans/{loanId}/repay")
+	@GetMapping("/{loanId}/repay")
 	public void repayLoanWithId(@PathVariable long loanId){
 		loanApplicationService.repayLoan(loanId);
 	}
-	
-	
-	
-	
-	
+
 }

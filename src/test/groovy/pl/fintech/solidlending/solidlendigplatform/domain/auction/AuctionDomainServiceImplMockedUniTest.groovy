@@ -53,6 +53,7 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 			timeService.now() >> now
 			Borrower borrower = Mock()
 			borrower.getRating() >> new Rating(rating)
+			borrower.hasBankAccount() >> true
 			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.of(borrower)
 			def auction = AuctionDomainFactory.createAuction(borrowerName,
 															auctionDuration,

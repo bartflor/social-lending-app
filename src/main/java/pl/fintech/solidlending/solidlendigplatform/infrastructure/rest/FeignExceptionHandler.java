@@ -29,7 +29,7 @@ public class FeignExceptionHandler implements ErrorDecoder {
 		}
 		log.severe("Unknown exception occur during communication with bank API: "+response+
 			"\n Exception at: "+exceptionSource);
-		return new RuntimeException(response.toString());
+		return new RuntimeException(exceptionSource);
 	}
 	
 	private String getResponseBodyField(Response response, String field) {
@@ -37,6 +37,6 @@ public class FeignExceptionHandler implements ErrorDecoder {
 		if(response.body() != null){
 			responseBody = new JSONObject(response.body().toString());
 		}
-		return responseBody.has(field) ? responseBody.getString(field) : "No response details";
+		return responseBody.has(field) ? responseBody.get(field).toString() : "No response details";
 	}
 }

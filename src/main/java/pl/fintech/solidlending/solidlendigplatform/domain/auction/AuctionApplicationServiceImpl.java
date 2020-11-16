@@ -44,14 +44,14 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 	
 	@Override
 	public Long createNewAuction(String borrower,
-								 Period ofMonths,
+								 Period auctionDuration,
 								 double amount,
-								 Period ofDays,
+								 Period loanDuration,
 								 double rate) {
 		return domainService.createNewAuction(borrower,
-				ofMonths,
+				auctionDuration,
 				amount,
-				ofDays,
+				loanDuration,
 				rate);
 	}
 }

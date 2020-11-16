@@ -17,8 +17,8 @@ public interface AuctionApplicationService {
 	List<Auction> getUserAuctions(String borrowerName);
 	
 	Long createNewAuction(String borrower,
-						  Period ofMonths,
+						  Period auctionDuration,
 						  double amount,
-						  Period ofDays,
+						  Period loanDuration,
 						  double rate);
 }

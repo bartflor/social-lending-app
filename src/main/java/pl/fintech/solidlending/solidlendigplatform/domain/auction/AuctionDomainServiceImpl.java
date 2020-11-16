@@ -14,10 +14,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepo
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private static final String BORROWER_NOT_ALLOWED = "Borrower with username:%s is not allowed to create new auction.";
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	private static final String LENDER_NOT_FOUND = "Lender with username:%s not found.";
+	private static final String NOT_ALLOWED_OFFER = "Can not add invalid offer to auction. Provided offer: %s";
 	
 	private final AuctionRepository auctionRepository;
 	private final BorrowerRepository borrowerRepository;
@@ -52,7 +50,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		AuctionLoanParams auctionLoanParams = AuctionLoanParams.builder()
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
-				.loanRate(Rate.fromPercentDouble(rate))
+				.loanRate(Rate.fromPercentValue(rate))
 				.loanRisk(loanRiskService.estimateLoanRisk(borrower, loanValue))
 				.build();
 		
@@ -68,8 +66,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	
 	@Override
 	public boolean allowedToCreateAuction(Borrower auctionOwner){
-		//TODO: implement
-		return true;
+		return auctionOwner.hasBankAccount();
 	}
 	
 	@Override
@@ -86,13 +83,29 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	
 	@Override
 	public Long addOffer(Offer offer){
+		if(offer == null){
+			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, "null"));
+		}
 		existsInRepositoryCheck(offer.getLenderName());
 		Long auctionId = offer.getAuctionId();
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
-		auction.addNewOffer(offer);
-		Long offerId = offerRepository.save(offer);
-		offer.setId(offerId);
+		if(offer.getAmount() == null|| offer.getRate() == null || !offer.getAmount().isMoreThan(Money.ZERO)){
+			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, offer));
+		}
+		Offer validOffer = Offer.builder()
+				.auctionId(auctionId)
+				.lenderName(offer.getLenderName())
+				.borrowerName(auction.getBorrowerUserName())
+				.amount(offer.getAmount())
+				.risk(auction.getAuctionLoanParams().getLoanRisk())
+				.rate(offer.getRate())
+				.duration(auction.getAuctionLoanParams().getLoanDuration())
+				.allowAmountSplit(offer.getAllowAmountSplit() == null ? Boolean.FALSE : offer.getAllowAmountSplit())
+				.build();
+		auction.addNewOffer(validOffer);
+		Long offerId = offerRepository.save(validOffer);
+		validOffer.setId(offerId);
 		auctionRepository.updateAuction(auctionId, auction);
 		return offerId;
 	}

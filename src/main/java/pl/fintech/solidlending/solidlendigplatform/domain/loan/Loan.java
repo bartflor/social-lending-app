@@ -26,9 +26,12 @@ public class Loan {
 	Set<Investment> investments;
 	@Builder.Default LoanStatus status = LoanStatus.UNCONFIRMED;
 	RepaymentSchedule schedule;
-
 	
 	public enum LoanStatus {
 		ACTIVE, CLOSED, UNCONFIRMED
+	}
+	
+	public boolean isActive(){
+		return status.equals(LoanStatus.ACTIVE);
 	}
 }

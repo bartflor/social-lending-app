@@ -77,7 +77,7 @@ public class LoanFactory {
 				.reduce(BigDecimal::add)
 				.orElse(BigDecimal.ZERO);
 		rateValue = rateValue.divide(BigDecimal.valueOf(investments.size()), MathContext.DECIMAL32);
-		return new Rate(rateValue);
+		return Rate.fromPercentValue(rateValue.doubleValue());
 	}
 	
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class InvestmentController {
 	LoanApplicationService loanApplicationService;
+	
 	@GetMapping("/{userName}")
 	public List<InvestmentDto> getAllUserInvestments(@PathVariable String userName){
     return loanApplicationService.getUserInvestments(userName).stream()
