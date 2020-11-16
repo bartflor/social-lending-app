@@ -34,6 +34,7 @@ public class LoanFactory {
 					.amount(params.getLoanAmount())
 					.repayment(repayment)
 					.averageRate(avgLoanRate)
+					.schedule(schedule)
 					.startDate(params.getLoanStartDate())
 					.duration(params.getLoanDuration())
 					.investments(investments)

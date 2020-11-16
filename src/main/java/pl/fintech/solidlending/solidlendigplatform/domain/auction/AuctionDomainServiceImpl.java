@@ -93,7 +93,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		auction.addNewOffer(offer);
 		Long offerId = offerRepository.save(offer);
 		offer.setId(offerId);
-		
 		auctionRepository.updateAuction(auctionId, auction);
 		return offerId;
 	}

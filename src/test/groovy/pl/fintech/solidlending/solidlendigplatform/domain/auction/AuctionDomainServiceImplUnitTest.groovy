@@ -61,14 +61,13 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 			def resultId = auctionService.createNewAuction("borrower_name",
 					auctionDuration,
 					1200.0, loanDuration,
-					15.4, loanStartDate)
+					15.4)
 		then:
 			auctionRepo.findAll().size() == 1
 		and:
 			def resultAuction = auctionRepo.findById(resultId).get()
 			resultAuction.getBorrowerUserName() == "borrower_name"
 			resultAuction.getAuctionDuration() == auctionDuration
-			resultAuction.getAuctionLoanParams().getLoanStartDate() == loanStartDate
 			resultAuction.getStatus() == Auction.AuctionStatus.ACTIVE
 			resultAuction.getOffers().isEmpty()
 
@@ -103,7 +102,7 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 			auctionService.createNewAuction("non_existing_borrower_name",
 					Period.of(0, 1, 15),
 					1200.0, Period.ofYears(2),
-					15.4, Gen.date.first().toInstant())
+					15.4)
 		then:
 			thrown(AuctionCreationException)
 

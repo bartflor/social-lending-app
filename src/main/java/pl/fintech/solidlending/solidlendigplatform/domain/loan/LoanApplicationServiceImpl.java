@@ -88,7 +88,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		for(Investment investment : investments){
 			Repayment repayment = investment.getSchedule().findNextRepayment()
 					.orElseThrow(() -> new RepaymentNotExecuted(String.format(INVESTMENT_REPAID, investment.getInvestmentId())));
-			
 			TransferOrderEvent transferOrder = TransferOrderEvent.builder()
 					.targetUserName(investment.lenderName)
 					.sourceUserName(loan.getBorrowerUserName())

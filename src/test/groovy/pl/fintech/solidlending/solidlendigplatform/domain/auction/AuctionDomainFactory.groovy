@@ -7,7 +7,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
 import spock.genesis.Gen
 
 import java.time.Instant
-import java.time.LocalDate
 import java.time.Period
 
 class AuctionDomainFactory {
@@ -16,15 +15,15 @@ class AuctionDomainFactory {
 	                             int amount,
 	                             Period loanDuration,
 	                             double rate,
-	                             Instant loanStart,
 	                             int rating) {
+		def auctionId = Gen.long.first()
 		Auction.builder()
+				.id(auctionId)
 				.borrowerUserName(borrowerName)
 				.startDate(Instant.now())
 				.auctionDuration(auctionDuration)
 				.borrowerRating(new Rating(rating))
 				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanStartDate(loanStart)
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
 						.loanRate(Rate.fromPercentDouble(rate))
@@ -41,7 +40,6 @@ class AuctionDomainFactory {
 				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
 				.borrowerRating(new Rating(Gen.integer.first()))
 				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanStartDate(Gen.date.first().toInstant())
 						.loanAmount(new Money(Gen.double.first()))
 						.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
 						.loanRate(Rate.fromPercentDouble(Gen.integer(0..100).first()))
@@ -58,7 +56,6 @@ class AuctionDomainFactory {
 				Gen.integer.first(),
 				Period.ofDays(Gen.integer.first()),
 				Gen.getDouble().first(),
-				Gen.date.first().toInstant(),
 				Gen.integer.first())
 	}
 
@@ -78,7 +75,6 @@ class AuctionDomainFactory {
 
 	private static AuctionLoanParams createLoanAuctionParams(int amount) {
 		AuctionLoanParams.builder()
-				.loanStartDate(Gen.date.first().toInstant())
 				.loanAmount(new Money(amount))
 				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
 				.loanRate(Rate.fromPercentDouble(Gen.integer(0, 100).first()))
@@ -110,7 +106,6 @@ class AuctionDomainFactory {
 				amount,
 				Period.ofDays(Gen.integer.first()),
 				Gen.getDouble().first(),
-				Gen.date.first().toInstant(),
 				Gen.integer.first())
 	}
 
@@ -127,7 +122,6 @@ class AuctionDomainFactory {
 	                              int amount,
 	                              Period loanDuration,
 	                              double rate,
-	                              Instant loanStart,
 	                              int rating,
 								  Instant now) {
 		Auction.builder()
@@ -136,7 +130,6 @@ class AuctionDomainFactory {
 				.auctionDuration(auctionDuration)
 				.borrowerRating(new Rating(rating))
 				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanStartDate(loanStart)
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
 						.loanRate(Rate.fromPercentDouble(rate))

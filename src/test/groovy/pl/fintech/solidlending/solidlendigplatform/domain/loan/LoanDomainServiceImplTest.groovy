@@ -28,7 +28,7 @@ class LoanDomainServiceImplTest extends Specification {
 			def res = loanDomainSvc.createLoan(params)
 		then:
 			1*investmentRepository.save(investment)
-			1*scheduleRepository.save(_)
+			2*scheduleRepository.save(_)
 			res == randId
 	}
 

@@ -48,7 +48,6 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 			def amount = Gen.integer.iterator().next()
 			def loanDuration = Period.ofDays(Gen.integer.iterator().next())
 			def rate = Gen.getDouble().iterator().next()
-			def loanStart = Gen.date.first().toInstant()
 			def rating = Gen.integer.iterator().next()
 			def now = Gen.date.first().toInstant()
 			timeService.now() >> now
@@ -60,7 +59,6 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 															amount,
 															loanDuration,
 															rate,
-															loanStart,
 															rating,
 															now)
 
@@ -69,8 +67,7 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 					auctionDuration,
 					amount,
 					loanDuration,
-					rate,
-					loanStart)
+					rate)
 		then:
 			1 * auctionRepo.save({ argument -> argument == auction })
 	}
@@ -82,15 +79,13 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 			def amount = Gen.integer.iterator().next()
 			def loanDuration = Period.ofDays(Gen.integer.iterator().next())
 			def rate = Gen.getDouble().iterator().next()
-			def loanStart = Gen.date.first().toInstant()
 			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.empty()
 		when:
 			auctionService.createNewAuction(borrowerName,
 					auctionDuration,
 					amount,
 					loanDuration,
-					rate,
-					loanStart)
+					rate)
 		then:
 			thrown(AuctionCreationException)
 

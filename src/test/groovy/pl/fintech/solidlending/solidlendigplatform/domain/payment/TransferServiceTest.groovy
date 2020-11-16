@@ -29,10 +29,11 @@ class TransferServiceTest extends Specification {
 			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
-			def sourceUser = createLender(sourceUserAccount, sourceUserName)
-			def targetUser = createBorrower(targetUserAccount, targetUserName)
+			def sourceUser = PaymentDomainFactory.createLender(sourceUserAccount, sourceUserName)
+			def targetUser = PaymentDomainFactory.createBorrower(targetUserAccount, targetUserName)
 		when:
-			def result = transferService.execute(sourceUserName, targetUserName, amount)
+			def result = transferService.execute(PaymentDomainFactory
+					.createTransferOrderEvent(sourceUserName, targetUserName, amount))
 		then:
 			1 * bankClientMock.transfer(sourceUserAccount, targetUserAccount, amount.getValue().doubleValue()) >> refId
 			1 * borrowerRepoMock.findBorrowerByUserName(targetUserName) >> Optional.of(targetUser)
@@ -52,9 +53,9 @@ class TransferServiceTest extends Specification {
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 
-			def sourceUser = createBorrower(targetUserAccount, targetUserName)
+			def sourceUser = PaymentDomainFactory.createBorrower(targetUserAccount, targetUserName)
 		when:
-			transferService.execute(sourceUserName, targetUserName, amount)
+			transferService.execute(PaymentDomainFactory.createTransferOrderEvent(sourceUserName, targetUserName, amount))
 		then:
 			0 * bankClientMock.transfer(_, _, _) >> refId
 			1 * borrowerRepoMock.findBorrowerByUserName(sourceUserName) >> Optional.empty()
@@ -74,7 +75,7 @@ class TransferServiceTest extends Specification {
 			def targetUserName = Gen.string(5,20).first()
 
 		when:
-			transferService.execute(sourceUserName, targetUserName, amount)
+			transferService.execute(PaymentDomainFactory.createTransferOrderEvent(sourceUserName, targetUserName, amount))
 		then:
 			0 * bankClientMock.transfer(_, _, amount) >> refId
 			1 * borrowerRepoMock.findBorrowerByUserName(sourceUserName) >> Optional.empty()
@@ -85,27 +86,7 @@ class TransferServiceTest extends Specification {
 			exception.getMessage() == "User with username:"+sourceUserName+" not found."
 	}
 
-	private static Borrower createBorrower(String targetUserAccount, String targetUserName) {
-		Borrower.builder()
-				.userDetails(UserDetails.builder()
-						.accountNumber(targetUserAccount)
-						.name(Gen.string(20).first())
-						.email(Gen.string(20).first())
-						.userName(targetUserName)
-						.build())
-				.build()
-	}
 
-	private static Lender createLender(String sourceUserAccount, String sourceUserName) {
-		Lender.builder()
-				.userDetails(UserDetails.builder()
-						.accountNumber(sourceUserAccount)
-						.name(Gen.string(20).first())
-						.email(Gen.string(20).first())
-						.userName(sourceUserName)
-						.build())
-				.build()
-	}
 }
 
 

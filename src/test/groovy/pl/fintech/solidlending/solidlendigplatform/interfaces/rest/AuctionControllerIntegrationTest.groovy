@@ -40,6 +40,7 @@ class AuctionControllerIntegrationTest extends Specification {
 			def auction = AuctionDomainFactory.createAuctionWithAmount(amount)
 			def id = auctionRepository.save(auction)
 			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
+			auctionRepository.updateAuction(id, auction)
 
 		when:
 			def response = restClient.when().get("/api/auctions/" + id + "/create-loan")
