@@ -20,6 +20,7 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	private final LoanRepository loanRepository;
 	private final RepaymentScheduleRepository scheduleRepository;
 	private final LoanFactory loanFactory;
+	private final InvestmentFactory investmentFactory;
 	private final InvestmentRepository investmentRepository;
 	
 	/**
@@ -29,9 +30,9 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	 */
 	@Override
 	public Long createLoan(NewLoanParams params){
-		Loan loan = loanFactory.createLoan(params);
+		Set<Investment> investments = investmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
+		Loan loan = loanFactory.createLoan(params, investments);
 		Long loanId = loanRepository.save(loan);
-		Set<Investment> investments = loan.getInvestments();
 		for(Investment investment : investments){
 			investment.setLoanId(loanId);
 			Long id = investmentRepository.save(investment);

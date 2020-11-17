@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
+package pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -15,13 +15,13 @@ class AddMockedServiceToContext {
 	@Primary
 	@Bean
 	AuctionApplicationService auctionApplicationService(){
-		return mockFactory.Mock(AuctionApplicationService)
+		mockFactory.Mock(AuctionApplicationService)
 	}
 
 	@Primary
 	@Bean
 	LoanApplicationService loanApplicationService(){
-		return mockFactory.Mock(LoanApplicationService)
+		mockFactory.Mock(LoanApplicationService)
 	}
 
 }

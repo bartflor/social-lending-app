@@ -33,13 +33,13 @@ public class RepaymentSchedule {
 				.min(Comparator.comparing(Repayment::getDate));
 	}
 	
-	boolean hasLateRepayment(){
+	public boolean hasLateRepayment(){
 		return schedule.stream()
 				.filter(repayment -> repayment.getStatus().equals(Repayment.Status.LATE))
 				.count() != 0;
 	}
 
-	boolean hasPaidAllScheduledRepayment() {
+	public boolean hasPaidAllScheduledRepayment() {
 		return schedule.stream()
 				.filter(repayment -> !repayment.getStatus().equals(Repayment.Status.PAID))
 				.count() == 0;

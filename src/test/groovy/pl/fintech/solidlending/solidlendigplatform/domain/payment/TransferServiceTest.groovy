@@ -21,7 +21,7 @@ class TransferServiceTest extends Specification {
 	@Subject
 	def transferService = new TransferServiceImpl(bankClientMock, lenderRepoMock, borrowerRepoMock)
 
-	def "MakeInternalTransfer should find users and return BankClient transfer reference id, given users name"() {
+	def "execute() should find users and return BankClient transfer reference id, given users name"() {
 		given:
 			def sourceUserAccount = UUID.randomUUID().toString()
 			def targetUserAccount = UUID.randomUUID().toString()
@@ -45,7 +45,7 @@ class TransferServiceTest extends Specification {
 			result == refId
 	}
 
-	def "MakeInternalTransfer should throw exception, when targetUser not found with given users name"() {
+	def "execute() should throw exception, when targetUser not found with given users name"() {
 		given:
 			def targetUserAccount = UUID.randomUUID().toString()
 			def refId = UUID.randomUUID().toString()
@@ -67,7 +67,7 @@ class TransferServiceTest extends Specification {
 			exception.getMessage() == "User with username:"+targetUserName+" not found."
 	}
 
-	def "MakeInternalTransfer should throw exception, when sourceUser not found with given users name"() {
+	def "execute() should throw exception, when sourceUser not found with given users name"() {
 		given:
 			def refId = UUID.randomUUID().toString()
 			def amount = new Money(Gen.integer(0, 10000).first() as double)

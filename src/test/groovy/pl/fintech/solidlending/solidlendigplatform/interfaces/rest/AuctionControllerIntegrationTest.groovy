@@ -1,7 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+
 import io.restassured.RestAssured
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,10 +10,10 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 

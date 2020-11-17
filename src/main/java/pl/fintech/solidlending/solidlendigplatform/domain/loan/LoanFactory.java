@@ -24,8 +24,7 @@ public class LoanFactory {
 	 * @param params parameters of loan to create
 	 * @return new loan with investments set and repayment schedule.
 	 */
-	public Loan createLoan(NewLoanParams params){
-		Set<Investment> investments = InvestmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
+	public Loan createLoan(NewLoanParams params, Set<Investment> investments){
 		Rate avgLoanRate = calculateAvgRate(investments);
 		Money repayment = params.getLoanAmount().calculateValueWithReturnRate(avgLoanRate);
 		RepaymentSchedule schedule = prepareRepaymentSchedule(investments);
@@ -46,7 +45,7 @@ public class LoanFactory {
 	 * @param investments - set of complete investments with schedules
 	 * @return one schedule for loan
 	 */
-	private RepaymentSchedule prepareRepaymentSchedule(Set<Investment> investments) {
+	private static RepaymentSchedule prepareRepaymentSchedule(Set<Investment> investments) {
 		List<RepaymentSchedule> investmentsScheduleList = investments.stream()
 				.map(Investment::getSchedule)
 				.collect(Collectors.toList());
@@ -67,7 +66,7 @@ public class LoanFactory {
 		return loanSchedule;
 	}
 	
-	private Rate calculateAvgRate(Set<Investment> investments) {
+	private static Rate calculateAvgRate(Set<Investment> investments) {
 		if(investments.isEmpty()){
 			throw new ValueNotAllowedException(EMPTY_INVESTMENTS_SET_NOT_ALLOWED);
 		}
