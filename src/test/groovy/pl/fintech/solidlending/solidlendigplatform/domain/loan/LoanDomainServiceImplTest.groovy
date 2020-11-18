@@ -1,7 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -10,26 +12,31 @@ class LoanDomainServiceImplTest extends Specification {
 	def loanRepository = Mock(LoanRepository)
 	def scheduleRepository = Mock(RepaymentScheduleRepository)
 	def loanFactory = Mock(LoanFactory)
+	def investmentFactory = Mock(InvestmentFactory)
 	def investmentRepository = Mock(InvestmentRepository)
 
 	@Subject
-	def loanDomainSvc = new LoanDomainServiceImpl(loanRepository, scheduleRepository, loanFactory, investmentRepository)
+	def loanDomainSvc = new LoanDomainServiceImpl(loanRepository, scheduleRepository, loanFactory, investmentFactory, investmentRepository)
 
-	def "CreateLoan should save loan, loan investments and schedule to repositories"() {
+	def "CreateLoan should save loan, loan investments and schedules to repositories"() {
 		given:
-		def randId = Gen.long.first()
-		def params = GroovyMock(LoanParams)
-		def loan = LoanDomainFactory.crateLoan(randId)
-		def investment = LoanDomainFactory.createInvestment()
-		loan.setInvestments(Set.of(investment))
-		loanFactory.createLoan(params) >> loan
-		loanRepository.save(loan) >> randId
+			def randId = Gen.long.first()
+			List<NewInvestmentParams> investmentParams = Mock()
+			def params = NewLoanParams.builder()
+					.investmentsParams(investmentParams)
+					.build()
+			def loan = LoanDomainFactory.crateLoan(randId)
+			def investment = LoanDomainFactory.createInvestment()
+			loan.setInvestments(Set.of(investment))
+			investmentFactory.createInvestmentsFrom(investmentParams) >> Set.of(investment)
+			loanFactory.createLoan(params, Set.of(investment)) >> loan
+			loanRepository.save(loan) >> randId
 		when:
-			def res = loanDomainSvc.createLoan(params)
+			def result = loanDomainSvc.createLoan(params)
 		then:
 			1*investmentRepository.save(investment)
-			1*scheduleRepository.save(_)
-			res == randId
+			2*scheduleRepository.save(_)
+			result == randId
 	}
 
 	def "activateLoan should call repositories activate method when loan with given id exists"(){
@@ -42,7 +49,6 @@ class LoanDomainServiceImplTest extends Specification {
 		and:
 			1*loanRepository.setActive(randId)
 			1*investmentRepository.setActiveWithLoanId(randId)
-
 	}
 
 	def "activateLoan should throw exception when loan with given id not exists"(){
@@ -53,7 +59,8 @@ class LoanDomainServiceImplTest extends Specification {
 		then:
 			1*loanRepository.findById(randId) >> Optional.empty()
 		and:
-			thrown(LoanNotFoundException)
+			def exception = thrown(LoanNotFoundException)
+			exception.getMessage() == "Loan with id:"+randId+" not found."
 	}
 
 	def "activateLoan should throw exception when loan with given id has not UNCONFIRMED status"(){
@@ -66,7 +73,8 @@ class LoanDomainServiceImplTest extends Specification {
 		then:
 			1*loanRepository.findById(randId) >> Optional.of(loan)
 		and:
-			thrown(LoanCreationException)
+			def exception = thrown(LoanCreationException)
+			exception.getMessage() == "Can not activate loan with status: ACTIVE"
 	}
 
 	def "findLoanById should throw exception when loan with given id not exist"(){
@@ -76,6 +84,29 @@ class LoanDomainServiceImplTest extends Specification {
 		when:
 			loanDomainSvc.findLoanById(randId)
 		then:
-			thrown(LoanNotFoundException)
+			def exception = thrown(LoanNotFoundException)
+			exception.getMessage() == "Loan with id:"+randId+" not found."
+	}
+
+	def "findLoanRepaymentSchedule should throw exception when schedule with given id not exist"(){
+		given:
+			def randId = Gen.long.first()
+			scheduleRepository.findRepaymentScheduleByLoanId(randId) >> Optional.empty()
+		when:
+			loanDomainSvc.findLoanRepaymentSchedule(randId)
+		then:
+			def exception = thrown(ScheduleNotFoundException)
+			exception.getMessage() == "Repayment schedule for loan with id:"+randId+", not found"
+	}
+
+	def "findInvestmentRepaymentSchedule should throw exception when schedule with given id not exist"(){
+		given:
+			def randId = Gen.long.first()
+			scheduleRepository.findRepaymentScheduleByInvestmentId(randId) >> Optional.empty()
+		when:
+			loanDomainSvc.findInvestmentRepaymentSchedule(randId)
+		then:
+			def exception = thrown(ScheduleNotFoundException)
+			exception.getMessage() == "Repayment schedule for loan with id:"+randId+", not found"
 	}
 }

@@ -4,7 +4,7 @@ import org.json.JSONObject
 
 class CommunicationDataFactory {
 
-	public static JSONObject createAuctionRequestBody(){
+	static JSONObject createAuctionRequestBody(){
 		new JSONObject("{" +
 				"\"amount\": 539," +
 				"\"borrower\": \"Bilbo_Baggins\"," +

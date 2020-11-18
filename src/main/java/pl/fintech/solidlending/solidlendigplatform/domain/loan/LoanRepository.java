@@ -13,4 +13,6 @@ public interface LoanRepository {
 	void setActive(Long loanId);
 	
 	Optional<Loan> findById(Long loanId);
+	
+	void update(Long loanId, Loan loan);
 }

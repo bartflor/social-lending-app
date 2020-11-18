@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
+package pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -7,8 +7,10 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplica
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryAuctionRepo
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan.InMemoryLoanRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan.InMemoryScheduleRepo
 import spock.mock.DetachedMockFactory
 
 /**
@@ -28,6 +30,12 @@ class AddStubRepositoriesToContext {
 	@Bean
 	LoanRepository loanRepository(){
 		return new InMemoryLoanRepo()
+	}
+
+	@Primary
+	@Bean
+	RepaymentScheduleRepository scheduleRepository(){
+		return new InMemoryScheduleRepo()
 	}
 
 }

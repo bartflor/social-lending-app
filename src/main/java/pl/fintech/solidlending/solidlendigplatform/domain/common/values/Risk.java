@@ -7,7 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Risk {
+public class
+Risk {
 	int risk;
 
 }

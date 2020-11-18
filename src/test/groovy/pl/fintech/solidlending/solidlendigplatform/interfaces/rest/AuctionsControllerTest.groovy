@@ -3,17 +3,16 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
-import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 

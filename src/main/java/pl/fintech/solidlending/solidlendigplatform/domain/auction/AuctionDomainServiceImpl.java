@@ -14,10 +14,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepo
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
@@ -28,6 +25,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private static final String BORROWER_NOT_ALLOWED = "Borrower with username:%s is not allowed to create new auction.";
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	private static final String LENDER_NOT_FOUND = "Lender with username:%s not found.";
+	private static final String NOT_ALLOWED_OFFER = "Can not add invalid offer to auction. Provided rate: %s, amount: %s";
 	
 	private final AuctionRepository auctionRepository;
 	private final BorrowerRepository borrowerRepository;
@@ -41,8 +39,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 								 Period auctionDuration,
 								 double loanAmount,
 								 Period loanDuration,
-								 double rate,
-								 Instant loanStartDate){
+								 double rate){
 		
 		Borrower borrower = borrowerRepository.findBorrowerByUserName(username)
 				.orElseThrow(() -> new AuctionCreationException(String.format(BORROWER_NOT_FOUND_MSG, username)));
@@ -53,8 +50,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		AuctionLoanParams auctionLoanParams = AuctionLoanParams.builder()
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
-				.loanRate(Rate.fromPercentDouble(rate))
-				.loanStartDate(loanStartDate)
+				.loanRate(Rate.fromPercentValue(rate))
 				.loanRisk(loanRiskService.estimateLoanRisk(borrower, loanValue))
 				.build();
 		
@@ -70,8 +66,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	
 	@Override
 	public boolean allowedToCreateAuction(Borrower auctionOwner){
-		//TODO: implement
-		return true;
+		return auctionOwner.hasBankAccount();
 	}
 	
 	@Override
@@ -87,15 +82,30 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	}
 	
 	@Override
-	public Long addOffer(Offer offer){
-		existsInRepositoryCheck(offer.getLenderName());
-		Long auctionId = offer.getAuctionId();
+	public Long addOffer(Long auctionId,
+						 String lenderName,
+						 double amount,
+						 double rate,
+						 Boolean allowAmountSplit){
+		existsInRepositoryCheck(lenderName);
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
-		auction.addNewOffer(offer);
-		Long offerId = offerRepository.save(offer);
-		offer.setId(offerId);
-		
+		if(amount<0 || rate<0){
+			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, rate, amount));
+		}
+		Offer validOffer = Offer.builder()
+				.auctionId(auctionId)
+				.lenderName(lenderName)
+				.borrowerName(auction.getBorrowerUserName())
+				.amount(new Money(amount))
+				.risk(auction.getAuctionLoanParams().getLoanRisk())
+				.rate(Rate.fromPercentValue(rate))
+				.duration(auction.getAuctionLoanParams().getLoanDuration())
+				.allowAmountSplit(allowAmountSplit == null ? Boolean.FALSE : allowAmountSplit)
+				.build();
+		auction.addNewOffer(validOffer);
+		Long offerId = offerRepository.save(validOffer);
+		validOffer.setId(offerId);
 		auctionRepository.updateAuction(auctionId, auction);
 		return offerId;
 	}

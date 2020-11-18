@@ -17,7 +17,6 @@ public class AuctionLoanParams {
 	private Money loanAmount;
 	private Risk loanRisk;
 	private Period loanDuration;
-	private Instant loanStartDate;
 	private Rate loanRate;
 	
 }

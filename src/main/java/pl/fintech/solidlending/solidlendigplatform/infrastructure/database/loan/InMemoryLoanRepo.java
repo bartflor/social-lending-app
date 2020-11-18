@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryLoanRepo implements LoanRepository {
+	public static final String LOAN_NOT_FOUND = "Loan with id:%s not found in repository";
 	private Map<Long, Loan> repo;
 	private static Long lastId;
 	
@@ -40,9 +41,14 @@ public class InMemoryLoanRepo implements LoanRepository {
 	}
 	
 	@Override
+	public void update(Long loanId, Loan loan) {
+		repo.put(loanId, loan);
+	}
+	
+	@Override
 	public void setActive(Long loanId) {
 		Loan loan = findById(loanId)
-				.orElseThrow(NoSuchElementException::new); //TODO: custom exception?
+				.orElseThrow(() -> new NoSuchElementException(String.format(LOAN_NOT_FOUND, loanId)));
 		loan.setStatus(Loan.LoanStatus.ACTIVE);
 		repo.put(loanId, loan);
 	}

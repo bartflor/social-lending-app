@@ -8,49 +8,65 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.exceptio
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.Month;
 import java.time.Period;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class LoanFactory {
 	private static final String EMPTY_INVESTMENTS_SET_NOT_ALLOWED = "Empty investment set not allowed. Can not calculate average rate from empty investment set.";
 	
-	public Loan createLoan(LoanParams params){
-		Set<Investment> investments = params.getInvestments();
+	/**
+	 * Builds loan using provided parameters. Set of investments, that together create Loan, is build by Factory method.
+	 * Loan RepaymentSchedule combines each Investment RepaymentSchedule.
+	 * @param params parameters of loan to create
+	 * @return new loan with investments set and repayment schedule.
+	 */
+	public Loan createLoan(NewLoanParams params, Set<Investment> investments){
 		Rate avgLoanRate = calculateAvgRate(investments);
 		Money repayment = params.getLoanAmount().calculateValueWithReturnRate(avgLoanRate);
-		RepaymentSchedule schedule = prepareRepaymentSchedule(repayment,
-				params.getLoanStartDate(),
-				params.getLoanDuration());
+		RepaymentSchedule schedule = prepareRepaymentSchedule(investments);
 		return Loan.builder()
 					.borrowerUserName(params.getBorrowerUserName())
 					.amount(params.getLoanAmount())
 					.repayment(repayment)
 					.averageRate(avgLoanRate)
+					.schedule(schedule)
 					.startDate(params.getLoanStartDate())
 					.duration(params.getLoanDuration())
 					.investments(investments)
-					.schedule(schedule)
 					.build();
 	}
 	
-	private RepaymentSchedule prepareRepaymentSchedule(Money repayment, Instant loanStartDate, Period loanDuration) {
-		RepaymentSchedule schedule = new RepaymentSchedule();
-		long repaymentMonths = loanDuration.toTotalMonths() == 0 ? 1 : loanDuration.toTotalMonths();
-		Money singleRepaymentAmount = repayment.divide(repaymentMonths);
-		//Request repayment after 1 month;
-		for(int i=1; i<=repaymentMonths; i++){
-			schedule.addRepayment(loanStartDate.plus(Period.ofDays(i*30)),
-					Repayment.builder().value(singleRepaymentAmount).build());
-		}
-		return schedule;
+	/**
+	 * create RepaymentSchedule combining all investments RepaymentSchedules
+	 * @param investments - set of complete investments with schedules
+	 * @return one schedule for loan
+	 */
+	private static RepaymentSchedule prepareRepaymentSchedule(Set<Investment> investments) {
+		List<RepaymentSchedule> investmentsScheduleList = investments.stream()
+				.map(Investment::getSchedule)
+				.collect(Collectors.toList());
+		RepaymentSchedule loanSchedule = new RepaymentSchedule();
+		Map<Instant, Money> totalLoanRepayToDateMap = investmentsScheduleList.stream()
+				.flatMap(investmentsSchedule -> investmentsSchedule.getSchedule().stream())
+				.collect(Collectors.groupingBy(Repayment::getDate,
+								Collectors.reducing(
+										Money.ZERO,
+										Repayment::getValue,
+										Money::sum)));
+		loanSchedule.setSchedule(totalLoanRepayToDateMap.entrySet().stream().map(entrySet -> Repayment.builder()
+						.date(entrySet.getKey())
+						.value(entrySet.getValue())
+						.build())
+				.collect(Collectors.toList()));
+		loanSchedule.setType(RepaymentSchedule.Type.LOAN);
+		return loanSchedule;
 	}
 	
-	private Rate calculateAvgRate(Set<Investment> investments) {
+	private static Rate calculateAvgRate(Set<Investment> investments) {
 		if(investments.isEmpty()){
 			throw new ValueNotAllowedException(EMPTY_INVESTMENTS_SET_NOT_ALLOWED);
 		}
@@ -60,7 +76,7 @@ public class LoanFactory {
 				.reduce(BigDecimal::add)
 				.orElse(BigDecimal.ZERO);
 		rateValue = rateValue.divide(BigDecimal.valueOf(investments.size()), MathContext.DECIMAL32);
-		return new Rate(rateValue);
+		return Rate.fromPercentValue(rateValue.doubleValue());
 	}
 	
 }

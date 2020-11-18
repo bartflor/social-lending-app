@@ -10,16 +10,15 @@ public interface AuctionApplicationService {
 	
 	List<Offer> getLenderOffers(String lenderName);
 	
-	Long addOffer(Offer domainOffer);
+	Long addOffer(Long auctionId, String lenderName, double amount, double rate, Boolean allowAmountSplit);
 	
 	List<Auction> getPlatformAuctions();
 	
 	List<Auction> getUserAuctions(String borrowerName);
 	
 	Long createNewAuction(String borrower,
-						  Period ofMonths,
+						  Period auctionDuration,
 						  double amount,
-						  Period ofDays,
-						  double rate,
-						  Instant loanStartDate);
+						  Period loanDuration,
+						  double rate);
 }

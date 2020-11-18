@@ -4,21 +4,24 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 @Component
 @AllArgsConstructor
 public class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
-	private static final String LOAN_STATUS_FORBID_ACTIVATION = "Can not activate loan with status: %s";
+	private static final String INVALID_LOAN_STATUS = "Can not activate loan with status: %s";
+	private static final String NO_SCHEDULE_FOR_LOAN_ID = "Repayment schedule for loan with id:%s, not found";
+	private static final String NO_SCHEDULE_FOR_INVESTMENT_ID = "Repayment schedule for loan with id:%s, not found";
 	
-	
-	private LoanRepository loanRepository;
-	private RepaymentScheduleRepository scheduleRepository;
-	private LoanFactory loanFactory;
-	private InvestmentRepository investmentRepository;
+	private final LoanRepository loanRepository;
+	private final RepaymentScheduleRepository scheduleRepository;
+	private final LoanFactory loanFactory;
+	private final InvestmentFactory investmentFactory;
+	private final InvestmentRepository investmentRepository;
 	
 	/**
 	 * Create loan and investments with UNCONFIRMED status
@@ -26,37 +29,52 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	 * @return loan id
 	 */
 	@Override
-	public Long createLoan(LoanParams params){
-		Loan loan = loanFactory.createLoan(params);
+	public Long createLoan(NewLoanParams params){
+		Set<Investment> investments = investmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
+		Loan loan = loanFactory.createLoan(params, investments);
 		Long loanId = loanRepository.save(loan);
-		Set<Investment> investments = loan.getInvestments();
-		investments.forEach(investment -> investment.setLoanId(loanId));
-		investments.forEach(investmentRepository::save);
-		RepaymentSchedule schedule = loan.getSchedule();
-		schedule.setLoanId(loanId);
-		scheduleRepository.save(schedule);
+		for(Investment investment : investments){
+			investment.setLoanId(loanId);
+			Long id = investmentRepository.save(investment);
+			RepaymentSchedule schedule = investment.getSchedule();
+			schedule.setOwnerId(id);
+			scheduleRepository.save(schedule);
+		}
+		loan.getSchedule().setOwnerId(loanId);
+		scheduleRepository.save(loan.getSchedule());
 		return loan.getId();
 	}
 	
 	/**
 	 * update loan and investment status
-	 * and make money transfer
 	 */
 	@Override
 	public Long activateLoan(Long loanId){
 		Loan loan = loanRepository.findById(loanId)
 				.orElseThrow(() -> new LoanNotFoundException(String.format(LOAN_WITH_ID_NOT_FOUND, loanId)));
 		if(!loan.getStatus().equals(Loan.LoanStatus.UNCONFIRMED))
-			throw new LoanCreationException(String.format(LOAN_STATUS_FORBID_ACTIVATION, loan.getStatus()));
+			throw new LoanCreationException(String.format(INVALID_LOAN_STATUS, loan.getStatus()));
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
-
 		return loanId;
 	}
 	
 	@Override
-	public void repay(Long loanId){
-		//TODO: transfer, update schedule
+	public void reportRepayment(Long loanId) {
+		Loan loan = findLoanById(loanId);
+		RepaymentSchedule loanRepaymentSchedule = findLoanRepaymentSchedule(loanId);
+		loanRepaymentSchedule.reportRepayment();
+		scheduleRepository.update(loanRepaymentSchedule.getId(), loanRepaymentSchedule);
+		loan.getInvestments().stream()
+				.map(Investment::getSchedule)
+				.forEach(schedule ->{schedule.reportRepayment();
+											scheduleRepository.update(schedule.getId(), schedule);});
+	}
+	
+	@Override
+	public Optional<Repayment> findNextRepayment(Long loanId){
+		RepaymentSchedule schedule = findLoanRepaymentSchedule(loanId);
+		return schedule.findNextRepayment();
 	}
 	
 	
@@ -76,6 +94,18 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	public List<Investment> getUserInvestments(String userName) {
 		//TODO:check if usr is lender
 		return investmentRepository.findAllByUsername(userName);
+	}
+	
+	@Override
+	public RepaymentSchedule findLoanRepaymentSchedule(Long loanId) {
+		return scheduleRepository.findRepaymentScheduleByLoanId(loanId)
+				.orElseThrow(() -> new ScheduleNotFoundException(String.format(NO_SCHEDULE_FOR_LOAN_ID, loanId)));
+	}
+	
+	@Override
+	public RepaymentSchedule findInvestmentRepaymentSchedule(Long investmentId) {
+		return scheduleRepository.findRepaymentScheduleByInvestmentId(investmentId)
+				.orElseThrow(() -> new ScheduleNotFoundException(String.format(NO_SCHEDULE_FOR_INVESTMENT_ID, investmentId)));
 	}
 	
 }

@@ -12,8 +12,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
 
@@ -29,7 +27,7 @@ public class InitDataLoader implements CommandLineRunner {
   public void run(String... args) throws Exception {
     log.info("load init data.");
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("Bilbo_Baggins", "Bilbo Baggins", "borrower@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("Bilbo_Baggins", "Bilbo Baggins", "borrower@mail", "d474cb1d-35b6-4d32-b290-0ab36317cdfc"))
 			  .rating(new Rating(3))
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
@@ -39,58 +37,36 @@ public class InitDataLoader implements CommandLineRunner {
 			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
 	  lenderRepository.save(Lender.builder()
-			  .userDetails(new UserDetails("Samwise_Gamgee", "Samwise Gamgee", "lender@mail", UUID.randomUUID().toString()))
+			  .userDetails(new UserDetails("Samwise_Gamgee", "Samwise Gamgee", "lender@mail", "e0c30b15-02e1-423f-9fa3-2a9cf411980d"))
 			  .balance(new Money(BigDecimal.TEN))
 			  .build());
-    
+
     long auction1Id = auctionDomainServiceImpl.createNewAuction(
         "Bilbo_Baggins",
         Period.ofDays(7),
         20,
         Period.of(1, 0, 0),
-        10,
-        Instant.now().plus(Period.ofDays(7)));
+        10);
 	  long auction2Id =auctionDomainServiceImpl.createNewAuction(
         "Frodo_Baggins",
         Period.ofDays(7),
         50,
         Period.of(2, 0, 0),
-        15,
-			  Instant.now().plus(Period.ofDays(30)));
+        15);
 	  long auction3Id =auctionDomainServiceImpl.createNewAuction(
 			  "Bilbo_Baggins",
 			  Period.ofDays(7),
 			  120,
 			  Period.of(3, 0, 0),
-			  22,
-			  Instant.now().plus(Period.ofDays(15)));
+			  22);
 	  long auction4Id =auctionDomainServiceImpl.createNewAuction(
 			  "Frodo_Baggins",
 			  Period.ofDays(7),
 			  2000,
 			  Period.of(2, 0, 0),
-			  7,
-			  Instant.now().plus(Period.ofDays(10)));
-	  Offer offer = Offer.builder()
-			  .auctionId(auction1Id)
-			  .lenderName("Samwise_Gamgee")
-			  .amount(new Money(20))
-			  .rate(Rate.fromPercentDouble(5.))
-			  .build();
-	  auctionDomainServiceImpl.addOffer(offer);
-	  offer = Offer.builder()
-			  .auctionId(auction1Id)
-			  .lenderName("Samwise_Gamgee")
-			  .amount(new Money(20))
-			  .rate(Rate.fromPercentDouble(12.))
-			  .build();
-	  auctionDomainServiceImpl.addOffer(offer);
-	  offer = Offer.builder()
-			  .auctionId(auction2Id)
-			  .rate(Rate.fromPercentDouble(7.))
-			  .lenderName("Samwise_Gamgee")
-			  .amount(new Money(50))
-			  .build();
-	  auctionDomainServiceImpl.addOffer(offer);
+			  7);
+	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,18,false);
+	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,12,true);
+	  auctionDomainServiceImpl.addOffer(auction2Id, "Samwise_Gamgee", 50,7,false);
   }
 }

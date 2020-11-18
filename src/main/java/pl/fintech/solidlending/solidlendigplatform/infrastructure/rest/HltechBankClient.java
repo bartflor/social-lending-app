@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.rest;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.BankClient;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
+@Log
 @Component
 @AllArgsConstructor
 public class HltechBankClient implements BankClient {
@@ -24,11 +25,13 @@ public class HltechBankClient implements BankClient {
 	
 	@Override
 	public String transfer(String sourceAccountNumber, String targetAccountNumber, Double amount) {
-		ResponseEntity<String> response = apiFeignClient.transfer(TransactionRequest.builder()
-												.amount(amount)
-												.sourceAccountNumber(sourceAccountNumber)
-												.targetAccountNumber(targetAccountNumber)
-												.build());
+		TransactionRequest transactionRequest = TransactionRequest.builder()
+				.amount(amount)
+				.sourceAccountNumber(sourceAccountNumber)
+				.targetAccountNumber(targetAccountNumber)
+				.build();
+		log.info("Transaction request: "+ transactionRequest.toString());
+		ResponseEntity<String> response = apiFeignClient.transfer(transactionRequest);
 		Optional<String> transactionResponse = Optional.ofNullable(response.getHeaders()
 				.getFirst("Location"));
 		return transactionResponse.map(r -> r.substring(r.lastIndexOf("/")+1))

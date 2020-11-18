@@ -5,7 +5,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
 import java.time.Period;
@@ -37,13 +36,12 @@ public class AuctionsController {
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping()
-	public Long addNewAuction(@RequestBody AuctionDto auctionDto){
+	public Long addNewAuction(@RequestBody NewAuctionDto auctionDto){
 		return auctionApplicationService.createNewAuction(auctionDto.getBorrower(), //TODO: from auth
-				Period.ofMonths(auctionDto.getAuctionDuration()),
-				auctionDto.getAmount(),
 				Period.ofDays(auctionDto.getAuctionDuration()),
-				auctionDto.getRate(),
-				auctionDto.getLoanStartDate());
+				auctionDto.getAmount(),
+				Period.ofMonths(auctionDto.getLoanDuration()),
+				auctionDto.getRate());
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
