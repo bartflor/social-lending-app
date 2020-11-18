@@ -14,7 +14,6 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-import java.time.LocalDate
 import java.time.Period
 
 class AuctionDomainServiceImplUnitTest extends Specification {
@@ -85,7 +84,11 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 			def auctionId = auctionRepo.save(auction)
 			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId(lenderName, auctionId)
 		when:
-			auctionService.addOffer(offer)
+			auctionService.addOffer(auctionId,
+					offer.getLenderName(),
+					offer.getAmount().getValue().doubleValue(),
+					offer.getRate().getPercentValue(),
+					offer.getAllowAmountSplit())
 		then:
 			auction.getOffers().size() == 1
 			def addedOffer = auction.getOffers().find()
@@ -103,7 +106,11 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 			def auctionId = auctionRepo.save(auction)
 			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId("non_existing_lender_name", auctionId)
 		when:
-			auctionService.addOffer(offer)
+			auctionService.addOffer(auctionId,
+					offer.getLenderName(),
+					offer.getAmount().getValue().doubleValue(),
+					offer.getRate().getPercentValue(),
+					offer.getAllowAmountSplit())
 		then:
 			thrown(UserNotFoundException)
 	}

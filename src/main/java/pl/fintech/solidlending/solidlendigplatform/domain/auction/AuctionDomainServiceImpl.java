@@ -25,7 +25,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private static final String BORROWER_NOT_ALLOWED = "Borrower with username:%s is not allowed to create new auction.";
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	private static final String LENDER_NOT_FOUND = "Lender with username:%s not found.";
-	private static final String NOT_ALLOWED_OFFER = "Can not add invalid offer to auction. Provided offer: %s";
+	private static final String NOT_ALLOWED_OFFER = "Can not add invalid offer to auction. Provided rate: %s, amount: %s";
 	
 	private final AuctionRepository auctionRepository;
 	private final BorrowerRepository borrowerRepository;
@@ -82,26 +82,26 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	}
 	
 	@Override
-	public Long addOffer(Offer offer){
-		if(offer == null){
-			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, "null"));
-		}
-		existsInRepositoryCheck(offer.getLenderName());
-		Long auctionId = offer.getAuctionId();
+	public Long addOffer(Long auctionId,
+						 String lenderName,
+						 double amount,
+						 double rate,
+						 Boolean allowAmountSplit){
+		existsInRepositoryCheck(lenderName);
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
-		if(offer.getAmount() == null|| offer.getRate() == null || !offer.getAmount().isMoreThan(Money.ZERO)){
-			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, offer));
+		if(amount<0 || rate<0){
+			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, rate, amount));
 		}
 		Offer validOffer = Offer.builder()
 				.auctionId(auctionId)
-				.lenderName(offer.getLenderName())
+				.lenderName(lenderName)
 				.borrowerName(auction.getBorrowerUserName())
-				.amount(offer.getAmount())
+				.amount(new Money(amount))
 				.risk(auction.getAuctionLoanParams().getLoanRisk())
-				.rate(offer.getRate())
+				.rate(Rate.fromPercentValue(rate))
 				.duration(auction.getAuctionLoanParams().getLoanDuration())
-				.allowAmountSplit(offer.getAllowAmountSplit() == null ? Boolean.FALSE : offer.getAllowAmountSplit())
+				.allowAmountSplit(allowAmountSplit == null ? Boolean.FALSE : allowAmountSplit)
 				.build();
 		auction.addNewOffer(validOffer);
 		Long offerId = offerRepository.save(validOffer);

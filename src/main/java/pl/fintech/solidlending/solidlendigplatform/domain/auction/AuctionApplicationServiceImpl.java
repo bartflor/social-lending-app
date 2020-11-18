@@ -3,10 +3,10 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 @Service
@@ -27,9 +27,9 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 	}
 	
 	@Override
-	public Long addOffer(Offer domainOffer) {
+	public Long addOffer(Long auctionId, String lenderName, double amount, double rate, Boolean allowAmountSplit) {
 		//TODO:check if lender has enough money
-		return domainService.addOffer(domainOffer);
+		return domainService.addOffer(auctionId,lenderName,  amount, rate, allowAmountSplit);
 	}
 	
 	@Override

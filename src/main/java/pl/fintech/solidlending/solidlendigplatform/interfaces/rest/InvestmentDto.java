@@ -20,7 +20,7 @@ public class InvestmentDto {
 	int risk;
 	double amount;
 	double rate;
-	int duration;
+	long duration;
 	String status;
 	List<RepaymentDto> schedule;
 	
@@ -32,7 +32,7 @@ public class InvestmentDto {
         .lenderName(investment.getLenderName())
         .amount(investment.getValue().getValue().doubleValue())
         .rate(investment.getRate().getPercentValue().doubleValue())
-        .duration(investment.getDuration().getMonths())
+        .duration(investment.getDuration().toTotalMonths())
         .status(investment.getStatus().toString())
         .borrowerName(investment.getBorrowerName())
         .risk(investment.getRisk().getRisk())
@@ -50,6 +50,7 @@ public class InvestmentDto {
 				.lenderName(investment.getLenderName())
 				.amount(investment.getValue().getValue().doubleValue())
 				.rate(investment.getRate().getPercentValue().doubleValue())
+				.duration(investment.getDuration().toTotalMonths())
 				.status(investment.getStatus().toString())
 				.build();
 	}
