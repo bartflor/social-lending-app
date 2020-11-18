@@ -1,11 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment
 
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import spock.genesis.Gen
@@ -16,24 +14,26 @@ class TransferServiceTest extends Specification {
 	def bankClientMock = Mock(BankClient)
 	def lenderRepoMock = Mock(LenderRepository)
 	def borrowerRepoMock = Mock(BorrowerRepository)
+	def userSvc = new UserServiceImpl(lenderRepoMock, borrowerRepoMock)
 
 
 	@Subject
-	def transferService = new TransferServiceImpl(bankClientMock, lenderRepoMock, borrowerRepoMock)
+	def transferService = new PaymentServiceImpl(bankClientMock, userSvc)
 
 	def "execute() should find users and return BankClient transfer reference id, given users name"() {
 		given:
-			def sourceUserAccount = UUID.randomUUID().toString()
-			def targetUserAccount = UUID.randomUUID().toString()
+			def sourceUserAccount = UUID.randomUUID()
+			def targetUserAccount = UUID.randomUUID()
 			def refId = UUID.randomUUID().toString()
 			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
 			def sourceUser = PaymentDomainFactory.createLender(sourceUserAccount, sourceUserName)
 			def targetUser = PaymentDomainFactory.createBorrower(targetUserAccount, targetUserName)
+			def event = PaymentDomainFactory
+					.createTransferOrderEvent(sourceUserName, targetUserName, amount)
 		when:
-			def result = transferService.execute(PaymentDomainFactory
-					.createTransferOrderEvent(sourceUserName, targetUserName, amount))
+			def result = transferService.execute(event)
 		then:
 			1 * bankClientMock.transfer(sourceUserAccount, targetUserAccount, amount.getValue().doubleValue()) >> refId
 			1 * borrowerRepoMock.findBorrowerByUserName(targetUserName) >> Optional.of(targetUser)
@@ -47,7 +47,7 @@ class TransferServiceTest extends Specification {
 
 	def "execute() should throw exception, when targetUser not found with given users name"() {
 		given:
-			def targetUserAccount = UUID.randomUUID().toString()
+			def targetUserAccount = UUID.randomUUID()
 			def refId = UUID.randomUUID().toString()
 			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
@@ -84,6 +84,10 @@ class TransferServiceTest extends Specification {
 		and:
 			def exception = thrown(UserNotFoundException)
 			exception.getMessage() == "User with username:"+sourceUserName+" not found."
+	}
+	
+	def "payment, withdrawal test"(){
+		false
 	}
 
 

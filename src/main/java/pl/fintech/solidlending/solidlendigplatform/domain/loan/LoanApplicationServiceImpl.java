@@ -7,7 +7,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,7 +20,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
 	private static final String LOAN_NOT_ACTIVE = "Can not repay not ACTIVE loan with id: %s";
 	private LoanDomainService domainService;
-	private TransferService transferService;
+	private PaymentService paymentService;
 	private TimeService timeService;
 	
 	/**
@@ -70,7 +70,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 						.amount(investment.getLoanAmount())
 						.build())
 				.collect(Collectors.toList());
-		transferService.execute(transferOrderEventsList);
+		paymentService.execute(transferOrderEventsList);
 		return domainService.activateLoan(loanId);
 	}
 	@Override
@@ -101,7 +101,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 					.sourceUserName(loan.getBorrowerUserName())
 					.amount(repayment.getValue())
 					.build();
-			transferService.execute(transferOrder);
+			paymentService.execute(transferOrder);
 		}
 		//TODO:confirm repayment
 		domainService.reportRepayment(loanId);

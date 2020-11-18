@@ -38,18 +38,18 @@ class RestInfrastructureFactory {
 						"\"accountBalance\": "+balance+"}")
 	}
 
-	static String transactionRequestBody(String source, String target, double amount){
+	static String transactionRequestBody(UUID source, UUID target, double amount){
 		"{\n" +
 				"  \"sourceAccountNumber\": \""+source+"\",\n" +
 				"  \"targetAccountNumber\": \""+target+"\",\n" +
 				"  \"amount\": "+amount+"\n" +
 				"}"
 	}
-	static TransactionRequest createTransactionsDto(String source, String target, double amount) {
+	static TransactionRequest createTransactionsDto(UUID source, UUID target, double amount) {
 		new TransactionRequest(source, target, amount)
 	}
 
-	static String paymentRequestJson(String number, double amount) {
+	static String paymentRequestJson(UUID number, double amount) {
 		"{\n" +
 		"\"accountNumber\": \""+number+"\",\n" +
 		"\"amount\": "+amount+
@@ -91,7 +91,7 @@ class RestInfrastructureFactory {
 				.build()
 	}
 
-	static PaymentRequest createPaymentRequest(String accountNumber, double amount) {
+	static PaymentRequest createPaymentRequest(UUID accountNumber, double amount) {
 		new PaymentRequest(accountNumber, amount)
 	}
 }

@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class PaymentRequest {
-	String accountNumber;
+	UUID accountNumber;
 	double amount;
 }

@@ -66,7 +66,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	
 	@Override
 	public boolean allowedToCreateAuction(Borrower auctionOwner){
-		return auctionOwner.hasBankAccount();
+		return auctionOwner.hasLinkedBankAccount();
 	}
 	
 	@Override

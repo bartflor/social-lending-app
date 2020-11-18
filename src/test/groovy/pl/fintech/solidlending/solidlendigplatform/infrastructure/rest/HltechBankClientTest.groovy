@@ -16,8 +16,8 @@ class HltechBankClientTest extends Specification {
 
 	def "Transfer should return transaction number when money transfer success"() {
 		given:
-			def sourceAccount = UUID.randomUUID().toString()
-			def targetAccount = UUID.randomUUID().toString()
+			def sourceAccount = UUID.randomUUID()
+			def targetAccount = UUID.randomUUID()
 			def transactionNumber = UUID.randomUUID().toString()
 			def amount = Gen.double.first()
 			def transactionRequest = TransactionRequest.builder()
@@ -88,7 +88,7 @@ class HltechBankClientTest extends Specification {
 
 	def "Payment should throw exception getting response with error status code"(){
 		given:
-			def accountNumber = UUID.randomUUID().toString()
+			def accountNumber = UUID.randomUUID()
 			def amount = BigDecimal.valueOf(Gen.double.first())
 			def response = ResponseEntity.badRequest().build()
 			def paymentRequest = RestInfrastructureFactory.createPaymentRequest(accountNumber, amount)

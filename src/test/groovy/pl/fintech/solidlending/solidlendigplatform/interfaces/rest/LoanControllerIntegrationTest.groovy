@@ -10,17 +10,14 @@ import org.springframework.context.annotation.Import
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Repayment
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockTransferService
 import spock.genesis.Gen
-import spock.lang.Ignore
 import spock.lang.Specification
 
 @Import([AddStubRepositoriesToContext, MockTransferService])
@@ -30,7 +27,7 @@ class LoanControllerIntegrationTest extends Specification{
 	@LocalServerPort
 	int randomPort
 	@Autowired
-	TransferService transferSvcMock
+	PaymentService transferSvcMock
 	@Autowired
 	LoanRepository loanRepository
 	@Autowired

@@ -17,10 +17,10 @@ class PaymentDomainFactory {
 			.build()
 	}
 
-	static Borrower createBorrower(String targetUserAccount, String targetUserName) {
+	static Borrower createBorrower(UUID targetUserAccount, String targetUserName) {
 		Borrower.builder()
 				.userDetails(UserDetails.builder()
-						.accountNumber(targetUserAccount)
+						.platformAccountNumber(targetUserAccount)
 						.name(Gen.string(20).first())
 						.email(Gen.string(20).first())
 						.userName(targetUserName)
@@ -28,10 +28,10 @@ class PaymentDomainFactory {
 				.build()
 	}
 
-	static Lender createLender(String sourceUserAccount, String sourceUserName) {
+	static Lender createLender(UUID sourceUserAccount, String sourceUserName) {
 		Lender.builder()
 				.userDetails(UserDetails.builder()
-						.accountNumber(sourceUserAccount)
+						.platformAccountNumber(sourceUserAccount)
 						.name(Gen.string(20).first())
 						.email(Gen.string(20).first())
 						.userName(sourceUserName)

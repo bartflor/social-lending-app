@@ -11,15 +11,19 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.math.BigDecimal;
+import java.util.UUID;
+
 @Builder
 @AllArgsConstructor
 @ToString
 public class UserEntity {
 	private String userName;
-	private String email;
 	private String name;
-	private String accountNumber;
-	private BigDecimal balanceValue;
+	private String surname;
+	private String email;
+	private String phoneNumber;
+	private UUID platformAccountNumber;
+	private UUID privateAccountNumber;
 	private Role role;
 	private int ratingValue;
 	
@@ -27,11 +31,17 @@ public class UserEntity {
 		LENDER, BORROWER
 	}
 	public User createDomainUser(){
-		UserDetails details = new UserDetails(userName, name,email, accountNumber);
-		Money balance = new Money(balanceValue);
+		UserDetails details = UserDetails.builder()
+				.userName(userName)
+				.name(name)
+				.surname(surname)
+				.email(email)
+				.phoneNumber(phoneNumber)
+				.privateAccountNumber(privateAccountNumber)
+				.platformAccountNumber(platformAccountNumber)
+				.build();
 		if(role == Role.LENDER){
 			return Lender.builder()
-					.balance(balance)
 					.userDetails(details)
 					.build();
 		}
@@ -39,7 +49,6 @@ public class UserEntity {
 			Rating rating = new Rating(ratingValue);
 			return Borrower.builder()
 					.userDetails(details)
-					.balance(balance)
 					.rating(rating)
 					.build();
 					
@@ -49,11 +58,11 @@ public class UserEntity {
 		UserDetails details = user.getUserDetails();
 		String userName = details.getUserName();
 		return UserEntity.builder()
-				.accountNumber(details.getAccountNumber())
+				.privateAccountNumber(details.getPrivateAccountNumber())
+				.platformAccountNumber(details.getPlatformAccountNumber())
 				.email(details.getEmail())
 				.role(user instanceof Borrower? Role.BORROWER : Role.LENDER)
 				.ratingValue(user instanceof Borrower? ((Borrower) user).getRating().getRating() : 0)
-				.balanceValue(user.getBalance().getValue())
 				.userName(userName)
 				.build();
 	}

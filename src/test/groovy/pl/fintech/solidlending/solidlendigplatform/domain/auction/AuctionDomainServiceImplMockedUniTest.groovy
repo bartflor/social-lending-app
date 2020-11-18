@@ -11,7 +11,6 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-import java.time.LocalDate
 import java.time.Period
 
 class AuctionDomainServiceImplMockedUniTest extends Specification {
@@ -53,7 +52,7 @@ class AuctionDomainServiceImplMockedUniTest extends Specification {
 			timeService.now() >> now
 			Borrower borrower = Mock()
 			borrower.getRating() >> new Rating(rating)
-			borrower.hasBankAccount() >> true
+			borrower.hasLinkedBankAccount() >> true
 			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.of(borrower)
 			def auction = AuctionDomainFactory.createAuction(borrowerName,
 															auctionDuration,

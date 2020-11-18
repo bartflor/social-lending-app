@@ -5,7 +5,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransferService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -15,7 +15,7 @@ import java.time.Instant
 class LoanApplicationServiceImplTest extends Specification {
 
 	def loanDomainSvcMock = Mock(LoanDomainService)
-	def transferSvcMock = Mock(TransferService)
+	def transferSvcMock = Mock(PaymentService)
 	def timeSvcMock = Mock(TimeService)
 	@Subject
 	def loanAppSvc = new LoanApplicationServiceImpl(loanDomainSvcMock, transferSvcMock, timeSvcMock)
