@@ -19,9 +19,12 @@ public class OffersController {
 				.collect(Collectors.toList());
 	}
 	@PostMapping()
-	public Long addNewOffer(@RequestBody OfferDto offerDto){
-		//TODO: add lender from auth
-		return auctionApplicationService.addOffer(offerDto.createDomainOffer());
-	
+	public Long addNewOffer(@RequestBody NewOfferDto offerDto){
+    // TODO: add lender from auth
+    return auctionApplicationService.addOffer(offerDto.getAuctionId(),
+			offerDto.lenderUserName,
+			offerDto.getAmount(),
+			offerDto.getRate(),
+			offerDto.isAllowAmountSplit());
 	}
 }

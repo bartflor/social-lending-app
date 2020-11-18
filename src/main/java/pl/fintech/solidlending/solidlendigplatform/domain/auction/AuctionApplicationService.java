@@ -10,7 +10,7 @@ public interface AuctionApplicationService {
 	
 	List<Offer> getLenderOffers(String lenderName);
 	
-	Long addOffer(Offer domainOffer);
+	Long addOffer(Long auctionId, String lenderName, double amount, double rate, Boolean allowAmountSplit);
 	
 	List<Auction> getPlatformAuctions();
 	
