@@ -23,7 +23,7 @@ public class LoanDto {
 	double rate;
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Warsaw")
 	Instant startDate;
-	int duration;
+	long duration;
 	Set<InvestmentDto> investments;
 	List<RepaymentDto> schedule;
 	String status;
@@ -36,7 +36,7 @@ public class LoanDto {
 			.repayment(loan.getRepayment().getValue().doubleValue())
 			.rate(loan.getAverageRate().getPercentValue().doubleValue())
 			.startDate(loan.getStartDate())
-			.duration(loan.getDuration().getMonths())
+			.duration(loan.getDuration().toTotalMonths())
 			.investments(loan.getInvestments().stream()
 					.map(InvestmentDto::shortFrom)
 					.collect(Collectors.toSet()))
