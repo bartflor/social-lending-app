@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
 public class InMemoryOfferRepo implements OfferRepository {
 	private Map<Long, Offer> repository;
 	private static Long lastId;

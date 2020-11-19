@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Repository
 public class InMemoryAuctionRepo implements AuctionRepository {
 	private Map<Long, Auction> repo;
 	private static Long lastId;
