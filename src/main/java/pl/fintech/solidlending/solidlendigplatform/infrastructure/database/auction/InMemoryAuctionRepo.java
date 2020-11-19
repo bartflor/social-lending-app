@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction.AuctionStatus.ARCHIVED;
-
 @Repository
 public class InMemoryAuctionRepo implements AuctionRepository {
 	private Map<Long, Auction> repo;

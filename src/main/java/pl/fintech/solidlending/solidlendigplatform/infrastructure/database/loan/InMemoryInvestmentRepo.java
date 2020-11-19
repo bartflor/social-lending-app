@@ -3,9 +3,10 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 @Repository
 public class InMemoryInvestmentRepo implements InvestmentRepository {

@@ -1,7 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan;
 
 import org.springframework.stereotype.Repository;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository;
 

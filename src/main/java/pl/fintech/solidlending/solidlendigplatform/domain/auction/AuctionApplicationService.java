@@ -1,7 +1,5 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 

@@ -2,7 +2,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.common.user;
 
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
 import java.util.UUID;
 

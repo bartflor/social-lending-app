@@ -1,6 +1,5 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;

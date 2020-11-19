@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException;
 

@@ -5,7 +5,6 @@ import feign.codec.ErrorDecoder;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.json.JSONObject;
-import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.AccountNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.UnprocessableRequestException;
 @Log

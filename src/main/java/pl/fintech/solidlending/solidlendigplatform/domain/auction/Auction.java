@@ -7,7 +7,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashSet;
 import java.util.Set;

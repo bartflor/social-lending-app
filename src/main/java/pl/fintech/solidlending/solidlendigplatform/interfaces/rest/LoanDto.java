@@ -1,11 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
-
 
 import java.time.Instant;
 import java.util.Comparator;

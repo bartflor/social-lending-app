@@ -5,13 +5,9 @@ import lombok.extern.java.Log;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainService;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
-import java.math.BigDecimal;
 import java.time.Period;
 import java.util.UUID;
 

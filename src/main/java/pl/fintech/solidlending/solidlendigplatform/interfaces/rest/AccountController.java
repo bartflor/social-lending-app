@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
-import static pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent.*;
+import static pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent.TransferType;
 
 @RequestMapping("api/accounts")
 @RestController

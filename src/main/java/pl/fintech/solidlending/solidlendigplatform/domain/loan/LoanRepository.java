@@ -1,7 +1,5 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
-
 import java.util.List;
 import java.util.Optional;
 
