@@ -72,7 +72,7 @@ public class InitDataLoader implements CommandLineRunner {
 			  Period.ofDays(7),
 			  120,
 			  Period.of(3, 0, 0),
-			  22);
+			  13);
 	  long auction4Id =auctionDomainServiceImpl.createNewAuction(
 			  "Frodo_Baggins",
 			  Period.ofDays(7),
