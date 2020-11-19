@@ -16,7 +16,7 @@ import spock.lang.Subject
 
 import java.time.Period
 
-class AuctionDomainServiceImplUnitTest extends Specification {
+class AuctionDomainServiceIntegrationTest extends Specification {
 
 	@Subject
 	AuctionDomainServiceImpl auctionService

@@ -57,13 +57,16 @@ public class UserEntity {
 	public static UserEntity createEntityFrom(User user){
 		UserDetails details = user.getUserDetails();
 		String userName = details.getUserName();
-		return UserEntity.builder()
-				.privateAccountNumber(details.getPrivateAccountNumber())
-				.platformAccountNumber(details.getPlatformAccountNumber())
-				.email(details.getEmail())
-				.role(user instanceof Borrower? Role.BORROWER : Role.LENDER)
-				.ratingValue(user instanceof Borrower? ((Borrower) user).getRating().getRating() : 0)
-				.userName(userName)
-				.build();
+    return UserEntity.builder()
+        .privateAccountNumber(details.getPrivateAccountNumber())
+        .platformAccountNumber(details.getPlatformAccountNumber())
+        .email(details.getEmail())
+        .role(user instanceof Borrower ? Role.BORROWER : Role.LENDER)
+        .ratingValue(user instanceof Borrower ? ((Borrower) user).getRating().getRating() : 0)
+        .userName(userName)
+        .name(details.getName())
+        .surname(details.getSurname())
+        .phoneNumber(details.getPhoneNumber())
+        .build();
 	}
 }

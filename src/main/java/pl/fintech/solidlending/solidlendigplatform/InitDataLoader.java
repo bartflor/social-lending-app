@@ -27,18 +27,36 @@ public class InitDataLoader implements CommandLineRunner {
   public void run(String... args) throws Exception {
     log.info("load init data.");
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("Bilbo_Baggins", "Bilbo Baggins", "borrower@mail", "d474cb1d-35b6-4d32-b290-0ab36317cdfc"))
+			  .userDetails(UserDetails.builder()
+					  .userName("Bilbo_Baggins")
+					  .name("Bilbo")
+					  .surname( "Baggins")
+					  .email("borrower@mail")
+					  .privateAccountNumber(UUID.randomUUID())
+					  .platformAccountNumber(UUID.fromString("d474cb1d-35b6-4d32-b290-0ab36317cdfc"))
+					  .build())
 			  .rating(new Rating(3))
-			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
 	  borrowerRepository.save(Borrower.builder()
-			  .userDetails(new UserDetails("Frodo_Baggins", "Frodo Baggins", "borrower@mail", UUID.randomUUID().toString()))
+			  .userDetails(UserDetails.builder()
+					  .userName("Frodo_Baggins")
+					  .name("Frodo")
+					  .surname( "Baggins")
+					  .email("Frodo@mail")
+					  .privateAccountNumber(UUID.randomUUID())
+					  .platformAccountNumber(UUID.randomUUID())
+					  .build())
 			  .rating(new Rating(3))
-			  .balance(new Money(BigDecimal.ZERO))
 			  .build());
 	  lenderRepository.save(Lender.builder()
-			  .userDetails(new UserDetails("Samwise_Gamgee", "Samwise Gamgee", "lender@mail", "e0c30b15-02e1-423f-9fa3-2a9cf411980d"))
-			  .balance(new Money(BigDecimal.TEN))
+			  .userDetails(UserDetails.builder()
+					  .userName("Samwise_Gamgee")
+					  .name("Samwise")
+					  .surname( "Gamgee")
+					  .email("Gamgee@mail")
+					  .platformAccountNumber(UUID.fromString("e0c30b15-02e1-423f-9fa3-2a9cf411980d"))
+					  .privateAccountNumber(UUID.fromString("6b659158-0e46-460b-b418-13bda2920361"))
+					  .build())
 			  .build());
 
     long auction1Id = auctionDomainServiceImpl.createNewAuction(

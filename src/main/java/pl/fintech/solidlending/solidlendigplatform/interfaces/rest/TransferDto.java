@@ -1,13 +1,21 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.DepositOrderEvent;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
+@Data
 public class TransferDto {
-	public static DepositOrderEvent depositOrder(TransferDto depositTransfer) {
-		return null;
-	}
+	Double amount;
+	String userName;
 	
-	public static DepositOrderEvent widthdrawalOrder(TransferDto withdrawalTransfer) {
-		return null;
+	public ExternalTransferOrderEvent createTransferOrderEvent(ExternalTransferOrderEvent.TransferType transferType) {
+		return ExternalTransferOrderEvent.builder()
+				.amount(new Money(amount))
+				.userName(userName)
+				.transferType(transferType)
+				.build();
 	}
+
 }

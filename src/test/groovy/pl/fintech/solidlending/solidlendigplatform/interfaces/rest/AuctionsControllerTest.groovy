@@ -16,6 +16,7 @@ import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMoc
 import spock.genesis.Gen
 import spock.lang.Specification
 
+import java.time.Period
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
@@ -46,18 +47,16 @@ class AuctionsControllerTest extends Specification {
 		given:
 			def randID = Gen.integer.first()
 			def loan = LoanDomainFactory.crateLoan(randID)
-
-			auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
-			loanServiceMock.findLoanById(randID) >> loan
 			def dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 					.withZone(ZoneId.systemDefault())
 
 		when:
 			def response = restClient.when().get("/api/auctions/"+randID+"/create-loan")
 		then:
-			response.statusCode() == 201
-		response.toString()
+			1*auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
+			1*loanServiceMock.findLoanById(randID) >> loan
 		and:
+			response.statusCode() == 201
 			response.then()
 					.assertThat()
 					.body("borrowerUserName", equalTo(loan.getBorrowerUserName()))
@@ -66,24 +65,27 @@ class AuctionsControllerTest extends Specification {
 					.body("startDate", equalTo(dateFormatter.format(loan.getStartDate())))
 	}
 
-	def "POST /api/auctions should return 201 status, create new auction and call repository save given proper request"(){
+	def "POST /api/auctions call should call auctionApplicationService with proper parameters and \
+		 return 201 status given proper request"(){
 		given:
 			def randID = Gen.integer.first()
-			def loan = LoanDomainFactory.crateLoan(randID)
-
-			auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
-			loanServiceMock.findLoanById(randID) >> loan
+			def borrowerName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def auctionDuration = Gen.integer.first()
+			def amount = Gen.integer.first()
+			def rate = Gen.integer.first()
+			def loanDuration = Gen.integer.first()
 
 		when:
 			def response = restClient.given()
 					.contentType(ContentType.JSON)
-					.body(CommunicationDataFactory.createAuctionRequestBody().toString())
+					.body(CommunicationDataFactory.createAuctionRequestBody(borrowerName, auctionDuration,
+							amount, rate, loanDuration))
 					.post("/api/auctions")
 		then:
-			response.statusCode() == 201
-			response.toString()
+			1*auctionServiceMock.createNewAuction(borrowerName, Period.ofDays(auctionDuration),
+					amount, Period.ofMonths(loanDuration), rate) >> randID
 		and:
-			response
+			response.statusCode() == 201
 	}
 
 

@@ -1,8 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.DepositOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.WithdrawalOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
 import java.util.List;
@@ -14,7 +13,7 @@ public interface PaymentService {
 	
 	Money checkUserBalance(String userName);
 	
-	void depositMoneyIntoPlatform(DepositOrderEvent event);
+	void executeExternal(ExternalTransferOrderEvent event);
 	
-	void withdrawMoneyFromPlatform(WithdrawalOrderEvent event);
+	boolean hasEnoughFundsToPay(String userName, Money amount);
 }

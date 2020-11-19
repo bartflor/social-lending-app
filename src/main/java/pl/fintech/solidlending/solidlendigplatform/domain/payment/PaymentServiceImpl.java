@@ -2,10 +2,9 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.DepositOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.WithdrawalOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException;
@@ -28,13 +27,13 @@ public class PaymentServiceImpl implements PaymentService {
 		User sourceUser = userService.findUser(transferOrderEvent.getSourceUserName());
 		User targetUser = userService.findUser(transferOrderEvent.getTargetUserName());
 		BigDecimal amount = transferOrderEvent.getAmount().getValue();
-		if(sourceUser.getPlatformBankAccount() != null && targetUser.getPlatformBankAccount() != null){
-			return bankClient.transfer(sourceUser.getPlatformBankAccount(),
-					targetUser.getPlatformBankAccount(),
-					amount.doubleValue());
-		} else {
-			throw new TransferFailException(String.format(USERS_HAVE_NO_ACCOUNT, sourceUser, targetUser));
+		if(sourceUser.getPlatformBankAccount() == null || targetUser.getPlatformBankAccount() == null){
+			throw new TransferFailException(String.format(USERS_HAVE_NO_ACCOUNT,
+					transferOrderEvent.getSourceUserName(), transferOrderEvent.getTargetUserName()));
 		}
+		return bankClient.transfer(sourceUser.getPlatformBankAccount(),
+				targetUser.getPlatformBankAccount(),
+				amount.doubleValue());
 	}
 	
 	@Override
@@ -49,29 +48,23 @@ public class PaymentServiceImpl implements PaymentService {
 	}
 	
 	@Override
-	public void depositMoneyIntoPlatform(DepositOrderEvent event){
-		User user = userService.findUser(event.getUserName());
-		if (user.hasLinkedBankAccount()) {
+	public void executeExternal(ExternalTransferOrderEvent transferOrderEvent){
+		User user = userService.findUser(transferOrderEvent.getUserName());
+		if (!user.hasLinkedBankAccount()) {
+			throw new TransferFailException(String.format(USER_HAVE_NO_LINKED_ACCOUNT, transferOrderEvent.getUserName()));
+		}
+		if(transferOrderEvent.isDepositTransfer()){
 			bankClient.transfer(user.getPrivateBankAccount(),
 					user.getPlatformBankAccount(),
-					event.getAmount().getValue().doubleValue());
+					transferOrderEvent.getAmount().getValue().doubleValue());
 		} else {
-			throw new TransferFailException(String.format(USER_HAVE_NO_LINKED_ACCOUNT, event.getUserName()));
+			bankClient.transfer(user.getPlatformBankAccount(),
+					user.getPrivateBankAccount(),
+					transferOrderEvent.getAmount().getValue().doubleValue());
 		}
 	}
 	
 	@Override
-	public void withdrawMoneyFromPlatform(WithdrawalOrderEvent event){
-		User user = userService.findUser(event.getUserName());
-		if (user.hasLinkedBankAccount()) {
-			bankClient.transfer(user.getPlatformBankAccount(),
-					user.getPrivateBankAccount(),
-					event.getAmount().getValue().doubleValue());
-		} else {
-			throw new TransferFailException(String.format(USER_HAVE_NO_LINKED_ACCOUNT, event.getUserName()));
-		}
-	}
-	
 	public boolean hasEnoughFundsToPay(String userName, Money amount){
 		return checkUserBalance(userName).isMoreOrEqual(amount);
 	}

@@ -3,13 +3,10 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.DepositOrderEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
-import java.util.UUID;
+import static pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent.*;
 
 @RequestMapping("api/accounts")
 @RestController
@@ -21,24 +18,20 @@ public class AccountController {
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{userName}")
 	public UserDetailsDto getUserDetails(@PathVariable String userName){
-		return UserDetailsDto.from(userService.getUserDetails(userName));
+		return UserDetailsDto.from(userService.getUserDetails(userName),
+				paymentService.checkUserBalance(userName).getValue());
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/deposit")
-	public void depositAmountInPlatform(TransferDto depositTransfer){
-		paymentService.depositMoneyIntoPlatform(TransferDto.depositOrder(depositTransfer));
+	public void depositAmountInPlatform(@RequestBody TransferDto depositTransfer){
+		paymentService.executeExternal(depositTransfer.createTransferOrderEvent(TransferType.DEPOSIT));
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/withdrawal")
-	public void withdrawalAmountFromPlatform(TransferDto withdrawalTransfer){
-		paymentService.depositMoneyIntoPlatform(TransferDto.widthdrawalOrder(withdrawalTransfer));
+	public void withdrawalAmountFromPlatform(@RequestBody TransferDto withdrawalTransfer){
+		paymentService.executeExternal(withdrawalTransfer.createTransferOrderEvent(TransferType.WITHDRAWAL));
 	}
 	
-	@ResponseStatus(HttpStatus.CREATED)
-	@PostMapping("/{userName}/link-account")
-	public void addPrivateBankAccount(@PathVariable String userName, UUID accountNumber){
-		paymentService.depositMoneyIntoPlatform(DepositOrderEvent.builder().build());
-	}
 }

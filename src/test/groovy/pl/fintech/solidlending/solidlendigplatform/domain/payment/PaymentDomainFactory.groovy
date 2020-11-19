@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import spock.genesis.Gen
@@ -39,4 +40,12 @@ class PaymentDomainFactory {
 				.build()
 	}
 
+	static User createUser(UUID platformAccount, UUID privateAccount) {
+		Lender.builder()
+				.userDetails(UserDetails.builder()
+						.platformAccountNumber(platformAccount)
+						.privateAccountNumber(privateAccount)
+						.build())
+				.build()
+	}
 }
