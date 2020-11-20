@@ -6,9 +6,13 @@ import java.util.UUID;
 
 public interface BankClient {
 	
-	String transfer(String sourceAccountNumber, String TargetAccountNumber, Double amount);
+	String transfer(UUID sourceAccountNumber, UUID TargetAccountNumber, Double amount);
+
 	void createAccount(String userName);
-	void payment(String accountNumber, double amount);
+	
+	void payment(UUID accountNumber, double amount);
+	
 	BigDecimal getAccountBalance(UUID accountNumber);
+
 	List<TransactionDetails> getAccountTransactions(UUID accountNumber);
 }

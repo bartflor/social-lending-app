@@ -8,7 +8,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.exceptio
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.time.Instant;
-import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

@@ -5,8 +5,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
-import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 @ToString
 @EqualsAndHashCode

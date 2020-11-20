@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import spock.genesis.Gen
@@ -17,10 +18,10 @@ class PaymentDomainFactory {
 			.build()
 	}
 
-	static Borrower createBorrower(String targetUserAccount, String targetUserName) {
+	static Borrower createBorrower(UUID targetUserAccount, String targetUserName) {
 		Borrower.builder()
 				.userDetails(UserDetails.builder()
-						.accountNumber(targetUserAccount)
+						.platformAccountNumber(targetUserAccount)
 						.name(Gen.string(20).first())
 						.email(Gen.string(20).first())
 						.userName(targetUserName)
@@ -28,10 +29,10 @@ class PaymentDomainFactory {
 				.build()
 	}
 
-	static Lender createLender(String sourceUserAccount, String sourceUserName) {
+	static Lender createLender(UUID sourceUserAccount, String sourceUserName) {
 		Lender.builder()
 				.userDetails(UserDetails.builder()
-						.accountNumber(sourceUserAccount)
+						.platformAccountNumber(sourceUserAccount)
 						.name(Gen.string(20).first())
 						.email(Gen.string(20).first())
 						.userName(sourceUserName)
@@ -39,4 +40,12 @@ class PaymentDomainFactory {
 				.build()
 	}
 
+	static User createUser(UUID platformAccount, UUID privateAccount) {
+		Lender.builder()
+				.userDetails(UserDetails.builder()
+						.platformAccountNumber(platformAccount)
+						.privateAccountNumber(privateAccount)
+						.build())
+				.build()
+	}
 }

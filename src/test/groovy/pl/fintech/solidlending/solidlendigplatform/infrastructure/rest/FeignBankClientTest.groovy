@@ -24,8 +24,8 @@ class FeignBankClientTest extends Specification {
 	def "Transfer should call api POST: /transactions with given transaction details \
 		and return location header when response status 201"() {
 		given:
-			def sourceAccount = UUID.randomUUID().toString()
-			def targetAccount = UUID.randomUUID().toString()
+			def sourceAccount = UUID.randomUUID()
+			def targetAccount = UUID.randomUUID()
 			def amount = Gen.double.first()
 			def dto = RestInfrastructureFactory.createTransactionsDto(sourceAccount,targetAccount,amount)
 			wireMockServer.stubFor(post("/transactions")
@@ -46,8 +46,8 @@ class FeignBankClientTest extends Specification {
 	def "Transfer should call api POST: /transactions with given transactionDetails \
 		and throw exception, given response with status 422"() {
 		given:
-			def dto = RestInfrastructureFactory.createTransactionsDto(UUID.randomUUID().toString(),
-					UUID.randomUUID().toString(), Gen.double.first())
+			def dto = RestInfrastructureFactory.createTransactionsDto(UUID.randomUUID(),
+					UUID.randomUUID(), Gen.double.first())
 			wireMockServer.stubFor(post("/transactions")
 					.withBasicAuth("usr", "pass")
 					.willReturn(aResponse().withStatus(HttpStatus.UNPROCESSABLE_ENTITY.value())
@@ -80,7 +80,7 @@ class FeignBankClientTest extends Specification {
 	def "payment should call api POST: /payment with given paymentDetails \
 		and return 201 response status"(){
 		given:
-			def accountNumber = UUID.randomUUID().toString()
+			def accountNumber = UUID.randomUUID()
 			def amount = Gen.double.first()
 			wireMockServer.stubFor(post("/payments")
 					.withBasicAuth("usr","pass")

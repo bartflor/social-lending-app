@@ -4,7 +4,6 @@ import lombok.Data;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.*;
 
 @Data

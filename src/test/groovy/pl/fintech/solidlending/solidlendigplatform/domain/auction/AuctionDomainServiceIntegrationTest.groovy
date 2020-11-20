@@ -16,7 +16,7 @@ import spock.lang.Subject
 
 import java.time.Period
 
-class AuctionDomainServiceImplUnitTest extends Specification {
+class AuctionDomainServiceIntegrationTest extends Specification {
 
 	@Subject
 	AuctionDomainServiceImpl auctionService
@@ -46,13 +46,16 @@ class AuctionDomainServiceImplUnitTest extends Specification {
 				loanRiskSvc,
 				timeService)
 		borrowerRepo.save(Borrower.builder()
-				.userDetails(new UserDetails(borrowerName, Gen.string(20).first(), Gen.string(20).first(), UUID.randomUUID().toString()))
+				.userDetails(UserDetails.builder()
+						.userName(borrowerName)
+						.privateAccountNumber(UUID.randomUUID())
+						.platformAccountNumber(UUID.randomUUID()).build())
 				.rating(new Rating(3))
-				.balance(new Money(BigDecimal.ZERO))
 				.build())
 		lenderRepo.save(Lender.builder()
-				.balance(new Money(10))
-				.userDetails(new UserDetails(lenderName, Gen.string(20).first(), Gen.string(20).first(), UUID.randomUUID().toString()))
+				.userDetails(UserDetails.builder()
+						.userName(lenderName)
+						.platformAccountNumber(UUID.randomUUID()).build())
 				.build())
 	}
 

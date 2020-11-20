@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService;
 
@@ -12,12 +13,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/offers")
 public class OffersController {
 	AuctionApplicationService auctionApplicationService;
+	
+	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{lenderName}")
 	public List<OfferDto> getAllLenderOffers(@PathVariable String lenderName){
 		return auctionApplicationService.getLenderOffers(lenderName).stream()
 				.map(OfferDto::fromOffer)
 				.collect(Collectors.toList());
 	}
+	
+	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping()
 	public Long addNewOffer(@RequestBody NewOfferDto offerDto){
     // TODO: add lender from auth

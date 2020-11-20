@@ -3,14 +3,10 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Setter;
-import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.Set;
 @Data

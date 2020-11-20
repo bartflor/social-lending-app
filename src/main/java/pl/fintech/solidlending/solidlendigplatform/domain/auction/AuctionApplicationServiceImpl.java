@@ -3,8 +3,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
 import java.time.Period;

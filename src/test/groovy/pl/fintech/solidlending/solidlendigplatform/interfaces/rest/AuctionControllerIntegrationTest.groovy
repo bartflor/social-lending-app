@@ -51,7 +51,7 @@ class AuctionControllerIntegrationTest extends Specification {
 			auctionRepository.updateAuction(id, auction)
 
 		when:
-			def response = restClient.when().get("/api/auctions/" + id + "/create-loan")
+			def response = restClient.get("/api/auctions/" + id + "/create-loan")
 		then:
 			response.statusCode() == 201
 		and:

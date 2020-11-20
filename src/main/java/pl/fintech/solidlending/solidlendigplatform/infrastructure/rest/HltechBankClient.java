@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.BankClient;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.TransactionDetails;
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.TransferNotCreatedException;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.BankCommunicationFailedException;
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.TransferNotCreatedException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -24,7 +24,7 @@ public class HltechBankClient implements BankClient {
 	private HltechBankApiFeignClient apiFeignClient;
 	
 	@Override
-	public String transfer(String sourceAccountNumber, String targetAccountNumber, Double amount) {
+	public String transfer(UUID sourceAccountNumber, UUID targetAccountNumber, Double amount) {
 		TransactionRequest transactionRequest = TransactionRequest.builder()
 				.amount(amount)
 				.sourceAccountNumber(sourceAccountNumber)
@@ -47,7 +47,7 @@ public class HltechBankClient implements BankClient {
 	}
 	
 	@Override
-	public void payment(String accountNumber, double amount) {
+	public void payment(UUID accountNumber, double amount) {
 		ResponseEntity<String> response = apiFeignClient.payment(new PaymentRequest(accountNumber, amount));
 		if(!response.getStatusCode().is2xxSuccessful()){
 			throw new BankCommunicationFailedException(String.format(PAYMENT_FAILED, response.toString()));

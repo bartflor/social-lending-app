@@ -10,6 +10,7 @@ import java.time.Period;
 import java.util.Comparator;
 @ToString
 @AllArgsConstructor
+@EqualsAndHashCode
 @Getter
 @Builder
 public class Offer {
