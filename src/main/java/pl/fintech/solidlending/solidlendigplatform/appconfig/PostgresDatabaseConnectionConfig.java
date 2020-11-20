@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 
-@Profile({"local", "k8s"})
 @Configuration
 public class PostgresDatabaseConnectionConfig {
 
