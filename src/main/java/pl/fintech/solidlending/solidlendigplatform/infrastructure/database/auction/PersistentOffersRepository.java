@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class OffersDao implements OfferRepository {
+public class PersistentOffersRepository implements OfferRepository {
 	
 	private JpaOffersRepository jpaOffersRepository;
 	

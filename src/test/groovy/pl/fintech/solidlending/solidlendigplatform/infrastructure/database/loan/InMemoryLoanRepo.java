@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryLoanRepo implements LoanRepository {
-	public static final String LOAN_NOT_FOUND = "Loan with id:%s not found in repository";
 	private Map<Long, Loan> repo;
 	private static Long lastId;
 	

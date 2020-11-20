@@ -7,8 +7,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-@Log
-@Repository
+
 public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	Map<String, UserEntity> repository;
 	

@@ -27,6 +27,6 @@ public class Investment {
     UNCONFIRMED,
     ACTIVE,
     COMPLETED,
-    OVERDUE
+    LATE
   }
 }

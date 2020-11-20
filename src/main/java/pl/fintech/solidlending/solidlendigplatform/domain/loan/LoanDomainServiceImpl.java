@@ -6,11 +6,13 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCre
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 @Component
 @AllArgsConstructor
+@Transactional
 public class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
 	private static final String INVALID_LOAN_STATUS = "Can not activate loan with status: %s";
@@ -33,16 +35,16 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 		Set<Investment> investments = investmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
 		Loan loan = loanFactory.createLoan(params, investments);
 		Long loanId = loanRepository.save(loan);
-		for(Investment investment : investments){
-			investment.setLoanId(loanId);
-			Long id = investmentRepository.save(investment);
-			RepaymentSchedule schedule = investment.getSchedule();
-			schedule.setOwnerId(id);
-			scheduleRepository.save(schedule);
-		}
-		loan.getSchedule().setOwnerId(loanId);
-		scheduleRepository.save(loan.getSchedule());
-		return loan.getId();
+//		for(Investment investment : investments){
+//			investment.setLoanId(loanId);
+//			Long id = investmentRepository.save(investment);
+//			RepaymentSchedule schedule = investment.getSchedule();
+//			schedule.setOwnerId(id);
+//			scheduleRepository.save(schedule);
+//		}
+//		loan.getSchedule().setOwnerId(loanId);
+//		scheduleRepository.save(loan.getSchedule());
+		return loanId;
 	}
 	
 	/**

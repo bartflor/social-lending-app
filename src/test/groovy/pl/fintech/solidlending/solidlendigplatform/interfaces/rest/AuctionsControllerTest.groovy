@@ -13,6 +13,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRateP
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 
@@ -22,7 +23,7 @@ import java.time.format.DateTimeFormatter
 
 import static org.hamcrest.Matchers.equalTo
 
-@Import(AddMockedServiceToContext)
+@Import([AddMockedServiceToContext, AddStubRepositoriesToContext])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AuctionsControllerTest extends Specification {
 

@@ -57,6 +57,7 @@ public class AuctionEntity {
 				.borrowerRating(new Rating(borrowerRating))
 				.startDate(auctionStartDate)
 				.auctionDuration(auctionDuration)
+				.status(status)
 				.offers(offers.stream()
 						.map(OfferEntity::toDomain)
 						.collect(Collectors.toSet()))

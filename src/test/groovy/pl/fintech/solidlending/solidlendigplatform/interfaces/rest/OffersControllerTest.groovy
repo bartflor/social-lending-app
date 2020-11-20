@@ -14,7 +14,7 @@ import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStu
 import spock.genesis.Gen
 import spock.lang.Specification
 
-@Import(AddMockedServiceToContext)
+@Import([AddMockedServiceToContext, AddStubRepositoriesToContext])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OffersControllerTest extends Specification {
 

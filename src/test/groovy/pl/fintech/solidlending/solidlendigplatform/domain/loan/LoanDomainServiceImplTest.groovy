@@ -28,14 +28,13 @@ class LoanDomainServiceImplTest extends Specification {
 			def loan = LoanDomainFactory.crateLoan(randId)
 			def investment = LoanDomainFactory.createInvestment()
 			loan.setInvestments(Set.of(investment))
-			investmentFactory.createInvestmentsFrom(investmentParams) >> Set.of(investment)
-			loanFactory.createLoan(params, Set.of(investment)) >> loan
-			loanRepository.save(loan) >> randId
+
 		when:
 			def result = loanDomainSvc.createLoan(params)
 		then:
-			1*investmentRepository.save(investment)
-			2*scheduleRepository.save(_)
+			1*investmentFactory.createInvestmentsFrom(investmentParams) >> Set.of(investment)
+			1*loanFactory.createLoan(params, Set.of(investment)) >> loan
+			1*loanRepository.save(loan) >> randId
 			result == randId
 	}
 

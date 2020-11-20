@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
-public class AuctionsDao implements AuctionRepository {
+public class PersistentAuctionsRepository implements AuctionRepository {
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	
 	private JpaAuctionRepository jpaAuctionRepository;
@@ -46,6 +46,7 @@ public class AuctionsDao implements AuctionRepository {
 	
 	@Override
 	public void updateAuction(Long auctionId, Auction auction) {
+		auction.setId(auctionId);
 		jpaAuctionRepository.save(AuctionEntity.from(auction));
 	}
 	

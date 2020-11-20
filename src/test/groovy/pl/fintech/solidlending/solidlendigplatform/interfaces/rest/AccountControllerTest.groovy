@@ -12,13 +12,14 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 
 import static org.hamcrest.Matchers.equalTo
 
 
-@Import(AddMockedServiceToContext)
+@Import([AddMockedServiceToContext, AddStubRepositoriesToContext])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class AccountControllerTest extends Specification {
 
