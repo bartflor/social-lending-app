@@ -22,11 +22,15 @@ public class Investment {
   Period duration;
   @Builder.Default Status status = Status.UNCONFIRMED;
   RepaymentSchedule schedule;
-
+  
+  public void makeCompleted() {
+        setStatus(Status.COMPLETED);
+  }
+  
   public enum Status {
     UNCONFIRMED,
     ACTIVE,
     COMPLETED,
-    OVERDUE
+    LATE
   }
 }
