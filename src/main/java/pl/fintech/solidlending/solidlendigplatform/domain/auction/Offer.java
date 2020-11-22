@@ -22,8 +22,20 @@ public class Offer {
   private Risk risk;
   private Rate rate;
   private Period duration;
-  private Boolean allowAmountSplit;
   @Builder.Default private OfferStatus status = OfferStatus.ACTIVE;
+  
+  public Offer(Offer offer){
+    this.id = offer.getId();
+    this.auctionId = offer.getAuctionId();
+    this.lenderName = offer.getLenderName();
+    this.borrowerName = offer.getBorrowerName();
+    this.amount = new Money(offer.getAmount()!=null ? offer.getAmount().getValue().doubleValue() : 0.0);
+    this.risk = new Risk(offer.getRisk() != null ? offer.getRisk().getRisk() : 0);
+    this.rate = Rate.fromPercentValue(offer.getRate()!=null ? offer.getRate().getPercentValue().doubleValue() : 0);
+    this.duration = offer.getDuration();
+    this.status = offer.getStatus();
+  }
+
   
   public void archive() {
     status = OfferStatus.ARCHIVED;
@@ -41,6 +53,24 @@ public class Offer {
     @Override
     public int compare(Offer offer1, Offer offer2) {
       return offer1.getRatePercentValue().compareTo(offer2.getRatePercentValue());
+    }
+  }
+  
+  public void reduceTo(Money reducedAmount){
+    if(amount.isMoreOrEqual(reducedAmount)){
+      amount = reducedAmount;
+    }
+  }
+  
+  public static class OfferAmountRateComparator implements Comparator<Offer> {
+    @Override
+    public int compare(Offer offer1, Offer offer2) {
+      int rateComparison = offer1.getRatePercentValue().compareTo(offer2.getRatePercentValue());
+      if(rateComparison == 0){
+        return offer1.getAmount().getValue().compareTo(offer2.getAmount().getValue());
+      } else {
+        return rateComparison;
+      }
     }
   }
 }

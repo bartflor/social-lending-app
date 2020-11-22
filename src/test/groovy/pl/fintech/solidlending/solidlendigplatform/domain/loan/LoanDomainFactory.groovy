@@ -31,6 +31,7 @@ class LoanDomainFactory {
 				.loanId(Gen.long.first())
 				.lenderName(Gen.string(20).first())
 				.value(new Money(Gen.double.first()))
+				.loanAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
 				.schedule(new RepaymentSchedule())

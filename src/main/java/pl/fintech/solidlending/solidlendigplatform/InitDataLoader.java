@@ -79,8 +79,8 @@ public class InitDataLoader implements CommandLineRunner {
 			  2000,
 			  Period.of(2, 0, 0),
 			  7);
-	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,18,false);
-	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,12,true);
-	  auctionDomainServiceImpl.addOffer(auction2Id, "Samwise_Gamgee", 50,7,false);
+	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,18);
+	  auctionDomainServiceImpl.addOffer(auction1Id, "Samwise_Gamgee", 20,12);
+	  auctionDomainServiceImpl.addOffer(auction2Id, "Samwise_Gamgee", 50,7);
   }
 }

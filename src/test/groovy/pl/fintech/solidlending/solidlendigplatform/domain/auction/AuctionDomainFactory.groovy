@@ -111,7 +111,7 @@ class AuctionDomainFactory {
 
 	static EndAuctionEvent createEndAuctionEvent(){
 		EndAuctionEvent.builder()
-			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.integer.first())))
+			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.long.first())))
 			.auctionLoanParams(createLoanAuctionParams(Gen.integer.first()))
 			.BorrowerUserName(Gen.string(20).first())
 			.build()

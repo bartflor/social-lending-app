@@ -9,8 +9,8 @@ class AuctionTest extends Specification {
 	def "AddNewOffer should update status if offers total amount is greater than requested loan amount"() {
 		given:
 			def randInt = Gen.integer(0, 10000).first()
-			def offer1 = AuctionDomainFactory.createOfferWithAmount(randInt, randInt)
-			def offer2 = AuctionDomainFactory.createOfferWithAmount(randInt, randInt)
+			def offer1 = AuctionDomainFactory.createOfferWithAmount(randInt, Gen.getLong().first())
+			def offer2 = AuctionDomainFactory.createOfferWithAmount(randInt, Gen.getLong().first())
 			def auction = AuctionDomainFactory.createAuctionWithAmount(randInt+1)
 		when:
 			auction.addNewOffer(offer1)
@@ -24,8 +24,8 @@ class AuctionTest extends Specification {
 	def "AddNewOffer should not change status if offers total amount is lower than requested loan amount"() {
 		given:
 			def randInt = Gen.integer(0, 10000).first()
-			def offer1 = AuctionDomainFactory.createOfferWithAmount(randInt, randInt)
-			def offer2 = AuctionDomainFactory.createOfferWithAmount(randInt, randInt)
+			def offer1 = AuctionDomainFactory.createOfferWithAmount(randInt, Gen.getLong().first())
+			def offer2 = AuctionDomainFactory.createOfferWithAmount(randInt, Gen.getLong().first())
 			def auction = AuctionDomainFactory.createAuctionWithAmount(3*randInt)
 		when:
 			auction.addNewOffer(offer1)
@@ -34,6 +34,22 @@ class AuctionTest extends Specification {
 			auction.getOffers().size() == 2
 		and:
 			auction.getStatus() == Auction.AuctionStatus.ACTIVE
+	}
+
+	def "AddNewOffer should update status if offers total amount is equal requested loan amount"() {
+		given:
+			def randInt1 = Gen.integer(0, 10000).first()
+			def randInt2 = Gen.integer(0, 10000).first()
+			def offer1 = AuctionDomainFactory.createOfferWithAmount(randInt1, Gen.getLong().first())
+			def offer2 = AuctionDomainFactory.createOfferWithAmount(randInt2, Gen.getLong().first())
+			def auction = AuctionDomainFactory.createAuctionWithAmount(randInt1+randInt2)
+		when:
+			auction.addNewOffer(offer1)
+			auction.addNewOffer(offer2)
+		then:
+			auction.getOffers().size() == 2
+		and:
+			auction.getStatus() == Auction.AuctionStatus.ACTIVE_COMPLETE
 	}
 
 	def "Auction.end() should change status to ARCHIVED, and \
@@ -53,7 +69,7 @@ class AuctionTest extends Specification {
 					.BorrowerUserName(auction.getBorrowerUserName())
 					.offers(selectedOffers)
 					.auctionLoanParams(auction.getAuctionLoanParams())
-					.build();
+					.build()
 	}
 
 }

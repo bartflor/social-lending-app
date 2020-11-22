@@ -9,7 +9,7 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
@@ -53,7 +53,7 @@ class AuctionsControllerTest extends Specification {
 		when:
 			def response = restClient.when().get("/api/auctions/"+randID+"/create-loan")
 		then:
-			1*auctionServiceMock.createLoanFromEndingAuction(randID, new BestOfferRatePolicy()) >> randID
+			1*auctionServiceMock.createLoanFromEndingAuction(randID, new BestOffersRatePolicy()) >> randID
 			1*loanServiceMock.findLoanById(randID) >> loan
 		and:
 			response.statusCode() == 201
