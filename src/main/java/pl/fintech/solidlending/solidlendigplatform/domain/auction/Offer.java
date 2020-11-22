@@ -66,11 +66,16 @@ public class Offer {
     @Override
     public int compare(Offer offer1, Offer offer2) {
       int rateComparison = offer1.getRatePercentValue().compareTo(offer2.getRatePercentValue());
-      if(rateComparison == 0){
-        return offer1.getAmount().getValue().compareTo(offer2.getAmount().getValue());
-      } else {
+      int amountComparison = offer1.getAmount().getValue().compareTo(offer2.getAmount().getValue());
+      int idComparison = offer1.getId().compareTo(offer2.getId());
+  
+      if(rateComparison != 0){
         return rateComparison;
       }
+      if(amountComparison != 0){
+        return amountComparison;
+      }
+      return idComparison;
     }
   }
 }

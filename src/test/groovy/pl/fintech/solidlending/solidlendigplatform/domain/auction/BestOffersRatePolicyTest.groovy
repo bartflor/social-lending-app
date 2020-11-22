@@ -11,22 +11,13 @@ class BestOffersRatePolicyTest extends Specification {
 	@Subject
 	def bestOffersRatePolicy = new BestOffersRatePolicy()
 
-	def 'selectOffers should return set of offers with lowes Rate'() {
+	def 'selectOffers should return set of offers with lowest Rate'() {
 		given:
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = Offer.builder()
-					.amount(new Money(50))
-					.rate(Rate.fromPercentValue(15))
-					.build()
-			def offer2 = Offer.builder()
-					.amount(new Money(50))
-					.rate(Rate.fromPercentValue(10))
-					.build()
-			def offer3 = Offer.builder()
-					.amount(new Money(50))
-					.rate(Rate.fromPercentValue(5))
-					.build()
+			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 5)
+			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 15)
+			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
@@ -36,24 +27,15 @@ class BestOffersRatePolicyTest extends Specification {
 					 offer.getRate() == Rate.fromPercentValue(10) })
 	}
 
-	def 'selectOffers should return set of offers with lowest rate and reduce amount of rate with bigger rate \
+	def 'selectOffers should return set of offers with lowest rate and reduce amount of offer with bigger rate \
 		to mach requested loan amount.'() {
 		given:
 
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = Offer.builder()
-					.amount(new Money(50))
-					.rate(Rate.fromPercentValue(5))
-					.build()
-			def offer2 = Offer.builder()
-					.amount(new Money(70))
-					.rate(Rate.fromPercentValue(10))
-					.build()
-			def offer3 = Offer.builder()
-					.amount(new Money(50))
-					.rate(Rate.fromPercentValue(15))
-					.build()
+			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 5)
+			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 15)
+			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 80, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
@@ -65,48 +47,31 @@ class BestOffersRatePolicyTest extends Specification {
 
 	}
 
-	def 'selectOffers should return set of offers containing bigger rate offer with amount split allowed'() {
+	def 'selectOffers should return set of one offer with lowest rate'() {
 		given:
 
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = Offer.builder()
-					.amount(new Money(100))
-					.rate(Rate.fromPercentValue(10))
-					.build()
-			def offer2 = Offer.builder()
-					.amount(new Money(70))
-					.rate(Rate.fromPercentValue(5))
-					.build()
-			def offer3 = Offer.builder()
-					.amount(new Money(70))
-					.rate(Rate.fromPercentValue(15))
-					.build()
+			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 100, 3)
+			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 70, 5)
+			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 70, 15)
+
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
-			result.size() == 2
-			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(70) &&
-					offer.getRate() == Rate.fromPercentValue(5) })
-			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(30) &&
-					offer.getRate() == Rate.fromPercentValue(10) })
+			result.size() == 1
+			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(100) &&
+					offer.getRate() == Rate.fromPercentValue(3) })
+
 	}
 
-	def 'selectOffers should return set of offers with divided second added offer'() {
+	def 'selectOffers should return set of offers with reduced first added offer'() {
 		given:
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
 
-			def offer1 = Offer.builder()
-					.id(1)
-					.amount(new Money(70))
-					.rate(Rate.fromPercentValue(15))
-					.build()
-			def offer2 = Offer.builder()
-					.id(2)
-					.amount(new Money(70))
-					.rate(Rate.fromPercentValue(15))
-					.build()
+			def offer1 = AuctionDomainFactory.createOffer(1, 70, 15)
+			def offer2 = AuctionDomainFactory.createOffer(2, 70, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2), loanParams)
 		then:
@@ -116,38 +81,29 @@ class BestOffersRatePolicyTest extends Specification {
 					offer.getRate() == Rate.fromPercentValue(15) })
 			result.stream().anyMatch({ offer ->  offer.getId() == 2 &&
 					offer.getAmount() == new Money(70) &&
-					offer.getRate() == Rate.fromPercentValue(15) })
+					offer.getRate() == Rate.fromPercentValue(10) })
 	}
 
-	def 'selectOffers should return set of offers containing all offers and reduce amount of offer with biggest rate \
-		to mach requested loan amount.\''() {
+	def 'selectOffers should return set of offers containing all offers and reduce amount of last added offer, \
+		given same offers'() {
 		given:
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = Offer.builder()
-					.id(Gen.long.first())
-					.amount(new Money(40))
-					.rate(Rate.fromPercentValue(15))
-					.build()
-			def offer2 = Offer.builder()
-					.id(Gen.long.first())
-					.amount(new Money(40))
-					.rate(Rate.fromPercentValue(20))
-					.build()
-			def offer3 = Offer.builder()
-					.id(Gen.long.first())
-					.amount(new Money(40))
-					.rate(Rate.fromPercentValue(15))
-					.build()
+			def offer1 = AuctionDomainFactory.createOffer(1, 40, 15)
+			def offer2 = AuctionDomainFactory.createOffer(2, 40, 15)
+			def offer3 = AuctionDomainFactory.createOffer(3, 40, 15)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
 			result.size() == 3
-			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(40) &&
+			result.stream().anyMatch({ offer -> offer.getId() == 1 &&
+					offer.getAmount() == new Money(40) &&
 					offer.getRate() == Rate.fromPercentValue(15) })
-			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(20) &&
-					offer.getRate() == Rate.fromPercentValue(20) })
-			result.stream().anyMatch({ offer -> offer.getAmount() == new Money(40) &&
+			result.stream().anyMatch({ offer -> offer.getId() == 2 &&
+					offer.getAmount() == new Money(40) &&
+					offer.getRate() == Rate.fromPercentValue(15) })
+			result.stream().anyMatch({ offer -> offer.getId() == 3 &&
+					offer.getAmount() == new Money(20) &&
 					offer.getRate() == Rate.fromPercentValue(15) })
 	}
 }

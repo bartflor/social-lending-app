@@ -90,6 +90,13 @@ class AuctionDomainFactory {
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
+	static Offer createOffer(Long auctionId, double amount, double rate) {
+		Offer.builder()
+				.id(auctionId)
+				.amount(new Money(amount))
+				.rate(Rate.fromPercentValue(rate))
+				.build()
+	}
 
 	static Offer createOfferWithAmount(int amount, long id){
 		Offer.builder()
