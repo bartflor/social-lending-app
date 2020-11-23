@@ -25,11 +25,16 @@ public class OffersController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping()
 	public Long addNewOffer(@RequestBody NewOfferDto offerDto){
-    // TODO: add lender from auth
     return auctionApplicationService.addOffer(offerDto.getAuctionId(),
 			offerDto.lenderUserName,
 			offerDto.getAmount(),
 			offerDto.getRate(),
 			offerDto.isAllowAmountSplit());
+	}
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/{offerId}")
+	public void deleteOffer(@PathVariable  Long offerId){
+		auctionApplicationService.deleteOffer(offerId);
 	}
 }

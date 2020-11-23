@@ -15,6 +15,7 @@ import spock.lang.Specification
 import spock.lang.Subject
 
 import java.time.Period
+import java.time.temporal.ChronoUnit
 
 class AuctionDomainServiceImplTest extends Specification {
 	def auctionRepo = Mock(AuctionRepository)
@@ -67,7 +68,7 @@ class AuctionDomainServiceImplTest extends Specification {
 					loanDuration,
 					rate,
 					rating,
-					now)
+					now.plus(auctionDuration.getDays(), ChronoUnit.DAYS))
 
 		when:
 			auctionService.createNewAuction(borrowerName,

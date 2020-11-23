@@ -82,7 +82,7 @@ class AuctionsControllerTest extends Specification {
 					.body("startDate", equalTo(dateFormatter.format(loan.getStartDate())))
 	}
 
-	def "POST /api/auctions call should call auctionApplicationService with proper parameters and \
+	def "POST /api/auctions should call auctionApplicationService with proper parameters and \
 		 return 201 status given proper request"(){
 		given:
 			def randID = Gen.integer.first()
@@ -105,6 +105,17 @@ class AuctionsControllerTest extends Specification {
 			response.statusCode() == 201
 	}
 
+	def "DELETE /api/auctions/{id} should call auctionApplicationService with proper parameters and \
+		 return 204 response status"(){
+		given:
+			def randID = Gen.integer.first()
 
+		when:
+			def response = restClient.delete("/api/auctions/"+randID)
+		then:
+			1*auctionServiceMock.deleteAuction(_) >> {arg -> arg == randID}
+		and:
+			response.statusCode() == 204
+	}
 
 }

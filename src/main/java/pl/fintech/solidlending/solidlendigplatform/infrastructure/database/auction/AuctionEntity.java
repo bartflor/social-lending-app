@@ -14,11 +14,8 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.Period;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Data
@@ -32,7 +29,7 @@ public class AuctionEntity {
 	private Long id;
 	private String borrowerName;
 	private Integer borrowerRating;
-	private Instant auctionStartDate;
+	private Instant auctionEndDate;
 	private Period auctionDuration;
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "auctionId")
@@ -55,7 +52,7 @@ public class AuctionEntity {
 				.id(id)
 				.borrowerUserName(borrowerName)
 				.borrowerRating(new Rating(borrowerRating))
-				.startDate(auctionStartDate)
+				.endDate(auctionEndDate)
 				.auctionDuration(auctionDuration)
 				.status(status)
 				.offers(offers.stream()
@@ -70,7 +67,7 @@ public class AuctionEntity {
 				.id(auction.getId())
 				.borrowerName(auction.getBorrowerUserName())
 				.borrowerRating(auction.getBorrowerRating().getRating())
-				.auctionStartDate(auction.getStartDate())
+				.auctionEndDate(auction.getEndDate())
 				.auctionDuration(auction.getAuctionDuration())
 				.offers(auction.getOffers().stream()
 						.map(OfferEntity::createFromOffer)

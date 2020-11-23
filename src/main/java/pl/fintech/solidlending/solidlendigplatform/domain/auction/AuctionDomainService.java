@@ -26,4 +26,8 @@ public interface AuctionDomainService {
 	
 	List<Offer> getLenderOffers(String lenderName);
 	EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy offersSelectionPolicy);
+	
+	void deleteAuction(Long auctionId);
+	
+	void deleteOffer(Long offerId);
 }

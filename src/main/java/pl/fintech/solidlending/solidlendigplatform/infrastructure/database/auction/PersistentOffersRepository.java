@@ -51,4 +51,9 @@ public class PersistentOffersRepository implements OfferRepository {
 	public void deleteAll(){
 		jpaOffersRepository.deleteAll();
 	}
+	
+	@Override
+	public void deleteOffer(Long offerId) {
+		jpaOffersRepository.deleteById(offerId);
+	}
 }

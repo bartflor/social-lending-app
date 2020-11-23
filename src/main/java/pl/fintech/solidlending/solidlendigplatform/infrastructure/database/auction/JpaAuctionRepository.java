@@ -6,11 +6,14 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 public interface JpaAuctionRepository extends JpaRepository<AuctionEntity, Long> {
 	
 	List<AuctionEntity> findAllByBorrowerName(String userName);
+	
+	List<AuctionEntity> findAllByAuctionEndDateAfter(Instant date);
 	
 }

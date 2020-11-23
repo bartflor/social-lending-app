@@ -47,4 +47,9 @@ class InMemoryOfferRepo implements OfferRepository {
 	void deleteAll() {
 		repository.clear()
 	}
+
+	@Override
+	void deleteOffer(Long offerId) {
+		repository.remove(offerId);
+	}
 }
