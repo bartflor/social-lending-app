@@ -21,7 +21,7 @@ public class InvestmentFactory {
 				.borrowerName(params.getBorrowerName())
 				.risk(params.getRisk())
 				.loanAmount(params.getInvestedMoney())
-				.value(value)
+				.returnAmount(value)
 				.rate(params.getReturnRate())
 				.duration(investmentDuration)
 				.schedule(prepareRepaymentSchedule(investmentDuration, value, startDate))

@@ -18,8 +18,8 @@ public class InvestmentDto {
 	String lenderName;
 	String borrowerName;
 	Integer risk;
-	Double amount;
-	Double value;
+	Double loanAmount;
+	Double returnAmount;
 	Double rate;
 	Long duration;
 	String status;
@@ -31,8 +31,8 @@ public class InvestmentDto {
         .investmentId(investment.getInvestmentId())
         .loanId(investment.getLoanId())
         .lenderName(investment.getLenderName())
-        .amount(investment.getLoanAmount().getValue().doubleValue())
-		.value(investment.getValue().getValue().doubleValue())
+        .loanAmount(investment.getLoanAmount().getValue().doubleValue())
+		.returnAmount(investment.getReturnAmount().getValue().doubleValue())
         .rate(investment.getRate().getPercentValue().doubleValue())
         .duration(investment.getDuration().toTotalMonths())
         .status(investment.getStatus().toString())
@@ -50,8 +50,8 @@ public class InvestmentDto {
 		return InvestmentDto.builder()
 				.investmentId(investment.getInvestmentId())
 				.lenderName(investment.getLenderName())
-				.amount(investment.getLoanAmount().getValue().doubleValue())
-				.value(investment.getValue().getValue().doubleValue())
+				.loanAmount(investment.getLoanAmount().getValue().doubleValue())
+				.returnAmount(investment.getReturnAmount().getValue().doubleValue())
 				.rate(investment.getRate().getPercentValue().doubleValue())
 				.duration(investment.getDuration().toTotalMonths())
 				.status(investment.getStatus().toString())

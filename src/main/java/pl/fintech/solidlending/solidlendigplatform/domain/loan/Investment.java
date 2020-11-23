@@ -15,7 +15,7 @@ public class Investment {
   Long loanId;
   String lenderName;
   String borrowerName;
-  Money value;
+  Money returnAmount;
   Money loanAmount;
   Rate rate;
   Risk risk;
