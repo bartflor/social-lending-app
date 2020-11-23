@@ -87,25 +87,4 @@ class LoanDomainServiceImplTest extends Specification {
 			exception.getMessage() == "Loan with id:"+randId+" not found."
 	}
 
-	def "findLoanRepaymentSchedule should throw exception when schedule with given id not exist"(){
-		given:
-			def randId = Gen.long.first()
-			scheduleRepository.findRepaymentScheduleByLoanId(randId) >> Optional.empty()
-		when:
-			loanDomainSvc.findLoanRepaymentSchedule(randId)
-		then:
-			def exception = thrown(ScheduleNotFoundException)
-			exception.getMessage() == "Repayment schedule for loan with id:"+randId+", not found"
-	}
-
-	def "findInvestmentRepaymentSchedule should throw exception when schedule with given id not exist"(){
-		given:
-			def randId = Gen.long.first()
-			scheduleRepository.findRepaymentScheduleByInvestmentId(randId) >> Optional.empty()
-		when:
-			loanDomainSvc.findInvestmentRepaymentSchedule(randId)
-		then:
-			def exception = thrown(ScheduleNotFoundException)
-			exception.getMessage() == "Repayment schedule for loan with id:"+randId+", not found"
-	}
 }

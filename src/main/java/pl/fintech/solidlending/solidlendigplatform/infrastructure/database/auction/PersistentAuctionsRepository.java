@@ -7,12 +7,14 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionReposit
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Transactional
 public class PersistentAuctionsRepository implements AuctionRepository {
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	

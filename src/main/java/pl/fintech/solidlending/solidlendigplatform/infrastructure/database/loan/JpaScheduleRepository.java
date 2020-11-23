@@ -6,7 +6,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule
 
 import java.util.Optional;
 
-@Repository
 public interface JpaScheduleRepository extends JpaRepository<RepaymentScheduleEntity, Long> {
 	
 	 Optional<RepaymentScheduleEntity> findByOwnerIdAndTypeEquals(Long loanId, RepaymentSchedule.Type type);

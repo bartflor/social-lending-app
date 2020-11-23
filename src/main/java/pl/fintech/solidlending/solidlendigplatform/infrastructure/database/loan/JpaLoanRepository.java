@@ -6,7 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 
 import java.util.List;
 
-@Repository
+
 public interface JpaLoanRepository extends JpaRepository<LoanEntity, Long> {
 	List<LoanEntity> findAllByBorrowerName(String userName);
 }

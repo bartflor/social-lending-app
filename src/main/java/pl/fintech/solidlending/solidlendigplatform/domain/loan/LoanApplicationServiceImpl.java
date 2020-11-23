@@ -9,12 +9,14 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEv
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
+@Transactional
 public class LoanApplicationServiceImpl implements LoanApplicationService {
 	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
 	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
@@ -73,16 +75,7 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		paymentService.execute(transferOrderEventsList);
 		return domainService.activateLoan(loanId);
 	}
-	@Override
-	public RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId){
-		return domainService.findLoanRepaymentSchedule(loanId);
-	}
-	
-	@Override
-	public RepaymentSchedule getInvestmentSchedule(Long investmentId){
-		return domainService.findInvestmentRepaymentSchedule(investmentId);
-	}
-	
+
 	@Override
 	public void repayLoan(Long loanId){
 		Loan loan = findLoanById(loanId);

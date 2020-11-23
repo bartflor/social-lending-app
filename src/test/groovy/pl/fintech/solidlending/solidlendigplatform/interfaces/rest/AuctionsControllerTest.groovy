@@ -4,11 +4,19 @@ import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationServiceImpl
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
@@ -23,8 +31,15 @@ import java.time.format.DateTimeFormatter
 
 import static org.hamcrest.Matchers.equalTo
 
-@Import([AddMockedServiceToContext, AddStubRepositoriesToContext])
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [
+		AuctionsController,
+		AddMockedServiceToContext,
+		DispatcherServletAutoConfiguration,
+		ServletWebServerFactoryAutoConfiguration],
+		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@AutoConfigureWebMvc
+
 class AuctionsControllerTest extends Specification {
 
 	@LocalServerPort

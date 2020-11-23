@@ -2,6 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
 import spock.genesis.Gen
 
 import java.time.Instant
@@ -20,7 +21,7 @@ class LoanDomainFactory {
 				.averageRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.repayment(new Money(Gen.double.first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
-				.startDate(Gen.date.first().toInstant())
+				.startDate(Instant.now())
 				.schedule(new RepaymentSchedule())
 				.build()
 	}
@@ -46,11 +47,11 @@ class LoanDomainFactory {
 				.averageRate(investment.getRate())
 				.repayment(investment.getSchedule().findNextRepayment().get().getValue())
 				.duration(investment.getDuration())
+				.startDate(Instant.now())
 				.schedule(schedule)
 				.status(Loan.LoanStatus.ACTIVE)
 				.build()
 	}
-
 	static Loan crateActiveLoan(long id) {
 		def schedule = createRepaymentSchedule(Gen.integer(2,10).first(), Gen.integer(10,100000).first())
 		Loan.builder()
@@ -61,7 +62,22 @@ class LoanDomainFactory {
 				.averageRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.repayment(new Money(Gen.double.first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
-				.startDate(Gen.date.first().toInstant())
+				.startDate(Instant.now())
+				.schedule(schedule)
+				.status(Loan.LoanStatus.ACTIVE)
+				.build()
+	}
+	static Loan crateActiveEmptyLoan(long id) {
+		def schedule = createRepaymentSchedule(Gen.integer(2,10).first(), Gen.integer(10,100000).first())
+		Loan.builder()
+				.id(id)
+				.borrowerUserName(Gen.string(20).first())
+				.investments(Collections.emptySet())
+				.amount(new Money(Gen.double.first()))
+				.averageRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
+				.repayment(new Money(Gen.double.first()))
+				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
+				.startDate(Instant.now())
 				.schedule(schedule)
 				.status(Loan.LoanStatus.ACTIVE)
 				.build()
@@ -71,9 +87,10 @@ class LoanDomainFactory {
 		schedule.setType(RepaymentSchedule.Type.INVESTMENT)
 		Investment.builder()
 				.investmentId(Gen.long.first())
-				.loanId(Gen.long.first())
 				.lenderName(Gen.string(20).first())
 				.value(new Money(Gen.double.first()))
+				.loanAmount(new Money(Gen.double.first()))
+				.risk(new Risk(Gen.integer(0, 5).first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
 				.schedule(schedule)
@@ -82,7 +99,7 @@ class LoanDomainFactory {
 
 	static RepaymentSchedule createRepaymentSchedule(int repaymentsNumber, int totalLoanValue){
 		def schedule = new RepaymentSchedule()
-		def startDay = Instant.ofEpochMilli(Gen.long.first())
+		def startDay = Instant.now()
 		def singleRepaymentValue = totalLoanValue/repaymentsNumber
 		for(int i = 1; i<=repaymentsNumber; i++) {
 			def repayment = Repayment.builder()

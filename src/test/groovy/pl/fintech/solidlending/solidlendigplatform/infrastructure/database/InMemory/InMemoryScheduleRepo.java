@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan;
+package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory;
 
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule;
@@ -7,7 +7,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-@Repository
 public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 	private Map<Long, RepaymentSchedule> repo;
 	private static Long lastId;
@@ -25,16 +24,7 @@ public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 		repo.put(++lastId, schedule);
 		return lastId;
 	}
-	@Override
-	public Optional<RepaymentSchedule> findRepaymentScheduleByLoanId(Long loanId){
-		return getScheduleOfTypeById(loanId, RepaymentSchedule.Type.LOAN);
-	}
-	
-	@Override
-	public Optional<RepaymentSchedule> findRepaymentScheduleByInvestmentId(Long loanId){
-		return getScheduleOfTypeById(loanId, RepaymentSchedule.Type.INVESTMENT);
-	}
-	
+
 	@Override
 	public void update(Long id, RepaymentSchedule schedule) {
 		repo.put(id, schedule);

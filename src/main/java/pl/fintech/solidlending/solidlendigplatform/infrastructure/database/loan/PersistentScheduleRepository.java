@@ -17,19 +17,7 @@ public class PersistentScheduleRepository implements RepaymentScheduleRepository
 	public Long save(RepaymentSchedule schedule) {
 		return jpaScheduleRepository.save(RepaymentScheduleEntity.from(schedule)).getId();
 	}
-	
-	@Override
-	public Optional<RepaymentSchedule> findRepaymentScheduleByLoanId(Long loanId) {
-		return jpaLoanRepository.findById(loanId)
-				.map(investmentEntity -> investmentEntity.getSchedule().toDomain());
-	}
-	
-	@Override
-	public Optional<RepaymentSchedule> findRepaymentScheduleByInvestmentId(Long investmentId) {
-		return jpaInvestmentRepository.findById(investmentId)
-				.map(investmentEntity -> investmentEntity.getSchedule().toDomain());
-	}
-	
+
 	@Override
 	public void update(Long id, RepaymentSchedule schedule) {
 		schedule.setId(id);

@@ -15,19 +15,18 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Repayment
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockTransferService
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockPaymentService
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.PostgresContainerTestSpecification
 import spock.genesis.Gen
-import spock.lang.Specification
 
-@Import([AddStubRepositoriesToContext, MockTransferService])
+@Import([MockPaymentService])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class LoanControllerIntegrationTest extends Specification{
+class LoanControllerFT extends PostgresContainerTestSpecification{
 
 	@LocalServerPort
 	int randomPort
 	@Autowired
-	PaymentService transferSvcMock
+	PaymentService paymentSvcMock
 	@Autowired
 	LoanRepository loanRepository
 	@Autowired
@@ -55,9 +54,9 @@ class LoanControllerIntegrationTest extends Specification{
 			def loanSchedule = LoanDomainFactory.createRepaymentSchedule(repaymentsNumber, totalLoanValue)
 
 			def investment = LoanDomainFactory.createInvestmentWithSchedule(investmentSchedule)
-			def loan = LoanDomainFactory.crateActiveLoanMatchingInvestment(investment, loanSchedule)
+			def loan = LoanDomainFactory.crateActiveEmptyLoan(repaymentsNumber)
+//			def loan = LoanDomainFactory.crateActiveLoanMatchingInvestment(investment, loanSchedule)
 			def loanId = loanRepository.save(loan)
-			loanSchedule = loan.getSchedule()
 			loanSchedule.setOwnerId(loanId)
 			loanSchedule.setId(1)
 			def investmentId = investmentRepository.save(investment)
@@ -66,6 +65,9 @@ class LoanControllerIntegrationTest extends Specification{
 			investmentSchedule.setId(2)
 			scheduleRepository.save(loanSchedule)
 			scheduleRepository.save(investmentSchedule)
+			loan.setInvestments(Set.of(investment))
+			loan.setSchedule(loanSchedule)
+			loanRepository.update(loanId, loan)
 			def expectedTransferOrder = TransferOrderEvent.builder()
 					.amount(new Money(totalLoanValue/repaymentsNumber))
 					.sourceUserName(loan.getBorrowerUserName())
@@ -75,14 +77,15 @@ class LoanControllerIntegrationTest extends Specification{
 			def response = restClient.get("/api/loans/"+loanId+"/repay")
 		then:
 			response.statusCode() == 201
-			1 * transferSvcMock.execute(expectedTransferOrder)
+			1 * paymentSvcMock.execute(_) >> {arg -> arg == expectedTransferOrder}
 		and:
-			def fromRepoInvestmentSchedule = scheduleRepository.findRepaymentScheduleByInvestmentId(investmentId).get()
+			def fromRepoInvestmentSchedule = investmentRepository.findAllByUsername(investment.getLenderName())
+					.first().getSchedule()
 			fromRepoInvestmentSchedule.getSchedule().stream()
 					.filter({ repayment -> repayment.getStatus() == (Repayment.Status.PAID) })
 					.count() == 1
 		and:
-			def fromRepoLoanSchedule = scheduleRepository.findRepaymentScheduleByLoanId(loanId).get()
+			def fromRepoLoanSchedule = loanRepository.findById(investmentId).get().getSchedule()
 			fromRepoLoanSchedule.getSchedule().stream()
 					.filter({ repayment -> repayment.getStatus() == (Repayment.Status.PAID) })
 					.count() == 1

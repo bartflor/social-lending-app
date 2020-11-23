@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
 public interface JpaOffersRepository extends JpaRepository<OfferEntity, Long> {
 	
 	List<OfferEntity> findAllByLenderName(String userName);

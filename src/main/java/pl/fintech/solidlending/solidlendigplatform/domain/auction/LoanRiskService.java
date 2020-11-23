@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.domain.loan;
+package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;

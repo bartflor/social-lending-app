@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan;
+package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory;
 
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-@Repository
 public class InMemoryInvestmentRepo implements InvestmentRepository {
 		private Map<Long, Investment> repo;
 		private static Long lastId;

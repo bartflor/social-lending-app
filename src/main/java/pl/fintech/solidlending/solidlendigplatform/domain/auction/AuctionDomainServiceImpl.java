@@ -14,7 +14,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepo
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
 
 import java.time.Period;
 import java.util.List;

@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction;
+package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory;
 
 import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;

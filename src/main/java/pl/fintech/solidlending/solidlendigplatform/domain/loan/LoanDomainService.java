@@ -18,7 +18,4 @@ public interface LoanDomainService {
 	
 	List<Investment> getUserInvestments(String userName);
 	
-	RepaymentSchedule findLoanRepaymentSchedule(Long loanId);
-	
-	RepaymentSchedule findInvestmentRepaymentSchedule(Long investmentId);
 }

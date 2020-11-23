@@ -7,11 +7,13 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Transactional
 public class PersistentInvestmentRepository implements InvestmentRepository {
 	JpaInvestmentRepository jpaInvestmentRepository;
 	

@@ -6,12 +6,14 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
+@Transactional
 public class PersistentLoanRepository implements LoanRepository {
 	
 	JpaLoanRepository jpaLoanRepository;

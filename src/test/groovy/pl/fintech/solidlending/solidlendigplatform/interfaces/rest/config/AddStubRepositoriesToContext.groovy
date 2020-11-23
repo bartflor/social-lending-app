@@ -10,12 +10,12 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRe
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryAuctionRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction.InMemoryOfferRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan.InMemoryInvestmentRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan.InMemoryLoanRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan.InMemoryScheduleRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.InMemoryUserRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryAuctionRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryOfferRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryInvestmentRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryLoanRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryScheduleRepo
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryUserRepo
 
 @TestConfiguration
 class AddStubRepositoriesToContext {

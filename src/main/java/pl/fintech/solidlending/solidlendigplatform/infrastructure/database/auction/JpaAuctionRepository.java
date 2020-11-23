@@ -9,7 +9,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-@Repository
 public interface JpaAuctionRepository extends JpaRepository<AuctionEntity, Long> {
 	
 	List<AuctionEntity> findAllByBorrowerName(String userName);
