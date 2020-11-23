@@ -28,7 +28,7 @@ public class InMemoryLoanRepo implements LoanRepository {
 	
 	@Override
 	public List<Loan> findAllByUsername(String userName) {
-		return repo.values().stream().filter((loan -> loan.getBorrowerUserName().equals(userName)))
+		return repo.values().stream().filter(({ loan -> loan.getBorrowerUserName().equals(userName) }))
 				.collect(Collectors.toList());
 		
 	}
@@ -50,7 +50,7 @@ public class InMemoryLoanRepo implements LoanRepository {
 	@Override
 	public void setActive(Long loanId) {
 		Loan loan = findById(loanId)
-				.orElseThrow(() -> new NoSuchElementException(String.format(LOAN_NOT_FOUND, loanId)));
+				.orElseThrow({ -> new NoSuchElementException(String.format(LOAN_NOT_FOUND, loanId)) });
 		loan.setStatus(Loan.LoanStatus.ACTIVE);
 		repo.put(loanId, loan);
 	}

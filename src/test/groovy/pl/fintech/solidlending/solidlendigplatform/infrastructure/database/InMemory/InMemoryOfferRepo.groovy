@@ -28,7 +28,7 @@ public class InMemoryOfferRepo implements OfferRepository {
 	}
 	@Override
 	public List<Offer> findAllByUserName(String userName) {
-		return repository.values().stream().filter((offer -> offer.getLenderName().equals(userName)))
+		return repository.values().stream().filter(({ offer -> offer.getLenderName().equals(userName) }))
 				.collect(Collectors.toList());
 	}
 	

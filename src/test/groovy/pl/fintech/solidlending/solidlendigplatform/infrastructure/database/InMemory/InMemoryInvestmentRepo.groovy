@@ -28,21 +28,23 @@ public class InMemoryInvestmentRepo implements InvestmentRepository {
 		
 		@Override
 		public List<Investment> findAllByUsername(String userName) {
-			return repo.values().stream().filter((investment -> investment.getLenderName().equals(userName)))
+			return repo.values().stream().filter(({ investment -> investment.getLenderName().equals(userName) }))
 					.collect(Collectors.toList());
 		}
 	
 	public List<Investment> findWithLoanId(Long loanId) {
 			return repo.values().stream()
-					.filter(investment -> investment.getLoanId() == loanId)
+					.filter({ investment -> investment.getLoanId() == loanId })
 					.collect(Collectors.toList());
 	}
 	
 	@Override
 	public void setActiveWithLoanId(Long loanId) {
 		List<Investment> investmentsList = findWithLoanId(loanId);
-		investmentsList.forEach(investment -> {investment.setStatus(Investment.Status.ACTIVE);
-    												repo.put(investment.getInvestmentId(), investment);});
+		investmentsList.forEach({ investment ->
+			investment.setStatus(Investment.Status.ACTIVE);
+			repo.put(investment.getInvestmentId(), investment);
+		});
 	}
 	
 	@Override

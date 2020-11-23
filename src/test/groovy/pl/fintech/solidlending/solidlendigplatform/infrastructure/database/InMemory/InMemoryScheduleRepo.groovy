@@ -37,8 +37,8 @@ public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 	
 	private Optional<RepaymentSchedule> getScheduleOfTypeById(Long loanId, RepaymentSchedule.Type investment) {
 		return repo.values().stream()
-				.filter(schedule -> schedule.getType().equals(investment))
-				.filter(schedule -> schedule.getOwnerId().equals(loanId))
+				.filter({ schedule -> schedule.getType().equals(investment) })
+				.filter({ schedule -> schedule.getOwnerId().equals(loanId) })
 				.findAny();
 	}
 }
