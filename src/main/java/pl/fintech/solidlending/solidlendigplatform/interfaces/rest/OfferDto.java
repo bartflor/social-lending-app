@@ -37,7 +37,6 @@ public class OfferDto {
                 .risk(offer.getRisk().getRisk())
                 .loanDuration(offer.getDuration())
                 .status(offer.getStatus().toString())
-                .allowAmountSplit(offer.getAllowAmountSplit())
                 .build();
     }
     
@@ -51,7 +50,6 @@ public class OfferDto {
                 .risk(new Risk(risk))
                 .rate(Rate.fromPercentValue(rate))
                 .duration(loanDuration)
-                .allowAmountSplit(isAllowAmountSplit())
                 .build();
     }
   

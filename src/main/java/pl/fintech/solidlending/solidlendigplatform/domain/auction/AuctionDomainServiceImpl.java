@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddOfferException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
@@ -85,8 +86,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	public Long addOffer(Long auctionId,
 						 String lenderName,
 						 double amount,
-						 double rate,
-						 Boolean allowAmountSplit){
+						 double rate){
 		existsInRepositoryCheck(lenderName);
 		Auction auction = auctionRepository.findById(auctionId).
 				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
@@ -101,7 +101,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.risk(auction.getAuctionLoanParams().getLoanRisk())
 				.rate(Rate.fromPercentValue(rate))
 				.duration(auction.getAuctionLoanParams().getLoanDuration())
-				.allowAmountSplit(allowAmountSplit == null ? Boolean.FALSE : allowAmountSplit)
 				.build();
 		auction.addNewOffer(validOffer);
 		Long offerId = offerRepository.save(validOffer);

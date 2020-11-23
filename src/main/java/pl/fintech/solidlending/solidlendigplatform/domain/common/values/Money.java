@@ -16,12 +16,20 @@ public class Money {
 		value = new BigDecimal(loanAmount);
 	}
 	
+	public static Money differenceValue(Money money1, Money money2) {
+		return new Money(money1.getValue().subtract(money2.getValue()).abs());
+	}
+	
 	public boolean isMoreOrEqual(Money amount) {
 		return value.compareTo(amount.getValue()) >= 0;
 	}
 	
 	public boolean isMoreThan(Money amount) {
 		return value.compareTo(amount.getValue()) > 0;
+	}
+	
+	public boolean isEqual(Money amount) {
+		return value.compareTo(amount.getValue()) == 0;
 	}
 	
 	public Money divide(long num){

@@ -90,6 +90,13 @@ class AuctionDomainFactory {
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
+	static Offer createOffer(Long auctionId, double amount, double rate) {
+		Offer.builder()
+				.id(auctionId)
+				.amount(new Money(amount))
+				.rate(Rate.fromPercentValue(rate))
+				.build()
+	}
 
 	static Offer createOfferWithAmount(int amount, long id){
 		Offer.builder()
@@ -111,7 +118,7 @@ class AuctionDomainFactory {
 
 	static EndAuctionEvent createEndAuctionEvent(){
 		EndAuctionEvent.builder()
-			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.integer.first())))
+			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.long.first())))
 			.auctionLoanParams(createLoanAuctionParams(Gen.integer.first()))
 			.BorrowerUserName(Gen.string(20).first())
 			.build()

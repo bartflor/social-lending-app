@@ -15,18 +15,22 @@ public class Investment {
   Long loanId;
   String lenderName;
   String borrowerName;
-  Money value;
+  Money returnAmount;
   Money loanAmount;
   Rate rate;
   Risk risk;
   Period duration;
   @Builder.Default Status status = Status.UNCONFIRMED;
   RepaymentSchedule schedule;
-
+  
+  public void makeCompleted() {
+        setStatus(Status.COMPLETED);
+  }
+  
   public enum Status {
     UNCONFIRMED,
     ACTIVE,
     COMPLETED,
-    OVERDUE
+    LATE
   }
 }

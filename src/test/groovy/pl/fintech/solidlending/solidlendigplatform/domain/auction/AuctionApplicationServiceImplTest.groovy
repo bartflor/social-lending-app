@@ -1,8 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
-import org.springframework.context.annotation.Import
+
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -18,7 +17,7 @@ class AuctionApplicationServiceImplTest extends Specification {
 	def "createLoanFromEndingAuction should invoke domain services with proper args"(){
 		given:
 			def randId = Gen.integer.first()
-			def policy = new BestOfferRatePolicy()
+			def policy = new BestOffersRatePolicy()
 			def event = AuctionDomainFactory.createEndAuctionEvent()
 		when:
 			auctionApplicationService.createLoanFromEndingAuction(randId, policy)
