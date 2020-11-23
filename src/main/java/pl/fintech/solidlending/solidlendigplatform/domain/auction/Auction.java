@@ -1,15 +1,20 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.*;
+import org.assertj.core.util.BigDecimalComparator;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.Period;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
 @ToString
 @EqualsAndHashCode
 @AllArgsConstructor
@@ -30,13 +35,22 @@ public class Auction {
 	
 	public void addNewOffer(Offer offer) {
 		offers.add(offer);
+		if(status != AuctionStatus.ACTIVE_COMPLETE){
+			checkStatusUpdate();
+		}
+	}
+	
+	private void checkStatusUpdate() {
+		status = AuctionStatus.ACTIVE;
+		Money loanAmount = auctionLoanParams.getLoanAmount();
 		Money offersSum = offers.stream()
 				.map(Offer::getAmount)
 				.reduce(Money::sum)
 				.orElse(Money.ZERO);
-		if(offersSum.isMoreOrEqual(auctionLoanParams.getLoanAmount())){
+		if(offersSum.isMoreOrEqual(loanAmount)){
 			status = AuctionStatus.ACTIVE_COMPLETE;
 		}
+		
 	}
 	
 	public EndAuctionEvent end(OffersSelectionPolicy selectionPolicy) {

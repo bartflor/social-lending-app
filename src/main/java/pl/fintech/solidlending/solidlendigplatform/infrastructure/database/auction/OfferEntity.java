@@ -31,7 +31,6 @@ public class OfferEntity {
 	private Integer risk;
 	private Double rate;
 	private Period duration;
-	private Boolean allowAmountSplit;
 	@Enumerated(EnumType.STRING)
 	private Offer.OfferStatus status;
 	
@@ -45,7 +44,6 @@ public class OfferEntity {
 				.risk(offer.getRisk().getRisk())
 				.rate(offer.getRate().getPercentValue().doubleValue())
 				.duration(offer.getDuration())
-				.allowAmountSplit(offer.getAllowAmountSplit())
 				.status(offer.getStatus())
 				.build();
 	}
@@ -60,7 +58,6 @@ public class OfferEntity {
 				.risk(new Risk(risk))
 				.rate(Rate.fromPercentValue(rate))
 				.duration(duration)
-				.allowAmountSplit(allowAmountSplit)
 				.status(status)
 				.build();
 	}

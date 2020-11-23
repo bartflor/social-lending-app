@@ -61,4 +61,9 @@ public class InMemoryAuctionRepo implements AuctionRepository {
 		repo.remove(auctionId);
 	}
 	
+	@Override
+	public void deleteAll() {
+		repo.clear();
+	}
+	
 }

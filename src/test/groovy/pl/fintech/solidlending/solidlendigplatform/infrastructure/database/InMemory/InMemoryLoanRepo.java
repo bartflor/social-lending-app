@@ -43,6 +43,11 @@ public class InMemoryLoanRepo implements LoanRepository {
 	}
 	
 	@Override
+	public void deleteAll() {
+		repo.clear();
+	}
+	
+	@Override
 	public void setActive(Long loanId) {
 		Loan loan = findById(loanId)
 				.orElseThrow(() -> new NoSuchElementException(String.format(LOAN_NOT_FOUND, loanId)));

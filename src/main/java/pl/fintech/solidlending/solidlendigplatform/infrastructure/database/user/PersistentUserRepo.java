@@ -49,4 +49,9 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 		jpaUserRepository.save(UserEntity.createEntityFrom(lender));
 		return lender.getUserDetails().getUserName();
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaUserRepository.deleteAll();
+	}
 }

@@ -44,5 +44,10 @@ public class InMemoryInvestmentRepo implements InvestmentRepository {
 		investmentsList.forEach(investment -> {investment.setStatus(Investment.Status.ACTIVE);
     												repo.put(investment.getInvestmentId(), investment);});
 	}
+	
+	@Override
+	public void deleteAll() {
+		repo.clear();
+	}
 }
 

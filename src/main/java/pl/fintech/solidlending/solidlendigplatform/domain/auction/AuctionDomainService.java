@@ -22,8 +22,7 @@ public interface AuctionDomainService {
 	Long addOffer(Long auctionId,
 				  String lenderName,
 				  double amount,
-				  double rate,
-				  Boolean allowAmountSplit);
+				  double rate);
 	
 	List<Offer> getLenderOffers(String lenderName);
 	EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy offersSelectionPolicy);

@@ -106,7 +106,6 @@ class AuctionDomainServiceImplTest extends Specification {
 			def borrowerName = Gen.string(20).first()
 			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
 			def rate = Gen.integer(0, 100).first()
-			def allowSplit = Gen.integer.first() > 0
 			def risk = new Risk(Gen.integer(0, Integer.MAX_VALUE).first())
 			def duration = Period.ofMonths(Gen.integer(0, Integer.MAX_VALUE).first())
 			def auction = Mock(Auction)
@@ -124,10 +123,9 @@ class AuctionDomainServiceImplTest extends Specification {
 					.risk(risk)
 					.rate(Rate.fromPercentValue(rate))
 					.duration(duration)
-					.allowAmountSplit(allowSplit)
 					.build();
 		when:
-			def result = auctionService.addOffer(auctionId, lenderName, amount, rate, allowSplit)
+			def result = auctionService.addOffer(auctionId, lenderName, amount, rate)
 		then:
 			1 * lenderRepo.lenderExist(lenderName) >> true
 			1 * auctionRepo.findById(auctionId) >> Optional.of(auction)

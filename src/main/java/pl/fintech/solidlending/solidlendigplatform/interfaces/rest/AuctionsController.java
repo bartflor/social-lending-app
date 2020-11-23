@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOfferRatePolicy;
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicy;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
 import java.time.Period;
@@ -48,7 +48,7 @@ public class AuctionsController {
 	@GetMapping("/{auctionId}/create-loan")
 	public LoanDto endAuctionCreateLoan(@PathVariable Long auctionId){
 		Long newLoanId = auctionApplicationService.createLoanFromEndingAuction(auctionId,
-				new BestOfferRatePolicy());
+				new BestOffersRatePolicy());
 		return LoanDto.from(loanApplicationService.findLoanById(newLoanId));
 	}
 }

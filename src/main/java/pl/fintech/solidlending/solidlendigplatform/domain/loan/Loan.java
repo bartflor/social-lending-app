@@ -23,8 +23,12 @@ public class Loan {
 	@Builder.Default LoanStatus status = LoanStatus.UNCONFIRMED;
 	RepaymentSchedule schedule;
 	
+	public void makeRepaid() {
+		setStatus(LoanStatus.REPAID);
+	}
+	
 	public enum LoanStatus {
-		ACTIVE, CLOSED, UNCONFIRMED
+		ACTIVE, REPAID, UNCONFIRMED
 	}
 	
 	public boolean isActive(){

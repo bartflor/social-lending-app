@@ -8,7 +8,6 @@ import spock.genesis.Gen
 import java.time.Instant
 import java.time.Period
 import java.time.temporal.ChronoUnit
-import java.util.stream.Collectors
 
 class LoanDomainFactory {
 
@@ -31,7 +30,8 @@ class LoanDomainFactory {
 				.investmentId(Gen.long.first())
 				.loanId(Gen.long.first())
 				.lenderName(Gen.string(20).first())
-				.value(new Money(Gen.double.first()))
+				.returnAmount(new Money(Gen.double.first()))
+				.loanAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
 				.schedule(new RepaymentSchedule())
@@ -43,7 +43,7 @@ class LoanDomainFactory {
 		Loan.builder()
 				.borrowerUserName(Gen.string(20).first())
 				.investments(Set.of(investment))
-				.amount(investment.getValue())
+				.amount(investment.getReturnAmount())
 				.averageRate(investment.getRate())
 				.repayment(investment.getSchedule().findNextRepayment().get().getValue())
 				.duration(investment.getDuration())
@@ -88,9 +88,9 @@ class LoanDomainFactory {
 		Investment.builder()
 				.investmentId(Gen.long.first())
 				.lenderName(Gen.string(20).first())
-				.value(new Money(Gen.double.first()))
 				.loanAmount(new Money(Gen.double.first()))
 				.risk(new Risk(Gen.integer(0, 5).first()))
+				.returnAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
 				.schedule(schedule)

@@ -30,6 +30,11 @@ public class InMemoryScheduleRepo implements RepaymentScheduleRepository {
 		repo.put(id, schedule);
 	}
 	
+	@Override
+	public void deleteAll() {
+		repo.clear();
+	}
+	
 	private Optional<RepaymentSchedule> getScheduleOfTypeById(Long loanId, RepaymentSchedule.Type investment) {
 		return repo.values().stream()
 				.filter(schedule -> schedule.getType().equals(investment))

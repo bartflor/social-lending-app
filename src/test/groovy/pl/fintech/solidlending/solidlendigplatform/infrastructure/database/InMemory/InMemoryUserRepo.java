@@ -37,6 +37,12 @@ public class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 		repository.put(userName, UserEntity.createEntityFrom(borrower));
 		return userName;
 	}
+	
+	@Override
+	public void deleteAll() {
+		repository.clear();
+	}
+	
 	public String save(Lender lender) {
 		String userName = lender.getUserDetails().getUserName();
 		repository.put(userName, UserEntity.createEntityFrom(lender));

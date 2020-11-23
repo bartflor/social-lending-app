@@ -46,4 +46,9 @@ public class PersistentOffersRepository implements OfferRepository {
 		offer.setId(id);
 		jpaOffersRepository.save(OfferEntity.createFromOffer(offer));
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaOffersRepository.deleteAll();
+	}
 }

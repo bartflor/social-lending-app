@@ -46,4 +46,9 @@ public class InMemoryOfferRepo implements OfferRepository {
 	public void update(Long id, Offer offer) {
 		repository.put(id, offer);
 	}
+	
+	@Override
+	public void deleteAll() {
+		repository.clear();
+	}
 }

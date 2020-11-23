@@ -48,4 +48,9 @@ public class PersistentLoanRepository implements LoanRepository {
 		loan.setId(loanId);
 		jpaLoanRepository.save(LoanEntity.from(loan));
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaLoanRepository.deleteAll();
+	}
 }

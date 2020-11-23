@@ -23,4 +23,9 @@ public class PersistentScheduleRepository implements RepaymentScheduleRepository
 		schedule.setId(id);
 		save(schedule);
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaScheduleRepository.deleteAll();
+	}
 }

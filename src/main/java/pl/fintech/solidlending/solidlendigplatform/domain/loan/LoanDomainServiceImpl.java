@@ -71,6 +71,11 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 				.map(Investment::getSchedule)
 				.forEach(schedule ->{schedule.reportRepayment();
 											scheduleRepository.update(schedule.getId(), schedule);});
+		if(loanRepaymentSchedule.hasPaidAllScheduledRepayment()){
+			loan.makeRepaid();
+			loan.getInvestments().forEach(Investment::makeCompleted);
+			loanRepository.update(loanId,loan);
+		}
 	}
 	
 	@Override

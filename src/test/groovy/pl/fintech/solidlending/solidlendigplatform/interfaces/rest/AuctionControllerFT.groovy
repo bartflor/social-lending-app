@@ -4,6 +4,7 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 import io.restassured.RestAssured
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import

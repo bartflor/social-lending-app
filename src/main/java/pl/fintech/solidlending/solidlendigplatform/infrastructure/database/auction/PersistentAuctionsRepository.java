@@ -65,4 +65,9 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	public void delete(Long auctionId) {
 		jpaAuctionRepository.deleteById(auctionId);
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaAuctionRepository.deleteAll();
+	}
 }

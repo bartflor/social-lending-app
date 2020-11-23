@@ -85,8 +85,7 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 			auctionService.addOffer(auctionId,
 					offer.getLenderName(),
 					offer.getAmount().getValue().doubleValue(),
-					offer.getRate().getPercentValue(),
-					offer.getAllowAmountSplit())
+					offer.getRate().getPercentValue())
 		then:
 			auction.getOffers().size() == 1
 			def addedOffer = auction.getOffers().find()
@@ -107,8 +106,7 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 			auctionService.addOffer(auctionId,
 					offer.getLenderName(),
 					offer.getAmount().getValue().doubleValue(),
-					offer.getRate().getPercentValue(),
-					offer.getAllowAmountSplit())
+					offer.getRate().getPercentValue())
 		then:
 			thrown(UserNotFoundException)
 	}

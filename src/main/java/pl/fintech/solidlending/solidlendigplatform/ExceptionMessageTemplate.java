@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Getter
@@ -10,10 +11,10 @@ public class ExceptionMessageTemplate {
 	
 	private HttpStatus status;
 	private String message;
-	private LocalDateTime dateTime;
+	private Instant dateTime;
 	
 	private ExceptionMessageTemplate(){
-		this.dateTime = LocalDateTime.now();
+		this.dateTime = Instant.now();
 	}
 	
 	public ExceptionMessageTemplate(HttpStatus status, Exception exception) {

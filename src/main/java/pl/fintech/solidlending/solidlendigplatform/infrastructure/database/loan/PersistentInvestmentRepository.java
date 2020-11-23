@@ -36,4 +36,9 @@ public class PersistentInvestmentRepository implements InvestmentRepository {
 				.forEach(investmentEntity -> {investmentEntity.setStatus(Investment.Status.ACTIVE);
 													jpaInvestmentRepository.save(investmentEntity);});
 	}
+	
+	@Override
+	public void deleteAll(){
+		jpaInvestmentRepository.deleteAll();
+	}
 }
