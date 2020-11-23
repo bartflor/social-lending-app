@@ -5,10 +5,13 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 
+import javax.transaction.Transactional;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
 @AllArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 	private static final String USER_NOT_FOUND = "User with username:%s not found.";
 	
@@ -26,6 +29,17 @@ public class UserServiceImpl implements UserService {
 		Optional<Borrower> borrower = borrowerRepository.findBorrowerByUserName(userName);
 		return borrower.isPresent() ? borrower.get() : lender.orElseThrow(()
 				-> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
+	}
+	
+	@Override
+	public void partialUpdateUserDetails(String userName, Map<String, String> newDetails) {
+		User user = findUser(userName);
+		if(user instanceof Lender){
+			lenderRepository.updateLenderDetails((Lender)user, newDetails);
+		} else {
+			borrowerRepository.updateBorrowerDetails((Borrower)user, newDetails);
+		}
+		
 	}
 	
 }

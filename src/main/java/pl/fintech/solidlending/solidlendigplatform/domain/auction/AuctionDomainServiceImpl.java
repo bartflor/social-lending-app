@@ -153,12 +153,4 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		offerRepository.deleteOffer(offerId);
 	}
 	
-	@Scheduled(cron = "0 0 0 ? * * *")
-	public void endExpiredAuctions(){
-		auctionRepository.findAllWithEndDateBefore(timeService.now()).stream()
-				.map(auction -> endAuction(auction.getId(), new BestOffersRatePolicy()))
-				.collect(Collectors.toList());
-	}
-	
-	
 }

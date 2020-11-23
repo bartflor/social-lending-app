@@ -32,7 +32,12 @@ class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 		repository.put(userName, UserEntity.createEntityFrom(borrower))
 		return userName
 	}
-	
+
+	@Override
+	User updateBorrowerDetails(Borrower user, Map<String, String> newDetails) {
+		return null
+	}
+
 	@Override
 	void deleteAll() {
 		repository.clear()
@@ -43,7 +48,12 @@ class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 		repository.put(userName, UserEntity.createEntityFrom(lender))
 		return userName
 	}
-	
+
+	@Override
+	User updateLenderDetails(Lender user, Map<String, String> newDetails) {
+		return null
+	}
+
 	@Override
 	Optional<Lender> findLenderByUserName(String userName) {
 		if(repository.containsKey(userName)){

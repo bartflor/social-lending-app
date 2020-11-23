@@ -1,13 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
 
 import java.math.BigDecimal;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
-@Value
+@Data
 public class UserDetailsDto {
 	String userName;
 	String name;
@@ -26,6 +26,16 @@ public class UserDetailsDto {
 				.phoneNumber(userDetails.getPhoneNumber())
 				.accountBalance(accountBalance)
 				.hasLinkedBankAccount(userDetails.getPrivateAccountNumber()!=null)
+				.build();
+	}
+	
+	public UserDetails toDomain() {
+		return UserDetails.builder()
+				.userName(userName)
+				.phoneNumber(phoneNumber)
+				.email(email)
+				.name(name)
+				.surname(surname)
 				.build();
 	}
 }

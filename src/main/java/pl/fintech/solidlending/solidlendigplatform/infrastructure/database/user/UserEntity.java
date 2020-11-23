@@ -1,9 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
@@ -16,7 +13,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Data
 @Entity
 public class UserEntity {
 	@Id
