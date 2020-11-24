@@ -42,13 +42,13 @@ spec:
             httpGet:
               path: /actuator/health
               port: 9090
-            initialDelaySeconds: 100
+            initialDelaySeconds: 60
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 9090
-            initialDelaySeconds: 100
+            initialDelaySeconds: 60
             periodSeconds: 10
       restartPolicy: Always
 ---
