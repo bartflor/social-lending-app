@@ -34,21 +34,21 @@ spec:
           resources:
             limits:
               cpu: 400m
-              memory: 256Mi
+              memory: 1024Mi
             requests:
               cpu: 50m
-              memory: 32Mi
+              memory: 256Mi
           livenessProbe:
             httpGet:
               path: /actuator/health
               port: 9090
-            initialDelaySeconds: 50
+            initialDelaySeconds: 90
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /actuator/health
               port: 9090
-            initialDelaySeconds: 30
+            initialDelaySeconds: 60
             periodSeconds: 10
       restartPolicy: Always
 ---
