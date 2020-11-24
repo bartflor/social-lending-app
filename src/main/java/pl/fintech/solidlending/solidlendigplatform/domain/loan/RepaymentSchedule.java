@@ -1,11 +1,15 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
 import java.time.Instant;
 import java.util.*;
-
+@Builder
+@AllArgsConstructor
 @Data
 public class RepaymentSchedule {
 	private static final String NO_REPAYMENT_TO_REPORT_TRANSFER = "Repayment for transaction report not found.";

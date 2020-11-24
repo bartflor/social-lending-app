@@ -9,10 +9,6 @@ public interface LoanApplicationService {
 	
 	Long activateLoan(Long loanId);
 	
-	RepaymentSchedule getRepaymentScheduleByLoanId(Long loanId);
-	
-	RepaymentSchedule getInvestmentSchedule(Long investmentId);
-	
 	void repayLoan(Long loanId);
 	
 	Loan findLoanById(Long loanId);

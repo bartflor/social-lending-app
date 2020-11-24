@@ -7,13 +7,13 @@ import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 import spock.mock.DetachedMockFactory
 
 @TestConfiguration
-class MockTransferService {
+class MockPaymentService {
 
 	def mockFactory = new DetachedMockFactory()
 
 	@Bean
 	@Primary
-	PaymentService mockedTransferService(){
+	PaymentService mockedPaymentService(){
 		mockFactory.Mock(PaymentService)
 	}
 }

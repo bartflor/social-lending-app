@@ -2,6 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
@@ -9,12 +10,18 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
+import javax.persistence.*;
 import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
+@Entity
 public class UserEntity {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
 	private String userName;
 	private String name;
 	private String surname;
@@ -22,6 +29,7 @@ public class UserEntity {
 	private String phoneNumber;
 	private UUID platformAccountNumber;
 	private UUID privateAccountNumber;
+	@Enumerated(EnumType.STRING)
 	private Role role;
 	private int ratingValue;
 	

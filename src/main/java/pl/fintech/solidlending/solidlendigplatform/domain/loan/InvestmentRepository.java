@@ -8,4 +8,6 @@ public interface InvestmentRepository {
 	List<Investment> findAllByUsername(String userName);
 	
 	void setActiveWithLoanId(Long loanId);
+	
+	void deleteAll();
 }

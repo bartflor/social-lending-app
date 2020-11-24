@@ -3,17 +3,30 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 import io.restassured.RestAssured
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
+import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
+import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
+import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
+import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 
-@Import(AddMockedServiceToContext)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [
+		LoanController,
+		AddMockedServiceToContext,
+		DispatcherServletAutoConfiguration,
+		ServletWebServerFactoryAutoConfiguration],
+		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+@AutoConfigureWebMvc
 class LoanControllerTest extends Specification {
 
 	@LocalServerPort

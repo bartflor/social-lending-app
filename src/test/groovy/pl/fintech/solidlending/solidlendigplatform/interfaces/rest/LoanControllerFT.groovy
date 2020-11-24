@@ -8,32 +8,31 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Repayment
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.*
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockTransferService
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockPaymentService
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.PostgresContainerTestSpecification
 import spock.genesis.Gen
-import spock.lang.Specification
 
-@Import([AddStubRepositoriesToContext, MockTransferService])
+@Import([MockPaymentService])
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class LoanControllerIntegrationTest extends Specification{
+class LoanControllerFT extends PostgresContainerTestSpecification{
 
 	@LocalServerPort
 	int randomPort
 	@Autowired
-	PaymentService transferSvcMock
+	PaymentService paymentSvcMock
 	@Autowired
 	LoanRepository loanRepository
 	@Autowired
 	RepaymentScheduleRepository scheduleRepository
 	@Autowired
 	InvestmentRepository investmentRepository
+	@Autowired
+	BorrowerRepository userRepository
 	RequestSpecification restClient
 
 
@@ -44,6 +43,10 @@ class LoanControllerIntegrationTest extends Specification{
 				.accept(ContentType.JSON)
 				.contentType(ContentType.JSON)
 				.log().all()
+		loanRepository.deleteAll()
+		scheduleRepository.deleteAll()
+		investmentRepository.deleteAll()
+		userRepository.deleteAll()
 	}
 
 	def "GET /api/loans/{loanId}/repay should call transferService with proper PaymentOrderEvent \
@@ -53,19 +56,12 @@ class LoanControllerIntegrationTest extends Specification{
 			def totalLoanValue = Gen.integer(100, Integer.MAX_VALUE).first()
 			def investmentSchedule = LoanDomainFactory.createRepaymentSchedule(repaymentsNumber, totalLoanValue)
 			def loanSchedule = LoanDomainFactory.createRepaymentSchedule(repaymentsNumber, totalLoanValue)
-
 			def investment = LoanDomainFactory.createInvestmentWithSchedule(investmentSchedule)
-			def loan = LoanDomainFactory.crateActiveLoanMatchingInvestment(investment, loanSchedule)
+			def loan = LoanDomainFactory.crateActiveEmptyLoan(repaymentsNumber)
 			def loanId = loanRepository.save(loan)
-			loanSchedule = loan.getSchedule()
-			loanSchedule.setOwnerId(loanId)
-			loanSchedule.setId(1)
-			def investmentId = investmentRepository.save(investment)
-			investmentSchedule = investment.getSchedule()
-			investmentSchedule.setOwnerId(investmentId)
-			investmentSchedule.setId(2)
-			scheduleRepository.save(loanSchedule)
-			scheduleRepository.save(investmentSchedule)
+			loan.setInvestments(Set.of(investment))
+			loan.setSchedule(loanSchedule)
+			loanRepository.update(loanId, loan)
 			def expectedTransferOrder = TransferOrderEvent.builder()
 					.amount(new Money(totalLoanValue/repaymentsNumber))
 					.sourceUserName(loan.getBorrowerUserName())
@@ -75,14 +71,16 @@ class LoanControllerIntegrationTest extends Specification{
 			def response = restClient.get("/api/loans/"+loanId+"/repay")
 		then:
 			response.statusCode() == 201
-			1 * transferSvcMock.execute(expectedTransferOrder)
+			1 * paymentSvcMock.execute(_) >> {arg -> arg == expectedTransferOrder}
 		and:
-			def fromRepoInvestmentSchedule = scheduleRepository.findRepaymentScheduleByInvestmentId(investmentId).get()
+			System.out.println( investmentRepository.findAllByUsername(investment.getLenderName()).toString())
+			def fromRepoInvestmentSchedule = investmentRepository.findAllByUsername(investment.getLenderName())
+					.first().getSchedule()
 			fromRepoInvestmentSchedule.getSchedule().stream()
 					.filter({ repayment -> repayment.getStatus() == (Repayment.Status.PAID) })
 					.count() == 1
 		and:
-			def fromRepoLoanSchedule = scheduleRepository.findRepaymentScheduleByLoanId(loanId).get()
+			def fromRepoLoanSchedule = loanRepository.findById(loanId).get().getSchedule()
 			fromRepoLoanSchedule.getSchedule().stream()
 					.filter({ repayment -> repayment.getStatus() == (Repayment.Status.PAID) })
 					.count() == 1

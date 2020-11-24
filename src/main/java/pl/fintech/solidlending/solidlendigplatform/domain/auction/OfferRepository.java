@@ -9,4 +9,6 @@ public interface OfferRepository {
 	List<Offer> findAll();
 	Optional<Offer> findById(Long offerId);
 	void update(Long id, Offer offer);
+	
+	void deleteAll();
 }

@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddOfferException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
@@ -14,11 +15,10 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepo
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService;
 
 import java.time.Period;
 import java.util.List;
-
+@Transactional
 @Service
 @AllArgsConstructor
 public class AuctionDomainServiceImpl implements AuctionDomainService {
@@ -134,8 +134,8 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.orElseThrow(() -> new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
 		EndAuctionEvent endEvent = auction.end(selectionPolicy);
 		auctionRepository.updateAuction(auctionId, auction);
-		auctionRepository.findAuctionOffers(auctionId).stream()
-		.forEach(offer -> { offer.archive();
+		auctionRepository.findAuctionOffers(auctionId)
+				.forEach(offer -> { offer.archive();
 									offerRepository.update(offer.getId(), offer);});
 		return endEvent;
 	}

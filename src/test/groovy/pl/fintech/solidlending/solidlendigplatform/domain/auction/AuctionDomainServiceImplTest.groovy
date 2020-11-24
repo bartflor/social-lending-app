@@ -10,7 +10,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRiskService
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject

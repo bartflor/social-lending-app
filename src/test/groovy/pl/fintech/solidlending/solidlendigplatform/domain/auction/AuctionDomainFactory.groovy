@@ -4,6 +4,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
 import spock.genesis.Gen
 
 import java.time.Instant
@@ -27,6 +28,7 @@ class AuctionDomainFactory {
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
 						.loanRate(Rate.fromPercentValue(rate))
+						.loanRisk(new Risk(Gen.integer(1,5).first()))
 						.build())
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
@@ -104,11 +106,12 @@ class AuctionDomainFactory {
 				.lenderName(Gen.string(20).first())
 				.amount(new Money(amount))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
+				.risk(new Risk(Gen.integer(1, 5).first()))
 				.build()
 	}
 
 	static Auction createAuctionWithAmount(Integer amount) {
-		createAuction(Gen.string.first(),
+		createAuction(Gen.string(30).first(),
 				Period.ofDays(Gen.integer.first()),
 				amount,
 				Period.ofDays(Gen.integer.first()),

@@ -12,7 +12,6 @@ import java.time.Period;
 import java.util.UUID;
 
 @Log
-@Component
 @AllArgsConstructor
 public class InitDataLoader implements CommandLineRunner {
   private AuctionDomainService auctionDomainServiceImpl;
