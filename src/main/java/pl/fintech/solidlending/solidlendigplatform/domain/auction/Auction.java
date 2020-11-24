@@ -27,7 +27,7 @@ public class Auction {
 	private Long id;
 	private final String borrowerUserName;
 	private final Rating borrowerRating;
-	private final Instant startDate;
+	private final Instant endDate;
 	private final Period auctionDuration;
 	@Builder.Default private Set<Offer> offers = new HashSet<>();
 	@Builder.Default private AuctionStatus status = AuctionStatus.ACTIVE;

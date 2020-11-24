@@ -17,7 +17,10 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Transactional
 @Service
 @AllArgsConstructor
@@ -57,7 +60,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		
 		Auction auction = Auction.builder()
 				.borrowerUserName(username)
-				.startDate(timeService.now())
+				.endDate(timeService.now().plus(auctionDuration.getDays(), ChronoUnit.DAYS))
 				.auctionDuration(auctionDuration)
 				.auctionLoanParams(auctionLoanParams)
 				.borrowerRating(borrower.getRating())
@@ -140,5 +143,14 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		return endEvent;
 	}
 	
-
+	@Override
+	public void deleteAuction(Long auctionId) {
+		auctionRepository.delete(auctionId);
+	}
+	
+	@Override
+	public void deleteOffer(Long offerId) {
+		offerRepository.deleteOffer(offerId);
+	}
+	
 }

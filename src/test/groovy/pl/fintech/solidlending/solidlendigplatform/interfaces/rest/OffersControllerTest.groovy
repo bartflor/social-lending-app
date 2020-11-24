@@ -65,6 +65,17 @@ class OffersControllerTest extends Specification {
 			1* auctionAppSvcMock.addOffer(auctionId, lenderName, amount, rate, allowSplit)
 		and:
 			response.statusCode() == 201
+	}
 
+	def "DELETE /api/offers/{id} should call auctionApplicationService with proper parameters and \
+		 return 204 status"(){
+		given:
+			def randID = Gen.integer.first()
+		when:
+			def response = restClient.delete("/api/offers/"+randID)
+		then:
+			1*auctionAppSvcMock.deleteOffer(_) >> {arg -> arg == randID}
+		and:
+			response.statusCode() == 204
 	}
 }

@@ -1,20 +1,18 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.util.UUID;
 
 @AllArgsConstructor
 @Builder
-@Value
+@Getter
 public class UserDetails {
 	String userName;
-	String name;
-	String surname;
-	String email;
-	String phoneNumber;
+	@Setter String name;
+	@Setter String surname;
+	@Setter String email;
+	@Setter String phoneNumber;
 	UUID platformAccountNumber;
-	UUID privateAccountNumber;
+	@Setter UUID privateAccountNumber;
 }

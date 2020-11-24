@@ -19,4 +19,8 @@ public interface AuctionApplicationService {
 						  double amount,
 						  Period loanDuration,
 						  double rate);
+	
+	void deleteAuction(Long auctionId);
+	
+	void deleteOffer(Long offerId);
 }

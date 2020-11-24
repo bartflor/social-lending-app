@@ -12,6 +12,7 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
+import java.time.Instant
 import java.time.Period
 
 class AuctionDomainServiceIntegrationTest extends Specification {
@@ -55,6 +56,7 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 						.userName(lenderName)
 						.platformAccountNumber(UUID.randomUUID()).build())
 				.build())
+		timeService.now() >> Instant.now()
 	}
 
 	def "createNewAuction should save new Auction to repository and return new id"() {

@@ -8,6 +8,8 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
 
 import javax.transaction.Transactional;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,11 +56,10 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	
 	@Override
 	public List<Offer> findAuctionOffers(Long auctionId) {
-		return findById(auctionId)
+		return new ArrayList<>(findById(auctionId)
 				.orElseThrow(() -> new AuctionNotFoundException(
 						String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)))
-				.getOffers().stream()
-				.collect(Collectors.toList());
+				.getOffers());
 	}
 	
 	@Override
@@ -70,4 +71,12 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	public void deleteAll(){
 		jpaAuctionRepository.deleteAll();
 	}
+	
+	@Override
+	public List<Auction> findAllWithEndDateBefore(Instant date) {
+		return jpaAuctionRepository.findAllByAuctionEndDateAfter(date).stream()
+				.map(AuctionEntity::toDomain)
+				.collect(Collectors.toList());
+	}
+
 }

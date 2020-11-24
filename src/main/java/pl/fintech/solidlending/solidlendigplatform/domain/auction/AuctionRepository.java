@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,4 +20,6 @@ public interface AuctionRepository {
 	void delete(Long auctionId);
 	
 	void deleteAll();
+	
+	List<Auction> findAllWithEndDateBefore(Instant now);
 }

@@ -23,7 +23,7 @@ public class AuctionDto {
     double rate;
     int loanDuration;//in months
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Europe/Warsaw")
-    Instant auctionStartDate;
+    Instant auctionEndDate;
     int auctionDuration;//in days
     String status;
     List<OfferDto> offers;
@@ -37,7 +37,7 @@ public class AuctionDto {
                 .amount(params.getLoanAmount().getValue().doubleValue())
                 .rate(params.getLoanRate().getPercentValue().doubleValue())
                 .loanDuration((int)params.getLoanDuration().toTotalMonths())
-                .auctionStartDate(auction.getStartDate())
+                .auctionEndDate(auction.getEndDate())
                 .auctionDuration(auction.getAuctionDuration().getDays())
                 .status(auction.getStatus().toString())
                 .offers(auction.getOffers().stream()

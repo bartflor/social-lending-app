@@ -2,15 +2,18 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 
+
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @AllArgsConstructor
 public class PersistentUserRepo implements BorrowerRepository, LenderRepository {
+	private static final String USER_NOT_FOUND = "User with user name: %s not found";
 	JpaUserRepository jpaUserRepository;
 	
 	@Override
@@ -32,6 +35,8 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 		return borrower.getUserDetails().getUserName();
 	}
 	
+
+	
 	@Override
 	public Optional<Lender> findLenderByUserName(String userName) {
 		return jpaUserRepository.findByUserNameAndRole(userName, UserEntity.Role.LENDER)
@@ -51,7 +56,47 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 	}
 	
 	@Override
+	public User updateLenderDetails(Lender user, Map<String, String> newDetails) {
+		return updateDetails(user.getUserDetails().getUserName(), newDetails);
+	}
+	
+	@Override
+	public User updateBorrowerDetails(Borrower user, Map<String, String> newDetails) {
+		return updateDetails(user.getUserDetails().getUserName(), newDetails);
+	}
+	
+	private User updateDetails(String userName, Map<String, String> newDetails) {
+		UserEntity borrower = jpaUserRepository.findByUserNameAndRole(
+				userName, UserEntity.Role.BORROWER)
+				.orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
+		for(Map.Entry<String, String> entry: newDetails.entrySet()){
+			String e = entry.getKey().toLowerCase();
+			switch(e){
+				case "name":
+					borrower.setName(entry.getValue());
+					break;
+				case "surname":
+					borrower.setSurname(entry.getValue());
+					break;
+				case "phonenumber":
+					borrower.setPhoneNumber(entry.getValue());
+					break;
+				case "email":
+					borrower.setEmail(entry.getValue());
+					break;
+				case "privateaccountnumber":
+          			borrower.setPrivateAccountNumber(UUID.fromString(entry.getValue()));
+					break;
+			}
+		
+		}
+		jpaUserRepository.save(borrower);
+		return borrower.createDomainUser();
+	}
+	
+	@Override
 	public void deleteAll(){
 		jpaUserRepository.deleteAll();
 	}
+	
 }

@@ -5,6 +5,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer
 
+import java.time.Instant
 import java.util.stream.Collectors
 
 class InMemoryAuctionRepo implements AuctionRepository {
@@ -61,5 +62,9 @@ class InMemoryAuctionRepo implements AuctionRepository {
 	void deleteAll() {
 		repo.clear()
 	}
-	
+
+	@Override
+	List<Auction> findAllWithEndDateBefore(Instant now) {
+		return null
+	}
 }

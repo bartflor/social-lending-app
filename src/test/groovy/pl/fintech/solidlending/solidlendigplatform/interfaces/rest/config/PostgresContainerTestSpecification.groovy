@@ -21,7 +21,10 @@ class PostgresContainerTestSpecification extends Specification {
 		registry.add('spring.datasource.jdbc-url', { -> postgreSQLContainer.getJdbcUrl() })
 		registry.add('spring.datasource.username', { -> USER })
 		registry.add('spring.datasource.password', { -> USER })
-
+		registry.add('spring.flyway.enabled', { -> 'true' })
+		registry.add('spring.flyway.url', { -> postgreSQLContainer.getJdbcUrl() })
+		registry.add('spring.flyway.user', { -> USER })
+		registry.add('spring.flyway.password', { -> USER })
 	}
 
 }

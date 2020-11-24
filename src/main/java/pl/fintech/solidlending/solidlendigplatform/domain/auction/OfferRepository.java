@@ -11,4 +11,6 @@ public interface OfferRepository {
 	void update(Long id, Offer offer);
 	
 	void deleteAll();
+	
+	void deleteOffer(Long offerId);
 }

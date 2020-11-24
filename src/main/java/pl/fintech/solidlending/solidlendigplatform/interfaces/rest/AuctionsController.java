@@ -37,7 +37,7 @@ public class AuctionsController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping()
 	public Long addNewAuction(@RequestBody NewAuctionDto auctionDto){
-		return auctionApplicationService.createNewAuction(auctionDto.getBorrower(), //TODO: from auth
+		return auctionApplicationService.createNewAuction(auctionDto.getBorrower(),
 				Period.ofDays(auctionDto.getAuctionDuration()),
 				auctionDto.getAmount(),
 				Period.ofMonths(auctionDto.getLoanDuration()),
@@ -50,5 +50,11 @@ public class AuctionsController {
 		Long newLoanId = auctionApplicationService.createLoanFromEndingAuction(auctionId,
 				new BestOffersRatePolicy());
 		return LoanDto.from(loanApplicationService.findLoanById(newLoanId));
+	}
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/{auctionId}")
+	public void deleteAuction(@PathVariable Long auctionId){
+		auctionApplicationService.deleteAuction(auctionId);
 	}
 }

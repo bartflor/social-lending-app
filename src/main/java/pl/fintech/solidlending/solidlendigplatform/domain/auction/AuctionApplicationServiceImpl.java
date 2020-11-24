@@ -52,4 +52,14 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 				loanDuration,
 				rate);
 	}
+	
+	@Override
+	public void deleteAuction(Long auctionId) {
+		domainService.deleteAuction(auctionId);
+	}
+	
+	@Override
+	public void deleteOffer(Long offerId) {
+		domainService.deleteOffer(offerId);
+	}
 }

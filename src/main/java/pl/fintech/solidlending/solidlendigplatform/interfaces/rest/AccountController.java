@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
+import java.util.Map;
+
 import static pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent.TransferType;
 
 @RequestMapping("api/accounts")
@@ -20,6 +22,12 @@ public class AccountController {
 	public UserDetailsDto getUserDetails(@PathVariable String userName){
 		return UserDetailsDto.from(userService.getUserDetails(userName),
 				paymentService.checkUserBalance(userName).getValue());
+	}
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PatchMapping("/{userName}")
+	public void updateUserDetails(@PathVariable String userName, @RequestBody Map<String, String> newDetails){
+		userService.partialUpdateUserDetails(userName, newDetails);
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
