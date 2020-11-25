@@ -1,10 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService;
 
 import java.util.List;
@@ -21,5 +20,13 @@ public class InvestmentController {
     return loanApplicationService.getUserInvestments(userName).stream()
         .map(InvestmentDto::from)
         .collect(Collectors.toList());
+	}
+	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PutMapping("/{investmentId}/giveOpinion")
+	public void giveOpinionOnBorrower(@PathVariable Long investmentId, @RequestBody OpinionDto opinionDto){
+		Opinion newOpinion = opinionDto.toDomain();
+		newOpinion.setInvestmentId(investmentId);
+		loanApplicationService.giveOpinionOnBorrower(newOpinion);
 	}
 }

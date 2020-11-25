@@ -63,7 +63,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.endDate(timeService.now().plus(auctionDuration.getDays(), ChronoUnit.DAYS))
 				.auctionDuration(auctionDuration)
 				.auctionLoanParams(auctionLoanParams)
-				.borrowerRating(borrower.getRating())
+				.borrowerRating(borrower.getRating().getTotalRating())
 				.build();
 		return auctionRepository.save(auction);
 	}

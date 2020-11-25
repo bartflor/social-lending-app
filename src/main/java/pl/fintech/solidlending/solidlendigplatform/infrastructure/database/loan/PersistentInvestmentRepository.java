@@ -9,6 +9,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -40,5 +41,11 @@ public class PersistentInvestmentRepository implements InvestmentRepository {
 	@Override
 	public void deleteAll(){
 		jpaInvestmentRepository.deleteAll();
+	}
+	
+	@Override
+	public Optional<Investment> findById(Long investmentId) {
+		return jpaInvestmentRepository.findById(investmentId)
+				.map(InvestmentEntity::toDomain);
 	}
 }

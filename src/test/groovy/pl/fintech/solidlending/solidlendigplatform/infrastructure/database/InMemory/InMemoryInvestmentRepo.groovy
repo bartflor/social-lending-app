@@ -49,5 +49,10 @@ class InMemoryInvestmentRepo implements InvestmentRepository {
 	void deleteAll() {
 		repo.clear()
 	}
+
+	@Override
+	Optional<Investment> findById(Long investmentId) {
+		return null
+	}
 }
 

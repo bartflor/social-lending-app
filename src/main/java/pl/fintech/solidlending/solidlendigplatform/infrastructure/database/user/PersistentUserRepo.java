@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 
 
 import java.util.Map;
@@ -97,6 +98,20 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 	@Override
 	public void deleteAll(){
 		jpaUserRepository.deleteAll();
+	}
+	
+	@Override
+	public void updateBorrowerOpinion(Borrower borrower, Opinion opinion) {
+		UserEntity borrower = jpaUserRepository.findByUserNameAndRole(
+				userName, UserEntity.Role.BORROWER)
+				.orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
+		borrower.getBorrowerOpinions().add(OpinionEntity.from(opinion));
+		
+		borrower.setRatingValue((int)borrower.getBorrowerOpinions().stream()
+				.mapToInt(opinionEntity -> opinionEntity.opinionRating)
+				.average().orElse(0));
+		jpaUserRepository.save(borrower);
+		
 	}
 	
 }

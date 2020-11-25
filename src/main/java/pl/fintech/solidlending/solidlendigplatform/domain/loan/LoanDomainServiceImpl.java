@@ -2,6 +2,9 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException;
@@ -24,6 +27,7 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	private final LoanFactory loanFactory;
 	private final InvestmentFactory investmentFactory;
 	private final InvestmentRepository investmentRepository;
+	private final UserService userService;
 	
 	/**
 	 * Create loan and investments with UNCONFIRMED status
@@ -35,15 +39,6 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 		Set<Investment> investments = investmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
 		Loan loan = loanFactory.createLoan(params, investments);
 		Long loanId = loanRepository.save(loan);
-//		for(Investment investment : investments){
-//			investment.setLoanId(loanId);
-//			Long id = investmentRepository.save(investment);
-//			RepaymentSchedule schedule = investment.getSchedule();
-//			schedule.setOwnerId(id);
-//			scheduleRepository.save(schedule);
-//		}
-//		loan.getSchedule().setOwnerId(loanId);
-//		scheduleRepository.save(loan.getSchedule());
 		return loanId;
 	}
 	
@@ -94,14 +89,20 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	
 	@Override
 	public List<Loan> getUserLoans(String userName) {
-		//TODO:check if usr is borrower
 		return loanRepository.findAllByUsername(userName);
 	}
 	
 	@Override
 	public List<Investment> getUserInvestments(String userName) {
-		//TODO:check if usr is lender
 		return investmentRepository.findAllByUsername(userName);
+	}
+	
+	@Override
+	public void giveOpinionOnBorrower(Opinion opinion){
+		Investment investment = investmentRepository.findById(opinion.getInvestmentId())
+				.orElseThrow(() -> new LoanNotFoundException(String.format(LOAN_WITH_ID_NOT_FOUND, opinion.getInvestmentId())));
+		userService.giveOpinionOnBorrower(investment.getBorrowerName(), opinion);
+		
 	}
 
 	

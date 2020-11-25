@@ -42,4 +42,10 @@ public class AccountController {
 		paymentService.executeExternal(withdrawalTransfer.createTransferOrderEvent(TransferType.WITHDRAWAL));
 	}
 	
+	@ResponseStatus(HttpStatus.OK)
+	@GetMapping("/{borrowerName}/borrowerOpinion")
+	public BorrowerInfoDto getBorrowerInfo(@PathVariable String borrowerName){
+		return BorrowerInfoDto.from(userService.findBorrower(borrowerName));
+	}
+	
 }
