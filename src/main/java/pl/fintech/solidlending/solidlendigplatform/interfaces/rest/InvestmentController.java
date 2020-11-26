@@ -23,7 +23,7 @@ public class InvestmentController {
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PutMapping("/{investmentId}/giveOpinion")
+	@PutMapping("/{investmentId}/give-opinion")
 	public void giveOpinionOnBorrower(@PathVariable Long investmentId, @RequestBody OpinionDto opinionDto){
 		loanApplicationService.giveOpinionOnBorrower(Opinion.makeOpinion(opinionDto.getAuthor(),
 				opinionDto.getOpinionText(),
