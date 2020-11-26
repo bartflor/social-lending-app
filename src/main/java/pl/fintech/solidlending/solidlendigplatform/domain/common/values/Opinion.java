@@ -8,22 +8,23 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class Opinion {
-	Integer opinionRating;
-	String opinionText;
-	String author;
-	Long investmentId;
+	private Double opinionRating;
+	private String opinionText;
+	private String author;
+	private Long investmentId;
 	
-	static Opinion makeOpinion(String userName, String opinion, Integer rating){
+	public static Opinion makeOpinion(String userName, String opinion, Double rating, Long investmentId){
 		if(rating>5){
-			rating = 5;
+			rating = 5.;
 		}
     	if (rating < 0) {
-      		rating = 0;
+      		rating = 0.;
 		}
 		return Opinion.builder()
 				.author(userName)
 				.opinionText(opinion)
 				.opinionRating(rating)
+				.investmentId(investmentId)
 				.build();
 	}
 }

@@ -30,19 +30,17 @@ public class AuctionDto {
 
     public static AuctionDto fromAuction(Auction auction) {
         AuctionLoanParams params = auction.getAuctionLoanParams();
-        return AuctionDto.builder()
-                .id(auction.getId())
-                .borrower(auction.getBorrowerUserName())
-                .borrowerRating(auction.getBorrowerRating())
-                .amount(params.getLoanAmount().getValue().doubleValue())
-                .rate(params.getLoanRate().getPercentValue().doubleValue())
-                .loanDuration((int)params.getLoanDuration().toTotalMonths())
-                .auctionEndDate(auction.getEndDate())
-                .auctionDuration(auction.getAuctionDuration().getDays())
-                .status(auction.getStatus().toString())
-                .offers(auction.getOffers().stream()
-                        .map(OfferDto::fromOffer)
-                        .collect(Collectors.toList()))
-                .build();
+    return AuctionDto.builder()
+        .id(auction.getId())
+        .borrower(auction.getBorrower().getUserDetails().getName())
+        .borrowerRating(auction.getBorrower().getRating().getTotalRating())
+        .amount(params.getLoanAmount().getValue().doubleValue())
+        .rate(params.getLoanRate().getPercentValue().doubleValue())
+        .loanDuration((int) params.getLoanDuration().toTotalMonths())
+        .auctionEndDate(auction.getEndDate())
+        .auctionDuration(auction.getAuctionDuration().getDays())
+        .status(auction.getStatus().toString())
+        .offers(auction.getOffers().stream().map(OfferDto::fromOffer).collect(Collectors.toList()))
+        .build();
     }
 }

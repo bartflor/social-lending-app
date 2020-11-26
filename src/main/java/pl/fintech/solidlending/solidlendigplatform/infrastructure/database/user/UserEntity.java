@@ -33,8 +33,9 @@ public class UserEntity {
 	private UUID privateAccountNumber;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	private Integer ratingValue;
+	private Double ratingValue;
 	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
 	private List<OpinionEntity> borrowerOpinions;
 	
 	protected enum Role{

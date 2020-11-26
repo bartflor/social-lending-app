@@ -14,11 +14,11 @@ import java.util.Optional;
 @AllArgsConstructor
 @Getter
 public class Rating {
-	Integer totalRating;
+	Double totalRating;
 	List<Opinion> opinions;
 
 	public Rating(){
-		this.totalRating = 1;
+		this.totalRating = 1.0;
 		this.opinions = new ArrayList<>();
 	}
 	
@@ -29,6 +29,9 @@ public class Rating {
     	oldOpinion.ifPresentOrElse(opinion -> {opinion.setOpinionRating(newOpinion.getOpinionRating());
     									   opinion.setOpinionText(newOpinion.getOpinionText());},
 			() -> opinions.add(newOpinion));
+		totalRating = (opinions.stream()
+				.mapToDouble(opinionEntity -> opinionEntity.getOpinionRating())
+				.average().orElse(0));
 	}
 	
 }

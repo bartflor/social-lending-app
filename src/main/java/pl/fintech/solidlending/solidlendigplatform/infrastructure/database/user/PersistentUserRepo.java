@@ -10,6 +10,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor
@@ -58,41 +59,40 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 	
 	@Override
 	public User updateLenderDetails(Lender user, Map<String, String> newDetails) {
-		return updateDetails(user.getUserDetails().getUserName(), newDetails);
+    return updateDetails(user.getUserDetails().getUserName(), UserEntity.Role.LENDER, newDetails);
 	}
 	
 	@Override
 	public User updateBorrowerDetails(Borrower user, Map<String, String> newDetails) {
-		return updateDetails(user.getUserDetails().getUserName(), newDetails);
+		return updateDetails(user.getUserDetails().getUserName(), UserEntity.Role.BORROWER, newDetails);
 	}
 	
-	private User updateDetails(String userName, Map<String, String> newDetails) {
-		UserEntity borrower = jpaUserRepository.findByUserNameAndRole(
-				userName, UserEntity.Role.BORROWER)
+	private User updateDetails(String userName, UserEntity.Role role, Map<String, String> newDetails) {
+		UserEntity user = jpaUserRepository.findByUserNameAndRole(userName, role)
 				.orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
 		for(Map.Entry<String, String> entry: newDetails.entrySet()){
 			String e = entry.getKey().toLowerCase();
 			switch(e){
 				case "name":
-					borrower.setName(entry.getValue());
+					user.setName(entry.getValue());
 					break;
 				case "surname":
-					borrower.setSurname(entry.getValue());
+					user.setSurname(entry.getValue());
 					break;
 				case "phonenumber":
-					borrower.setPhoneNumber(entry.getValue());
+					user.setPhoneNumber(entry.getValue());
 					break;
 				case "email":
-					borrower.setEmail(entry.getValue());
+					user.setEmail(entry.getValue());
 					break;
 				case "privateaccountnumber":
-          			borrower.setPrivateAccountNumber(UUID.fromString(entry.getValue()));
+          			user.setPrivateAccountNumber(UUID.fromString(entry.getValue()));
 					break;
 			}
 		
 		}
-		jpaUserRepository.save(borrower);
-		return borrower.createDomainUser();
+		jpaUserRepository.save(user);
+		return user.createDomainUser();
 	}
 	
 	@Override
@@ -101,16 +101,15 @@ public class PersistentUserRepo implements BorrowerRepository, LenderRepository 
 	}
 	
 	@Override
-	public void updateBorrowerOpinion(Borrower borrower, Opinion opinion) {
-		UserEntity borrower = jpaUserRepository.findByUserNameAndRole(
-				userName, UserEntity.Role.BORROWER)
-				.orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userName)));
-		borrower.getBorrowerOpinions().add(OpinionEntity.from(opinion));
-		
-		borrower.setRatingValue((int)borrower.getBorrowerOpinions().stream()
-				.mapToInt(opinionEntity -> opinionEntity.opinionRating)
-				.average().orElse(0));
-		jpaUserRepository.save(borrower);
+	public void updateBorrowerOpinion(Borrower borrower) {
+		UserEntity borrowerEntity = jpaUserRepository.findByUserNameAndRole(
+				borrower.getUserDetails().getUserName(), UserEntity.Role.BORROWER)
+				.orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, borrower.getUserDetails().getUserName())));
+		borrowerEntity.setBorrowerOpinions(borrower.getRating().getOpinions().stream()
+				.map(OpinionEntity::from)
+				.collect(Collectors.toList()));
+		borrowerEntity.setRatingValue(borrower.getRating().getTotalRating());
+		jpaUserRepository.save(borrowerEntity);
 		
 	}
 	

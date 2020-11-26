@@ -27,7 +27,8 @@ class InMemoryAuctionRepo implements AuctionRepository {
 	
 	@Override
 	List<Auction> findAllByUsername(String userName) {
-		return repo.values().stream().filter(({ auction -> auction.getBorrowerUserName().equals(userName) }))
+		return repo.values().stream().filter({ auction -> auction.getBorrower()
+				.getUserDetails().getUserName() == userName})
 				.collect(Collectors.toList())
 		
 	}

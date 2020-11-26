@@ -43,7 +43,7 @@ public class AccountController {
 	}
 	
 	@ResponseStatus(HttpStatus.OK)
-	@GetMapping("/{borrowerName}/borrowerOpinion")
+	@GetMapping("/borrower-profile/{borrowerName}")
 	public BorrowerInfoDto getBorrowerInfo(@PathVariable String borrowerName){
 		return BorrowerInfoDto.from(userService.findBorrower(borrowerName));
 	}

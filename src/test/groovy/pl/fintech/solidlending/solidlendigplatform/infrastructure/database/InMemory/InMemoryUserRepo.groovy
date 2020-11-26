@@ -45,7 +45,7 @@ class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	}
 
 	@Override
-	void updateBorrowerOpinion(String userName, Opinion opinion) {
+	void updateBorrowerOpinion(Borrower borrower) {
 
 	}
 

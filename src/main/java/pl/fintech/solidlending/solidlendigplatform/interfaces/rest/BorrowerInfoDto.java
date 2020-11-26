@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Value
 public class BorrowerInfoDto {
 	String email;
-	Integer totalRating;
+	Double totalRating;
 	List<OpinionDto> opinions;
 	
 	public static BorrowerInfoDto from(Borrower borrower){

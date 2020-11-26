@@ -5,14 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.OpinionEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
 public class OpinionDto {
-	private Integer opinionRating;
+	private Double opinionRating;
 	private String opinionText;
 	private String author;
 	

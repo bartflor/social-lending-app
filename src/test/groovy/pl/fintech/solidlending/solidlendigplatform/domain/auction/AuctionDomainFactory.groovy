@@ -1,6 +1,8 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
@@ -20,10 +22,9 @@ class AuctionDomainFactory {
 		def auctionId = Gen.long.first()
 		Auction.builder()
 				.id(auctionId)
-				.borrowerUserName(borrowerName)
+				.borrower(createBorrower(borrowerName, rating))
 				.endDate(Instant.now())
 				.auctionDuration(auctionDuration)
-				.borrowerRating(new Rating(rating))
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
@@ -37,10 +38,9 @@ class AuctionDomainFactory {
 	static Auction createAuction(long id) {
 		Auction.builder()
 				.id(id)
-				.borrowerUserName(Gen.string(20).first())
+				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
 				.endDate(Gen.date.first().toInstant())
 				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.borrowerRating(new Rating(Gen.integer.first()))
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(Gen.double.first()))
 						.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
@@ -65,10 +65,9 @@ class AuctionDomainFactory {
 		def amount = Gen.integer.first();
 		Auction.builder()
 				.id(id)
-				.borrowerUserName(Gen.string(20).first())
+				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
 				.endDate(Gen.date.first().toInstant())
 				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.borrowerRating(new Rating(Gen.integer.first()))
 				.auctionLoanParams(createLoanAuctionParams(amount))
 				.offers(Set.of(createOfferWithAmount(amount, Gen.long.first())))
 				.status(Auction.AuctionStatus.ACTIVE_COMPLETE)
@@ -119,6 +118,15 @@ class AuctionDomainFactory {
 				Gen.integer.first())
 	}
 
+	static Auction createAuctionWithUserNameAmount(String borrower, Integer amount) {
+		createAuction(borrower,
+				Period.ofDays(Gen.integer.first()),
+				amount,
+				Period.ofDays(Gen.integer.first()),
+				Gen.getDouble().first(),
+				Gen.integer.first())
+	}
+
 	static EndAuctionEvent createEndAuctionEvent(){
 		EndAuctionEvent.builder()
 			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.long.first())))
@@ -135,10 +143,9 @@ class AuctionDomainFactory {
 	                              int rating,
 								  Instant now) {
 		Auction.builder()
-				.borrowerUserName(borrowerName)
+				.borrower(createBorrower(borrowerName, rating))
 				.endDate(now)
 				.auctionDuration(auctionDuration)
-				.borrowerRating(new Rating(rating))
 				.auctionLoanParams(AuctionLoanParams.builder()
 						.loanAmount(new Money(amount))
 						.loanDuration(loanDuration)
@@ -146,5 +153,18 @@ class AuctionDomainFactory {
 						.build())
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
+	}
+
+	static Borrower createBorrower(String userName, double rating){
+			Borrower.builder()
+					.rating(new Rating(rating, Collections.emptyList()))
+					.userDetails(UserDetails.builder()
+							.name(Gen.string(20).first())
+							.email(Gen.string(20).first())
+							.userName(userName)
+							.privateAccountNumber(UUID.randomUUID())
+							.build())
+					.build()
+
 	}
 }

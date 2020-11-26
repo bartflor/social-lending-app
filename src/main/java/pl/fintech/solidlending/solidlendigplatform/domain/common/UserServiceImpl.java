@@ -46,7 +46,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void giveOpinionOnBorrower(String userName, Opinion opinion){
-		borrowerRepository.updateBorrowerOpinion(findBorrower(userName), opinion);
+		Borrower borrower = findBorrower(userName);
+		borrower.giveOpinion(opinion);
+		borrowerRepository.updateBorrowerOpinion(borrower);
 	}
 	
 	@Override

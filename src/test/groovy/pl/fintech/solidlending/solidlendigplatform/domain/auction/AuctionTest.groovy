@@ -66,7 +66,7 @@ class AuctionTest extends Specification {
 			auction.getStatus() == Auction.AuctionStatus.ARCHIVED
 		and:
 			result == EndAuctionEvent.builder()
-					.BorrowerUserName(auction.getBorrowerUserName())
+					.BorrowerUserName(auction.getBorrower().getUserDetails().getUserName())
 					.offers(selectedOffers)
 					.auctionLoanParams(auction.getAuctionLoanParams())
 					.build()

@@ -25,8 +25,9 @@ public class InvestmentController {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PutMapping("/{investmentId}/giveOpinion")
 	public void giveOpinionOnBorrower(@PathVariable Long investmentId, @RequestBody OpinionDto opinionDto){
-		Opinion newOpinion = opinionDto.toDomain();
-		newOpinion.setInvestmentId(investmentId);
-		loanApplicationService.giveOpinionOnBorrower(newOpinion);
+		loanApplicationService.giveOpinionOnBorrower(Opinion.makeOpinion(opinionDto.getAuthor(),
+				opinionDto.getOpinionText(),
+				opinionDto.getOpinionRating(),
+				investmentId));
 	}
 }

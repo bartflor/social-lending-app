@@ -20,7 +20,7 @@ public class OpinionEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
-	Integer opinionRating;
+	Double opinionRating;
 	String opinionText;
 	String author;
 	Long investmentId;

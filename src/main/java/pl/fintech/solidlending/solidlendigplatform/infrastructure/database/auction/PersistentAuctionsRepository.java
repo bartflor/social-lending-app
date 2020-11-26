@@ -6,6 +6,9 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.PersistentUserRepo;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -19,7 +22,8 @@ import java.util.stream.Collectors;
 @Transactional
 public class PersistentAuctionsRepository implements AuctionRepository {
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
-	
+	private static final String BORROWER_NOT_FOUND = "Borrower with user name: %s not found";
+	private PersistentUserRepo userRepo;
 	private JpaAuctionRepository jpaAuctionRepository;
 	
 	@Override
@@ -30,22 +34,38 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	
 	@Override
 	public List<Auction> findAllByUsername(String userName) {
-		return jpaAuctionRepository.findAllByBorrowerName(userName).stream()
-				.map(AuctionEntity::toDomain)
-				.collect(Collectors.toList());
+		return mapToDomainList(jpaAuctionRepository.findAllByBorrowerName(userName));
 	}
 	
 	@Override
 	public List<Auction> findAll() {
-		return jpaAuctionRepository.findAll().stream()
-				.map(AuctionEntity::toDomain)
-				.collect(Collectors.toList());
+		List<AuctionEntity> auctionEntityList = jpaAuctionRepository.findAll();
+		return mapToDomainList(auctionEntityList);
+	}
+	private List<Auction> mapToDomainList(List<AuctionEntity> auctionEntityList) {
+		List<Auction> resultList = new ArrayList<>();
+		for(AuctionEntity entity : auctionEntityList){
+			Borrower borrower = userRepo.findBorrowerByUserName(entity.getBorrowerName())
+					.orElseThrow(() ->
+							new UserNotFoundException(String.format(BORROWER_NOT_FOUND, entity.getBorrowerName())));
+			Auction auction = entity.toDomain();
+			auction.setBorrower(borrower);
+			resultList.add(auction);
+		}
+		return resultList;
 	}
 	
 	@Override
 	public Optional<Auction> findById(Long auctionId) {
-		return jpaAuctionRepository.findById(auctionId)
-				.map(AuctionEntity::toDomain);
+		AuctionEntity auctionEntity = jpaAuctionRepository.findById(auctionId)
+				.orElseThrow(() ->
+						new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
+		Borrower borrower = userRepo.findBorrowerByUserName(auctionEntity.getBorrowerName())
+				.orElseThrow(() ->
+						new UserNotFoundException(String.format(BORROWER_NOT_FOUND, auctionEntity.getBorrowerName())));
+		Auction auction = auctionEntity.toDomain();
+		auction.setBorrower(borrower);
+		return Optional.of(auction);
 	}
 	
 	@Override
@@ -74,9 +94,7 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	
 	@Override
 	public List<Auction> findAllWithEndDateBefore(Instant date) {
-		return jpaAuctionRepository.findAllByAuctionEndDateAfter(date).stream()
-				.map(AuctionEntity::toDomain)
-				.collect(Collectors.toList());
+		return mapToDomainList(jpaAuctionRepository.findAllByAuctionEndDateAfter(date));
 	}
 
 }

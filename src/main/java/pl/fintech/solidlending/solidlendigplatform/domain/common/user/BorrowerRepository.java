@@ -14,5 +14,5 @@ public interface BorrowerRepository {
 	
 	void deleteAll();
 	
-	void updateBorrowerOpinion(Borrower borrower, Opinion opinion);
+	void updateBorrowerOpinion(Borrower borrower);
 }
