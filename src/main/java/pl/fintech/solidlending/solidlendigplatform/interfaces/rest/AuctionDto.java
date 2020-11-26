@@ -32,7 +32,7 @@ public class AuctionDto {
         AuctionLoanParams params = auction.getAuctionLoanParams();
     return AuctionDto.builder()
         .id(auction.getId())
-        .borrower(auction.getBorrower().getUserDetails().getName())
+        .borrower(auction.getBorrower().getUserDetails().getUserName())
         .borrowerRating(auction.getBorrower().getRating().getTotalRating())
         .amount(params.getLoanAmount().getValue().doubleValue())
         .rate(params.getLoanRate().getPercentValue().doubleValue())
