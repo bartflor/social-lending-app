@@ -2,6 +2,8 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
@@ -49,7 +51,7 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 						.userName(borrowerName)
 						.privateAccountNumber(UUID.randomUUID())
 						.platformAccountNumber(UUID.randomUUID()).build())
-				.rating(new Rating(3))
+				.rating(new Rating())
 				.build())
 		lenderRepo.save(Lender.builder()
 				.userDetails(UserDetails.builder()
@@ -71,7 +73,7 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 			auctionRepo.findAll().size() == 1
 		and:
 			def resultAuction = auctionRepo.findById(resultId).get()
-			resultAuction.getBorrowerUserName() == borrowerName
+			resultAuction.getBorrower().getUserDetails().getUserName() == borrowerName
 			resultAuction.getAuctionDuration() == auctionDuration
 			resultAuction.getStatus() == Auction.AuctionStatus.ACTIVE
 			resultAuction.getOffers().isEmpty()

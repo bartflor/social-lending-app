@@ -5,10 +5,15 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Builder
 @AllArgsConstructor
@@ -18,7 +23,7 @@ import java.util.UUID;
 public class UserEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	private Long id;
 	private String userName;
 	private String name;
 	private String surname;
@@ -28,7 +33,10 @@ public class UserEntity {
 	private UUID privateAccountNumber;
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	private int ratingValue;
+	private Double ratingValue;
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
+	private List<OpinionEntity> borrowerOpinions;
 	
 	protected enum Role{
 		LENDER, BORROWER
@@ -49,7 +57,10 @@ public class UserEntity {
 					.build();
 		}
 		else {
-			Rating rating = new Rating(ratingValue);
+			Rating rating = new Rating( ratingValue,
+					borrowerOpinions.stream()
+							.map(OpinionEntity::toDomain)
+							.collect(Collectors.toList()));
 			return Borrower.builder()
 					.userDetails(details)
 					.rating(rating)
@@ -65,7 +76,12 @@ public class UserEntity {
         .platformAccountNumber(details.getPlatformAccountNumber())
         .email(details.getEmail())
         .role(user instanceof Borrower ? Role.BORROWER : Role.LENDER)
-        .ratingValue(user instanceof Borrower ? ((Borrower) user).getRating().getRating() : 0)
+        .ratingValue(user instanceof Borrower ? ((Borrower) user).getRating().getTotalRating() : 0)
+		.borrowerOpinions(user instanceof Borrower ?
+				((Borrower) user).getRating().getOpinions().stream()
+						.map(OpinionEntity::from)
+						.collect(Collectors.toList())
+				: Collections.emptyList())
         .userName(userName)
         .name(details.getName())
         .surname(details.getSurname())

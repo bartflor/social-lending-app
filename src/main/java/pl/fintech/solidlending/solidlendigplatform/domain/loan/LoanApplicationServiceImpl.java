@@ -6,6 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanPar
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
@@ -113,5 +114,10 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	@Override
 	public List<Investment> getUserInvestments(String userName) {
 		return domainService.getUserInvestments(userName);
+	}
+	
+	@Override
+	public void giveOpinionOnBorrower(Opinion opinion){
+		domainService.giveOpinionOnBorrower(opinion);
 	}
 }

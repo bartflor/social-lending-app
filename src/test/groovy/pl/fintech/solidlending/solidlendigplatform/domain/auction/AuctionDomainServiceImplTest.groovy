@@ -50,17 +50,15 @@ class AuctionDomainServiceImplTest extends Specification {
 
 	def "crateNewAuction method should save new Auction"() {
 		given:
-			def borrowerName = Gen.string.iterator().next()
-			def auctionDuration = Period.ofDays(Gen.integer.iterator().next())
-			def amount = Gen.integer.iterator().next()
-			def loanDuration = Period.ofDays(Gen.integer.iterator().next())
-			def rate = Gen.getDouble().iterator().next()
-			def rating = Gen.integer.iterator().next()
+			def borrowerName = Gen.string.first()
+			def auctionDuration = Period.ofDays(Gen.integer.first())
+			def amount = Gen.integer.first()
+			def loanDuration = Period.ofDays(Gen.integer.first())
+			def rate = Gen.getDouble().first()
+			def rating = Gen.integer.first()
 			def now = Gen.date.first().toInstant()
 			timeSvc.now() >> now
-			Borrower borrower = Mock()
-			borrower.getRating() >> new Rating(rating)
-			borrower.hasLinkedBankAccount() >> true
+			Borrower borrower = AuctionDomainFactory.createBorrower(borrowerName, rating)
 			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.of(borrower)
 			def auction = AuctionDomainFactory.createAuction(borrowerName,
 					auctionDuration,
@@ -77,7 +75,8 @@ class AuctionDomainServiceImplTest extends Specification {
 					loanDuration,
 					rate)
 		then:
-			1 * auctionRepo.save({ argument -> argument == auction })
+			1 * auctionRepo.save(_) >> { arguments -> Auction given = arguments.get(0)
+				assert given == (auction) }
 	}
 
 	def "crateNewAuction method should throw exception when Borrower with username not exists."() {
@@ -113,7 +112,7 @@ class AuctionDomainServiceImplTest extends Specification {
 			def loanParams = Mock(AuctionLoanParams)
 			loanParams.getLoanRisk() >> risk
 			loanParams.getLoanDuration() >> duration
-			auction.getBorrowerUserName() >> borrowerName
+			auction.getBorrower() >> AuctionDomainFactory.createBorrower(borrowerName, Gen.integer(0, 5).first() as double)
 			auction.getAuctionLoanParams() >> loanParams
 			auction.getAuctionLoanParams() >> duration
 			def expectedOffer = Offer.builder()
@@ -124,7 +123,7 @@ class AuctionDomainServiceImplTest extends Specification {
 					.risk(risk)
 					.rate(Rate.fromPercentValue(rate))
 					.duration(duration)
-					.build();
+					.build()
 		when:
 			def result = auctionService.addOffer(auctionId, lenderName, amount, rate)
 		then:

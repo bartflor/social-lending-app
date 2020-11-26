@@ -2,6 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMe
 
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.UserEntity
 
 class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
@@ -42,7 +43,12 @@ class InMemoryUserRepo implements BorrowerRepository, LenderRepository {
 	void deleteAll() {
 		repository.clear()
 	}
-	
+
+	@Override
+	void updateBorrowerOpinion(Borrower borrower) {
+
+	}
+
 	String save(Lender lender) {
 		String userName = lender.getUserDetails().getUserName()
 		repository.put(userName, UserEntity.createEntityFrom(lender))

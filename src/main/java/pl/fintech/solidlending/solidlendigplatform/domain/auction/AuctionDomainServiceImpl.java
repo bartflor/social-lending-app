@@ -59,11 +59,10 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.build();
 		
 		Auction auction = Auction.builder()
-				.borrowerUserName(username)
+				.borrower(borrower)
 				.endDate(timeService.now().plus(auctionDuration.getDays(), ChronoUnit.DAYS))
 				.auctionDuration(auctionDuration)
 				.auctionLoanParams(auctionLoanParams)
-				.borrowerRating(borrower.getRating())
 				.build();
 		return auctionRepository.save(auction);
 	}
@@ -99,7 +98,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		Offer validOffer = Offer.builder()
 				.auctionId(auctionId)
 				.lenderName(lenderName)
-				.borrowerName(auction.getBorrowerUserName())
+				.borrowerName(auction.getBorrower().getUserDetails().getUserName())
 				.amount(new Money(amount))
 				.risk(auction.getAuctionLoanParams().getLoanRisk())
 				.rate(Rate.fromPercentValue(rate))

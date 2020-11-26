@@ -3,6 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.*;
 import org.assertj.core.util.BigDecimalComparator;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
@@ -25,8 +26,8 @@ public class Auction {
 	
 	@Setter
 	private Long id;
-	private final String borrowerUserName;
-	private final Rating borrowerRating;
+	@Setter
+	private Borrower borrower;
 	private final Instant endDate;
 	private final Period auctionDuration;
 	@Builder.Default private Set<Offer> offers = new HashSet<>();
@@ -59,7 +60,7 @@ public class Auction {
 		Set<Offer> bestOffers = selectionPolicy.selectOffers(offers, auctionLoanParams);
 		status = AuctionStatus.ARCHIVED;
 		return EndAuctionEvent.builder()
-				.BorrowerUserName(borrowerUserName)
+				.BorrowerUserName(borrower.getUserDetails().getUserName())
 				.offers(bestOffers)
 				.auctionLoanParams(auctionLoanParams)
 				.build();

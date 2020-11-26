@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanRepository
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockPaymentService
@@ -33,6 +34,8 @@ class AuctionControllerFT extends PostgresContainerTestSpecification {
 	AuctionRepository auctionRepository
 	@Autowired
 	LoanRepository loanRepository
+	@Autowired
+	BorrowerRepository borrowerRepository
 
 	RequestSpecification restClient
 
@@ -46,12 +49,13 @@ class AuctionControllerFT extends PostgresContainerTestSpecification {
 
 	def "GET /api/auctions/{auctionId}/create-loan should create new loan in repository"() {
 		given:
+			def borrowerName = Gen.string(20).first()
 			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
-			def auction = AuctionDomainFactory.createAuctionWithAmount(amount)
+			def auction = AuctionDomainFactory.createAuctionWithUserNameAmount(borrowerName, amount)
 			def id = auctionRepository.save(auction)
 			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
 			auctionRepository.updateAuction(id, auction)
-
+			borrowerRepository.save(AuctionDomainFactory.createBorrower(borrowerName, Gen.integer(0, 5).first() as double))
 		when:
 			def response = restClient.get("/api/auctions/" + id + "/create-loan")
 		then:
@@ -72,8 +76,7 @@ class AuctionControllerFT extends PostgresContainerTestSpecification {
 			def id = auctionRepository.save(auction)
 			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount, id))
 			auctionRepository.updateAuction(id, auction)
-
-
+			borrowerRepository.save(AuctionDomainFactory.createBorrower(borrower, rating))
 		when:
 			def response = restClient.get("/api/auctions/"+id+"/create-loan")
 		then:

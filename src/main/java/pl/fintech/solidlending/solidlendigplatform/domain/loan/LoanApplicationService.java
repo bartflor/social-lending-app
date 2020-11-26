@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 
 import java.util.Collection;
 
@@ -16,4 +17,6 @@ public interface LoanApplicationService {
 	Collection<Loan> getUserLoans(String userName);
 	
 	Collection<Investment> getUserInvestments(String userName);
+	
+	void giveOpinionOnBorrower(Opinion opinion);
 }

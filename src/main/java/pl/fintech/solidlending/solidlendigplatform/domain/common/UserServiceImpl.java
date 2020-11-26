@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.Map;
@@ -39,7 +42,19 @@ public class UserServiceImpl implements UserService {
 		} else {
 			borrowerRepository.updateBorrowerDetails((Borrower)user, newDetails);
 		}
-		
+	}
+	
+	@Override
+	public void giveOpinionOnBorrower(String userName, Opinion opinion){
+		Borrower borrower = findBorrower(userName);
+		borrower.giveOpinion(opinion);
+		borrowerRepository.updateBorrowerOpinion(borrower);
+	}
+	
+	@Override
+	public Borrower findBorrower(String borrowerName) {
+		return borrowerRepository.findBorrowerByUserName(borrowerName)
+				.orElseThrow(()-> new UserNotFoundException(String.format(USER_NOT_FOUND, borrowerName)));
 	}
 	
 }

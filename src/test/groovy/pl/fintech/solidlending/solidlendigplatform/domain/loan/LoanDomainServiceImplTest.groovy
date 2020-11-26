@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException
@@ -14,9 +15,10 @@ class LoanDomainServiceImplTest extends Specification {
 	def loanFactory = Mock(LoanFactory)
 	def investmentFactory = Mock(InvestmentFactory)
 	def investmentRepository = Mock(InvestmentRepository)
-
+	def userService = Mock(UserService)
 	@Subject
-	def loanDomainSvc = new LoanDomainServiceImpl(loanRepository, scheduleRepository, loanFactory, investmentFactory, investmentRepository)
+	def loanDomainSvc = new LoanDomainServiceImpl(loanRepository,
+			scheduleRepository, loanFactory, investmentFactory, investmentRepository, userService)
 
 	def "CreateLoan should save loan, loan investments and schedules to repositories"() {
 		given:
