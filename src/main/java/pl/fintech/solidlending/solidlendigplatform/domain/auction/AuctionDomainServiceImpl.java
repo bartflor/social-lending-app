@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddOfferException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.OfferNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
@@ -19,6 +20,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -28,6 +30,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private static final String BORROWER_NOT_FOUND_MSG = "Borrower with username:%s not found.";
 	private static final String BORROWER_NOT_ALLOWED = "Borrower with username:%s is not allowed to create new auction.";
 	private static final String AUCTION_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
+	private static final String OFFER_WITH_ID_NOT_FOUND = "Auction with id:%s not found.";
 	private static final String LENDER_NOT_FOUND = "Lender with username:%s not found.";
 	private static final String NOT_ALLOWED_OFFER = "Can not add invalid offer to auction. Provided rate: %s, amount: %s";
 	
@@ -149,7 +152,13 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	
 	@Override
 	public void deleteOffer(Long offerId) {
+		Offer offer = offerRepository.findById(offerId).orElseThrow(() ->
+				new OfferNotFoundException(String.format(OFFER_WITH_ID_NOT_FOUND, offerId)));
+		Long auctionId = offer.getAuctionId();
 		offerRepository.deleteOffer(offerId);
+		auctionRepository.findById(auctionId)
+				.ifPresent(auction -> {auction.removeOffer(offer);
+					auctionRepository.updateAuction(auctionId, auction);});
 	}
 	
 }

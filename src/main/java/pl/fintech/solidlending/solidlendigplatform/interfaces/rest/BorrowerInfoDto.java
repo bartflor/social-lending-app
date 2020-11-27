@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @Builder
 @Value
 public class BorrowerInfoDto {
+	String name;
+	String surname;
 	String email;
 	Double totalRating;
 	List<OpinionDto> opinions;
@@ -23,6 +25,8 @@ public class BorrowerInfoDto {
 	public static BorrowerInfoDto from(Borrower borrower){
 		Rating rating = borrower.getRating();
 		return BorrowerInfoDto.builder()
+				.name(borrower.getUserDetails().getName())
+				.surname(borrower.getUserDetails().getSurname())
 				.email(borrower.getUserDetails().getEmail())
 				.totalRating(rating.getTotalRating())
 				.opinions(rating.getOpinions().stream()
