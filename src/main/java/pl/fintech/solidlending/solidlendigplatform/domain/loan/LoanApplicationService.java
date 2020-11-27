@@ -19,4 +19,6 @@ public interface LoanApplicationService {
 	Collection<Investment> getUserInvestments(String userName);
 	
 	void giveOpinionOnBorrower(Opinion opinion);
+	
+	void rejectLoanProposal(Long loanId);
 }

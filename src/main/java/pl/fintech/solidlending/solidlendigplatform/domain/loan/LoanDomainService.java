@@ -10,6 +10,8 @@ public interface LoanDomainService {
 	
 	Long activateLoan(Long loanId);
 	
+	boolean checkLoanStatus(Long loanId, Loan.LoanStatus status);
+	
 	void reportRepayment(Long loanId);
 	
 	Optional<Repayment> findNextRepayment(Long loanId);
@@ -21,4 +23,6 @@ public interface LoanDomainService {
 	List<Investment> getUserInvestments(String userName);
 	
 	void giveOpinionOnBorrower(Opinion opinion);
+	
+	void rejectLoan(Long loanId);
 }

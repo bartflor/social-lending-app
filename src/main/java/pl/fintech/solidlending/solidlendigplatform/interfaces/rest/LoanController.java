@@ -28,6 +28,12 @@ public class LoanController {
 		loanApplicationService.activateLoan(loanId);
 	}
 	
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@DeleteMapping("/{loanId}/reject")
+	public void rejectLoanProposal(@PathVariable long loanId){
+		loanApplicationService.rejectLoanProposal(loanId);
+	}
+	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{loanId}")
 	public LoanDto getLoanWithId(@PathVariable long loanId){

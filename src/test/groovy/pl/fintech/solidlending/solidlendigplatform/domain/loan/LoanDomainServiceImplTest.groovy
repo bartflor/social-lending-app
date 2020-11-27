@@ -40,13 +40,16 @@ class LoanDomainServiceImplTest extends Specification {
 			result == randId
 	}
 
-	def "activateLoan should call repositories activate method when loan with given id exists"(){
+	def "activateLoan should run loanRepository and investmentRepository activate methods when loan with given id\
+		has proper status"(){
 		given:
 			def randId = Gen.long.first()
+			def loan = LoanDomainFactory.crateLoan(randId)
+			loan.setStatus(Loan.LoanStatus.UNCONFIRMED)
 		when:
 			loanDomainSvc.activateLoan(randId)
 		then:
-			1*loanRepository.findById(randId) >> Optional.of(LoanDomainFactory.crateLoan(randId))
+			1*loanRepository.findById(randId) >> Optional.of(loan)
 		and:
 			1*loanRepository.setActive(randId)
 			1*investmentRepository.setActiveWithLoanId(randId)
@@ -75,7 +78,7 @@ class LoanDomainServiceImplTest extends Specification {
 			1*loanRepository.findById(randId) >> Optional.of(loan)
 		and:
 			def exception = thrown(LoanCreationException)
-			exception.getMessage() == "Can not activate loan with status: ACTIVE"
+			exception.getMessage() == "Can not activate loan with id: "+randId+", loan status must be UNCONFIRMED"
 	}
 
 	def "findLoanById should throw exception when loan with given id not exist"(){

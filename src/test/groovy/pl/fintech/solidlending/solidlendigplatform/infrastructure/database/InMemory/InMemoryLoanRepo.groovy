@@ -45,7 +45,12 @@ class InMemoryLoanRepo implements LoanRepository {
 	void deleteAll() {
 		repo.clear()
 	}
-	
+
+	@Override
+	void delete(Long loanId) {
+
+	}
+
 	@Override
 	void setActive(Long loanId) {
 		Loan loan = findById(loanId)
