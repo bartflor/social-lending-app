@@ -36,13 +36,16 @@ public class Auction {
 	
 	public void addNewOffer(Offer offer) {
 		offers.add(offer);
-		if(status != AuctionStatus.ACTIVE_COMPLETE){
-			checkStatusUpdate();
-		}
+		checkStatusUpdate();
 	}
 	
-	private void checkStatusUpdate() {
-		status = AuctionStatus.ACTIVE;
+	public void removeOffer(Offer offer) {
+		offers.remove(offer);
+		checkStatusUpdate();
+	}
+	
+	public void checkStatusUpdate() {
+		
 		Money loanAmount = auctionLoanParams.getLoanAmount();
 		Money offersSum = offers.stream()
 				.map(Offer::getAmount)
@@ -50,8 +53,9 @@ public class Auction {
 				.orElse(Money.ZERO);
 		if(offersSum.isMoreOrEqual(loanAmount)){
 			status = AuctionStatus.ACTIVE_COMPLETE;
+    	} else {
+      		status = AuctionStatus.ACTIVE;
 		}
-		
 	}
 	
 	public EndAuctionEvent end(OffersSelectionPolicy selectionPolicy) {

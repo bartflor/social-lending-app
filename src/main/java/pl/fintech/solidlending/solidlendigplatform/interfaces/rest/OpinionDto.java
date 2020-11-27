@@ -14,6 +14,7 @@ public class OpinionDto {
 	private Double opinionRating;
 	private String opinionText;
 	private String author;
+	private Long investmentId;
 	
 	public Opinion toDomain() {
 		return Opinion.builder()
@@ -28,6 +29,7 @@ public class OpinionDto {
 				.opinionRating(opinion.getOpinionRating())
 				.opinionText(opinion.getOpinionText())
 				.author(opinion.getAuthor())
+				.investmentId(opinion.getInvestmentId())
 				.build();
 	}
 }
