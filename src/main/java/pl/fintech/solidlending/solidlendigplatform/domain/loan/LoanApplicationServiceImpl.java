@@ -76,6 +76,11 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 		paymentService.execute(transferOrderEventsList);
 		return domainService.activateLoan(loanId);
 	}
+	
+	@Override
+	public void rejectLoanProposal(Long loanId){
+		domainService.rejectLoan(loanId);
+	}
 
 	@Override
 	public void repayLoan(Long loanId){

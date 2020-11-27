@@ -3,11 +3,9 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -18,9 +16,8 @@ import java.util.Set;
 @Transactional
 public class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
-	private static final String INVALID_LOAN_STATUS = "Can not activate loan with status: %s";
-	private static final String NO_SCHEDULE_FOR_LOAN_ID = "Repayment schedule for loan with id:%s, not found";
-	private static final String NO_SCHEDULE_FOR_INVESTMENT_ID = "Repayment schedule for loan with id:%s, not found";
+	private static final String INVALID_ACTIVATION_LOAN_STATUS = "Can not activate loan with id: %s, loan status must be UNCONFIRMED";
+	private static final String INVALID_REJECTION_LOAN_STATUS = "Can not reject loan with id: %s, loan status must be UNCONFIRMED";
 	
 	private final LoanRepository loanRepository;
 	private final RepaymentScheduleRepository scheduleRepository;
@@ -47,13 +44,27 @@ public class LoanDomainServiceImpl implements LoanDomainService {
 	 */
 	@Override
 	public Long activateLoan(Long loanId){
-		Loan loan = loanRepository.findById(loanId)
-				.orElseThrow(() -> new LoanNotFoundException(String.format(LOAN_WITH_ID_NOT_FOUND, loanId)));
-		if(!loan.getStatus().equals(Loan.LoanStatus.UNCONFIRMED))
-			throw new LoanCreationException(String.format(INVALID_LOAN_STATUS, loan.getStatus()));
+		if(!checkLoanStatus(loanId, Loan.LoanStatus.UNCONFIRMED)){
+			throw new LoanCreationException(String.format(INVALID_ACTIVATION_LOAN_STATUS, loanId));
+		}
 		loanRepository.setActive(loanId);
 		investmentRepository.setActiveWithLoanId(loanId);
 		return loanId;
+	}
+	
+	@Override
+	public void rejectLoan(Long loanId) {
+		if(!checkLoanStatus(loanId, Loan.LoanStatus.UNCONFIRMED)){
+			throw new LoanCreationException(String.format(INVALID_REJECTION_LOAN_STATUS, loanId));
+		}
+		loanRepository.delete(loanId);
+	}
+	
+	@Override
+	public boolean checkLoanStatus(Long loanId, Loan.LoanStatus status){
+		Loan loan = loanRepository.findById(loanId)
+				.orElseThrow(() -> new LoanNotFoundException(String.format(LOAN_WITH_ID_NOT_FOUND, loanId)));
+		return loan.getStatus().equals(status);
 	}
 	
 	@Override

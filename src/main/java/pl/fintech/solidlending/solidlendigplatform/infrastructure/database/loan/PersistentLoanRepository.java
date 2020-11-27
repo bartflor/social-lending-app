@@ -53,4 +53,9 @@ public class PersistentLoanRepository implements LoanRepository {
 	public void deleteAll(){
 		jpaLoanRepository.deleteAll();
 	}
+	
+	@Override
+	public void delete(Long loanId) {
+		jpaLoanRepository.deleteById(loanId);
+	}
 }
