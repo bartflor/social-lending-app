@@ -1,5 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
@@ -11,14 +12,11 @@ public class ExceptionMessageTemplate {
 	
 	private HttpStatus status;
 	private String message;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "Europe/Warsaw")
 	private Instant dateTime;
 	
-	private ExceptionMessageTemplate(){
-		this.dateTime = Instant.now();
-	}
-	
 	public ExceptionMessageTemplate(HttpStatus status, Exception exception) {
-		this();
+		this.dateTime = Instant.now();
 		this.status = status;
 		this.message = exception.getMessage();
 	}
