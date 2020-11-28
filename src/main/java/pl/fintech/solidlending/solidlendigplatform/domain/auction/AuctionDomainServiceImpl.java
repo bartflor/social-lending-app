@@ -38,7 +38,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 	private final BorrowerRepository borrowerRepository;
 	private final OfferRepository offerRepository;
 	private final LenderRepository lenderRepository;
-	private final LoanRiskService loanRiskService;
 	private final TimeService timeService;
 	
 	@Override
@@ -58,7 +57,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.loanAmount(loanValue)
 				.loanDuration(loanDuration)
 				.loanRate(Rate.fromPercentValue(rate))
-				.loanRisk(loanRiskService.estimateLoanRisk(borrower, loanValue))
 				.build();
 		
 		Auction auction = Auction.builder()
@@ -103,7 +101,6 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 				.lenderName(lenderName)
 				.borrowerName(auction.getBorrower().getUserDetails().getUserName())
 				.amount(new Money(amount))
-				.risk(auction.getAuctionLoanParams().getLoanRisk())
 				.rate(Rate.fromPercentValue(rate))
 				.duration(auction.getAuctionLoanParams().getLoanDuration())
 				.build();

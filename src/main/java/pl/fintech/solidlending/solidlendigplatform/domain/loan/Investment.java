@@ -4,7 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import java.time.Period;
 
@@ -18,7 +17,6 @@ public class Investment {
   Money returnAmount;
   Money loanAmount;
   Rate rate;
-  Risk risk;
   Period duration;
   @Builder.Default Status status = Status.UNCONFIRMED;
   RepaymentSchedule schedule;

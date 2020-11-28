@@ -19,12 +19,11 @@ class CommunicationDataFactory {
 				"}")
 	}
 
-	static String createNewOfferRequest(long auctionId, String lenderName,	int amount,	int rate, boolean allowSplit) {
+	static String createNewOfferRequest(long auctionId, String lenderName,	int amount,	int rate) {
 		new JSONObject("{ " +
 				"\"amount\": "+amount+"," +
 				"\"auctionId\": "+auctionId+"," +
 				"\"lenderUserName\": \""+lenderName+"\"," +
-				"\"allowAmountSplit\": "+allowSplit+"," +
 				"\"rate\": "+rate+
 				"}")
 	}

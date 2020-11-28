@@ -13,6 +13,7 @@ public class UserDetails {
 	@Setter String surname;
 	@Setter String email;
 	@Setter String phoneNumber;
+	@Setter String address;
 	UUID platformAccountNumber;
 	@Setter UUID privateAccountNumber;
 }

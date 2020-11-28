@@ -4,14 +4,13 @@ package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 import io.restassured.RestAssured
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionsTestsHelper
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan
@@ -51,11 +50,11 @@ class AuctionControllerFT extends PostgresContainerTestSpecification {
 		given:
 			def borrowerName = Gen.string(20).first()
 			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
-			def auction = AuctionDomainFactory.createAuctionWithUserNameAmount(borrowerName, amount)
+			def auction = AuctionsTestsHelper.createAuctionWithUserNameAmount(borrowerName, amount)
 			def id = auctionRepository.save(auction)
-			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount,id))
+			auction.addNewOffer(AuctionsTestsHelper.createOfferWithAmount(amount,id))
 			auctionRepository.updateAuction(id, auction)
-			borrowerRepository.save(AuctionDomainFactory.createBorrower(borrowerName, Gen.integer(0, 5).first() as double))
+			borrowerRepository.save(AuctionsTestsHelper.createBorrower(borrowerName, Gen.integer(0, 5).first() as double))
 		when:
 			def response = restClient.get("/api/auctions/" + id + "/create-loan")
 		then:
@@ -71,12 +70,12 @@ class AuctionControllerFT extends PostgresContainerTestSpecification {
 			def amount = Gen.integer(0, 10000).first()
 			def rate = Gen.integer(0,100).first()
 			def rating = Gen.integer(0, 5).first()
-			def auction = AuctionDomainFactory.createAuction(borrower,
+			def auction = AuctionsTestsHelper.createAuction(borrower,
 					Period.ofDays(Gen.integer.first()), amount, loanDuration,rate, rating)
 			def id = auctionRepository.save(auction)
-			auction.addNewOffer(AuctionDomainFactory.createOfferWithAmount(amount, id))
+			auction.addNewOffer(AuctionsTestsHelper.createOfferWithAmount(amount, id))
 			auctionRepository.updateAuction(id, auction)
-			borrowerRepository.save(AuctionDomainFactory.createBorrower(borrower, rating))
+			borrowerRepository.save(AuctionsTestsHelper.createBorrower(borrower, rating))
 		when:
 			def response = restClient.get("/api/auctions/"+id+"/create-loan")
 		then:

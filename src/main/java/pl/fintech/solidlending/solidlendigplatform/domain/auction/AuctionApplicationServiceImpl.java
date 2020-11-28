@@ -9,6 +9,8 @@ import java.time.Period;
 import java.util.List;
 @Service
 @AllArgsConstructor
+
+
 public class AuctionApplicationServiceImpl implements AuctionApplicationService {
 	private AuctionDomainService domainService;
 	private LoanApplicationService loanService;
@@ -25,8 +27,7 @@ public class AuctionApplicationServiceImpl implements AuctionApplicationService 
 	}
 	
 	@Override
-	public Long addOffer(Long auctionId, String lenderName, double amount, double rate, Boolean allowAmountSplit) {
-		//TODO:check if lender has enough money
+	public Long addOffer(Long auctionId, String lenderName, double amount, double rate) {
 		return domainService.addOffer(auctionId,lenderName,  amount, rate);
 	}
 	

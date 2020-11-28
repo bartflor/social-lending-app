@@ -44,7 +44,6 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 							.BorrowerName(endAuctionEvent.getBorrowerUserName())
 							.investedMoney(offer.getAmount())
 							.returnRate(offer.getRate())
-							.risk(auctionLoanParams.getLoanRisk())
 							.investmentDuration(auctionLoanParams.getLoanDuration())
 							.investmentStartDate(loanStartDate)
 							.build())

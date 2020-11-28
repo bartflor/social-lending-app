@@ -25,6 +25,7 @@ public interface AuctionDomainService {
 				  double rate);
 	
 	List<Offer> getLenderOffers(String lenderName);
+	
 	EndAuctionEvent endAuction(Long auctionId, OffersSelectionPolicy offersSelectionPolicy);
 	
 	void deleteAuction(Long auctionId);

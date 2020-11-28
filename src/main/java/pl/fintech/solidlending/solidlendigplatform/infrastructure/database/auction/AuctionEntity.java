@@ -1,18 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.auction;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -40,7 +35,6 @@ public class AuctionEntity {
 	@Enumerated(EnumType.STRING)
 	private Auction.AuctionStatus status;
 	private BigDecimal loanAmount;
-	private Integer loanRisk;
 	private Period loanDuration;
 	private Double loanRate;
 	
@@ -49,7 +43,6 @@ public class AuctionEntity {
 				.loanAmount(new Money(loanAmount))
 				.loanDuration(loanDuration)
 				.loanRate(Rate.fromPercentValue(loanRate))
-				.loanRisk(new Risk(loanRisk))
 				.build();
 		return Auction.builder()
 				.id(id)
@@ -76,7 +69,6 @@ public class AuctionEntity {
                 .collect(Collectors.toSet()))
         .status(auction.getStatus())
         .loanAmount(auction.getAuctionLoanParams().getLoanAmount().getValue())
-        .loanRisk(auction.getAuctionLoanParams().getLoanRisk().getRisk())
         .loanDuration(auction.getAuctionLoanParams().getLoanDuration())
         .loanRate(auction.getAuctionLoanParams().getLoanRate().getPercentValue().doubleValue())
         .build();

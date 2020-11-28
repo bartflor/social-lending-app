@@ -7,13 +7,9 @@ import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.Period;
-
-import static javax.persistence.FetchType.LAZY;
 
 @Builder
 @Entity
@@ -28,7 +24,6 @@ public class OfferEntity {
 	private String lenderName;
 	private String borrowerName;
 	private Double amount;
-	private Integer risk;
 	private Double rate;
 	private Period duration;
 	@Enumerated(EnumType.STRING)
@@ -41,7 +36,6 @@ public class OfferEntity {
 				.lenderName(offer.getLenderName())
 				.borrowerName(offer.getBorrowerName())
 				.amount(offer.getAmount().getValue().doubleValue())
-				.risk(offer.getRisk().getRisk())
 				.rate(offer.getRate().getPercentValue().doubleValue())
 				.duration(offer.getDuration())
 				.status(offer.getStatus())
@@ -55,7 +49,6 @@ public class OfferEntity {
 				.lenderName(lenderName)
 				.borrowerName(borrowerName)
 				.amount(new Money(amount))
-				.risk(new Risk(risk))
 				.rate(Rate.fromPercentValue(rate))
 				.duration(duration)
 				.status(status)

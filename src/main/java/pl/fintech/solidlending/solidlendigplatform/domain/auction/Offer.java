@@ -3,7 +3,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 import lombok.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import java.math.BigDecimal;
 import java.time.Period;
@@ -19,7 +18,6 @@ public class Offer {
   private String lenderName;
   private String borrowerName;
   private Money amount;
-  private Risk risk;
   private Rate rate;
   private Period duration;
   @Builder.Default private OfferStatus status = OfferStatus.ACTIVE;
@@ -30,7 +28,6 @@ public class Offer {
     this.lenderName = offer.getLenderName();
     this.borrowerName = offer.getBorrowerName();
     this.amount = new Money(offer.getAmount()!=null ? offer.getAmount().getValue().doubleValue() : 0.0);
-    this.risk = new Risk(offer.getRisk() != null ? offer.getRisk().getRisk() : 0);
     this.rate = Rate.fromPercentValue(offer.getRate()!=null ? offer.getRate().getPercentValue().doubleValue() : 0);
     this.duration = offer.getDuration();
     this.status = offer.getStatus();

@@ -20,6 +20,4 @@ public interface AuctionRepository {
 	void delete(Long auctionId);
 	
 	void deleteAll();
-	
-	List<Auction> findAllWithEndDateBefore(Instant now);
 }

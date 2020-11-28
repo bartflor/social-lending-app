@@ -1,6 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionsTestsHelper
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
@@ -23,13 +23,12 @@ class LoanApplicationServiceImplTest extends Specification {
 	def "createLoan should crate new loan from given endAuctionEvent"(){
 		given:
 			def loanStartDate = Instant.ofEpochMilli(Gen.long.first())
-			def event = AuctionDomainFactory.createEndAuctionEvent()
+			def event = AuctionsTestsHelper.createEndAuctionEvent()
 			def investParams = NewInvestmentParams.builder()
 					.LenderUserName(event.getOffers().first().getLenderName())
 					.BorrowerName(event.getBorrowerUserName())
 					.investedMoney(event.getOffers().first().getAmount())
 					.returnRate(event.getOffers().first().getRate())
-					.risk(event.getAuctionLoanParams().getLoanRisk())
 					.investmentDuration(event.getAuctionLoanParams().getLoanDuration())
 					.investmentStartDate(loanStartDate)
 					.build()

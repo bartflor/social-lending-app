@@ -8,8 +8,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRe
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -17,16 +15,15 @@ import spock.lang.Subject
 import java.time.Period
 import java.time.temporal.ChronoUnit
 
-class AuctionDomainServiceImplTest extends Specification {
+class AuctionDomainServiceImplUT extends Specification {
 	def auctionRepo = Mock(AuctionRepository)
 	def borrowerRepo = Mock(BorrowerRepository)
 	def offerRepo = Mock(OfferRepository)
 	def lenderRepo = Mock(LenderRepository)
-	def loanRiskSvc = Mock(LoanRiskService)
 	def timeSvc = Mock(TimeService)
 
 	@Subject
-	def auctionService = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, loanRiskSvc, timeSvc)
+	def auctionService = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, timeSvc)
 
 	def "endAuction should call end() on auction with given id and \
 		update repository and\
@@ -58,9 +55,9 @@ class AuctionDomainServiceImplTest extends Specification {
 			def rating = Gen.integer.first()
 			def now = Gen.date.first().toInstant()
 			timeSvc.now() >> now
-			Borrower borrower = AuctionDomainFactory.createBorrower(borrowerName, rating)
+			Borrower borrower = AuctionsTestsHelper.createBorrower(borrowerName, rating)
 			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.of(borrower)
-			def auction = AuctionDomainFactory.createAuction(borrowerName,
+			def auction = AuctionsTestsHelper.createAuction(borrowerName,
 					auctionDuration,
 					amount,
 					loanDuration,
@@ -106,13 +103,11 @@ class AuctionDomainServiceImplTest extends Specification {
 			def borrowerName = Gen.string(20).first()
 			def amount = Gen.integer(0, Integer.MAX_VALUE).first()
 			def rate = Gen.integer(0, 100).first()
-			def risk = new Risk(Gen.integer(0, Integer.MAX_VALUE).first())
 			def duration = Period.ofMonths(Gen.integer(0, Integer.MAX_VALUE).first())
 			def auction = Mock(Auction)
 			def loanParams = Mock(AuctionLoanParams)
-			loanParams.getLoanRisk() >> risk
 			loanParams.getLoanDuration() >> duration
-			auction.getBorrower() >> AuctionDomainFactory.createBorrower(borrowerName, Gen.integer(0, 5).first() as double)
+			auction.getBorrower() >> AuctionsTestsHelper.createBorrower(borrowerName, Gen.integer(0, 5).first() as double)
 			auction.getAuctionLoanParams() >> loanParams
 			auction.getAuctionLoanParams() >> duration
 			def expectedOffer = Offer.builder()
@@ -120,7 +115,6 @@ class AuctionDomainServiceImplTest extends Specification {
 					.lenderName(lenderName)
 					.borrowerName(borrowerName)
 					.amount(new Money(amount))
-					.risk(risk)
 					.rate(Rate.fromPercentValue(rate))
 					.duration(duration)
 					.build()

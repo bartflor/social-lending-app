@@ -37,7 +37,6 @@ public class InvestmentDto {
         .duration(investment.getDuration().toTotalMonths())
         .status(investment.getStatus().toString())
         .borrowerName(investment.getBorrowerName())
-        .risk(investment.getRisk().getRisk())
         .schedule(
             investment.getSchedule().getSchedule().stream()
                 .map(RepaymentDto::from)

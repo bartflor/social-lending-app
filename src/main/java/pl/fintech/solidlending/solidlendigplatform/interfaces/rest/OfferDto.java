@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 
 import java.time.Period;
 @AllArgsConstructor
@@ -21,10 +20,8 @@ public class OfferDto {
     String borrowerName;
     double amount;
     double rate;
-    int risk;
     Period loanDuration;
     String status;
-    boolean allowAmountSplit;
     
     public static OfferDto fromOffer(Offer offer) {
         return OfferDto.builder()
@@ -34,7 +31,6 @@ public class OfferDto {
                 .borrowerName(offer.getBorrowerName())
                 .amount(offer.getAmount().getValue().doubleValue())
                 .rate(offer.getRate().getPercentValue().doubleValue())
-                .risk(offer.getRisk().getRisk())
                 .loanDuration(offer.getDuration())
                 .status(offer.getStatus().toString())
                 .build();
@@ -47,7 +43,6 @@ public class OfferDto {
                 .lenderName(lenderUserName)
                 .borrowerName(borrowerName)
                 .amount(new Money(amount))
-                .risk(new Risk(risk))
                 .rate(Rate.fromPercentValue(rate))
                 .duration(loanDuration)
                 .build();

@@ -6,7 +6,7 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class BestOffersRatePolicyTest extends Specification {
+class BestOffersRatePolicyUT extends Specification {
 
 	@Subject
 	def bestOffersRatePolicy = new BestOffersRatePolicy()
@@ -15,9 +15,9 @@ class BestOffersRatePolicyTest extends Specification {
 		given:
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 5)
-			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 15)
-			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 10)
+			def offer1 = AuctionsTestsHelper.createOffer(Gen.long.first(), 50, 5)
+			def offer2 = AuctionsTestsHelper.createOffer(Gen.long.first(), 50, 15)
+			def offer3 = AuctionsTestsHelper.createOffer(Gen.long.first(), 50, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
@@ -33,9 +33,9 @@ class BestOffersRatePolicyTest extends Specification {
 
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 5)
-			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 50, 15)
-			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 80, 10)
+			def offer1 = AuctionsTestsHelper.createOffer(Gen.long.first(), 50, 5)
+			def offer2 = AuctionsTestsHelper.createOffer(Gen.long.first(), 50, 15)
+			def offer3 = AuctionsTestsHelper.createOffer(Gen.long.first(), 80, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:
@@ -52,9 +52,9 @@ class BestOffersRatePolicyTest extends Specification {
 
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = AuctionDomainFactory.createOffer(Gen.long.first(), 100, 3)
-			def offer2 = AuctionDomainFactory.createOffer(Gen.long.first(), 70, 5)
-			def offer3 = AuctionDomainFactory.createOffer(Gen.long.first(), 70, 15)
+			def offer1 = AuctionsTestsHelper.createOffer(Gen.long.first(), 100, 3)
+			def offer2 = AuctionsTestsHelper.createOffer(Gen.long.first(), 70, 5)
+			def offer3 = AuctionsTestsHelper.createOffer(Gen.long.first(), 70, 15)
 
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
@@ -70,8 +70,8 @@ class BestOffersRatePolicyTest extends Specification {
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
 
-			def offer1 = AuctionDomainFactory.createOffer(1, 70, 15)
-			def offer2 = AuctionDomainFactory.createOffer(2, 70, 10)
+			def offer1 = AuctionsTestsHelper.createOffer(1, 70, 15)
+			def offer2 = AuctionsTestsHelper.createOffer(2, 70, 10)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2), loanParams)
 		then:
@@ -89,9 +89,9 @@ class BestOffersRatePolicyTest extends Specification {
 		given:
 			def loanAmount = new Money(100)
 			def loanParams = AuctionLoanParams.builder().loanAmount(loanAmount).build()
-			def offer1 = AuctionDomainFactory.createOffer(1, 40, 15)
-			def offer2 = AuctionDomainFactory.createOffer(2, 40, 15)
-			def offer3 = AuctionDomainFactory.createOffer(3, 40, 15)
+			def offer1 = AuctionsTestsHelper.createOffer(1, 40, 15)
+			def offer2 = AuctionsTestsHelper.createOffer(2, 40, 15)
+			def offer3 = AuctionsTestsHelper.createOffer(3, 40, 15)
 		when:
 			def result = bestOffersRatePolicy.selectOffers(Set.of(offer1, offer2, offer3), loanParams)
 		then:

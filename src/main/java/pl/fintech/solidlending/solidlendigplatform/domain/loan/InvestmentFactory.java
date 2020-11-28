@@ -19,7 +19,6 @@ public class InvestmentFactory {
       	investments.add(Investment.builder()
 				.lenderName(params.getLenderUserName())
 				.borrowerName(params.getBorrowerName())
-				.risk(params.getRisk())
 				.loanAmount(params.getInvestedMoney())
 				.returnAmount(value)
 				.rate(params.getReturnRate())

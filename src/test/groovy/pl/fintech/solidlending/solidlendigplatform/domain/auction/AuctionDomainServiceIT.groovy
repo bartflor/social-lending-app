@@ -2,8 +2,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
@@ -17,7 +15,7 @@ import spock.lang.Subject
 import java.time.Instant
 import java.time.Period
 
-class AuctionDomainServiceIntegrationTest extends Specification {
+class AuctionDomainServiceIT extends Specification {
 
 	@Subject
 	AuctionDomainServiceImpl auctionService
@@ -26,7 +24,6 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 	BorrowerRepository borrowerRepo
 	LenderRepository lenderRepo
 	OfferRepository offerRepo
-	LoanRiskService loanRiskSvc
 	TimeService timeService
 	String lenderName
 	String borrowerName
@@ -36,7 +33,6 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 		borrowerRepo = new InMemoryUserRepo()
 		lenderRepo = borrowerRepo
 		offerRepo = new InMemoryOfferRepo()
-		loanRiskSvc = new LoanRiskService()
 		timeService = Mock(TimeService)
 		lenderName = Gen.string(20).first()
 		borrowerName = Gen.string(20).first()
@@ -44,7 +40,6 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 				borrowerRepo,
 				offerRepo,
 				lenderRepo,
-				loanRiskSvc,
 				timeService)
 		borrowerRepo.save(Borrower.builder()
 				.userDetails(UserDetails.builder()
@@ -82,9 +77,9 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 
 	def "addOffer should save new Offer and link it to proper Auction"() {
 		given:
-			def auction = AuctionDomainFactory.createAuction()
+			def auction = AuctionsTestsHelper.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId(lenderName, auctionId)
+			def offer = AuctionsTestsHelper.createOfferWithLenderNameAuctionId(lenderName, auctionId)
 		when:
 			auctionService.addOffer(auctionId,
 					offer.getLenderName(),
@@ -103,9 +98,9 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 
 	def "addOffer should throw exception if given lender name not found"() {
 		given:
-			def auction = AuctionDomainFactory.createAuction()
+			def auction = AuctionsTestsHelper.createAuction()
 			def auctionId = auctionRepo.save(auction)
-			def offer = AuctionDomainFactory.createOfferWithLenderNameAuctionId("non_existing_lender_name", auctionId)
+			def offer = AuctionsTestsHelper.createOfferWithLenderNameAuctionId("non_existing_lender_name", auctionId)
 		when:
 			auctionService.addOffer(auctionId,
 					offer.getLenderName(),
@@ -128,9 +123,9 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 
 	def "getPlatformAuction should return all Auction from repository"(){
 		given:
-			def auction1 = AuctionDomainFactory.createAuction(borrowerName)
+			def auction1 = AuctionsTestsHelper.createAuction(borrowerName)
 			auctionRepo.save(auction1)
-			def auction2 = AuctionDomainFactory.createAuction("different_borrower_name")
+			def auction2 = AuctionsTestsHelper.createAuction("different_borrower_name")
 			auctionRepo.save(auction2)
 		when:
 			def resultList = auctionService.getPlatformAuctions()
@@ -143,9 +138,9 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 
 	def "getUserAuction should return all Auction with given userName from repository"(){
 		given:
-			def auction1 = AuctionDomainFactory.createAuction(borrowerName)
+			def auction1 = AuctionsTestsHelper.createAuction(borrowerName)
 			auctionRepo.save(auction1)
-			def auction2 = AuctionDomainFactory.createAuction("different_borrower_name")
+			def auction2 = AuctionsTestsHelper.createAuction("different_borrower_name")
 			auctionRepo.save(auction2)
 		when:
 			def resultList = auctionService.getUserAuctions(borrowerName)
@@ -157,9 +152,9 @@ class AuctionDomainServiceIntegrationTest extends Specification {
 
 	def "getLendersOffers should return all Offers with given LenderName"(){
 		given:
-			def offer1 = AuctionDomainFactory.createOfferWithLenderNameAuctionId(lenderName, 1)
+			def offer1 = AuctionsTestsHelper.createOfferWithLenderNameAuctionId(lenderName, 1)
 			offerRepo.save(offer1)
-			def offer2= AuctionDomainFactory.createOfferWithLenderNameAuctionId("different_lender_name", 1)
+			def offer2= AuctionsTestsHelper.createOfferWithLenderNameAuctionId("different_lender_name", 1)
 			offerRepo.save(offer2)
 		when:
 			def result = auctionService.getLenderOffers(lenderName)

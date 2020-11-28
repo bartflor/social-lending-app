@@ -28,8 +28,7 @@ public class OffersController {
     return auctionApplicationService.addOffer(offerDto.getAuctionId(),
 			offerDto.lenderUserName,
 			offerDto.getAmount(),
-			offerDto.getRate(),
-			offerDto.isAllowAmountSplit());
+			offerDto.getRate());
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)

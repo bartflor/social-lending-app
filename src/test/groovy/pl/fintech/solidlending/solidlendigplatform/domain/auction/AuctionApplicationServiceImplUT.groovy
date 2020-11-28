@@ -6,7 +6,7 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class AuctionApplicationServiceImplTest extends Specification {
+class AuctionApplicationServiceImplUT extends Specification {
 
 	def domainService = Mock(AuctionDomainService)
 	def loanService = Mock(LoanApplicationService)
@@ -18,7 +18,7 @@ class AuctionApplicationServiceImplTest extends Specification {
 		given:
 			def randId = Gen.integer.first()
 			def policy = new BestOffersRatePolicy()
-			def event = AuctionDomainFactory.createEndAuctionEvent()
+			def event = AuctionsTestsHelper.createEndAuctionEvent()
 		when:
 			auctionApplicationService.createLoanFromEndingAuction(randId, policy)
 		then:
