@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.json.JSONObject;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.AccountNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.BankCommunicationFailedException;
+import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.TransferNotCreatedException;
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.rest.exception.UnprocessableRequestException;
 @Log
 @AllArgsConstructor
@@ -13,22 +15,26 @@ public class FeignExceptionHandler implements ErrorDecoder {
 	
 	@Override
 	public Exception decode(String exceptionSource, Response response) {
+		String messageDetails = getResponseBodyField(response, "details");
 		
 		if(response.status() == 422){
-      		String messageDetails = getResponseBodyField(response, "details");
-			log.severe("Unprocessable bank API request: "+messageDetails+
+			log.warning("Unprocessable bank API request: "+messageDetails+
 					"\n Exception at: "+exceptionSource);
 			throw new UnprocessableRequestException(messageDetails);
 		}
 		if (response.status() == 404) {
-			String messageDetails = getResponseBodyField(response, "details");
 			log.severe("NotFound exception for bank API request: "+messageDetails+
 					"\n Exception at: "+exceptionSource);
 			return new AccountNotFoundException(messageDetails);
 		}
-		log.severe("Unknown exception occur during communication with bank API: "+response+
+		if (response.status() == 400) {
+			log.severe("Bad Request exception for bank API request: "+messageDetails+
+					"\n Exception at: "+exceptionSource);
+			return new TransferNotCreatedException(messageDetails);
+		}
+		log.severe("Unknown exception occur during communication with bank API: "+messageDetails+
 			"\n Exception at: "+exceptionSource);
-		return new RuntimeException(exceptionSource);
+		return new BankCommunicationFailedException(messageDetails);
 	}
 	
 	private String getResponseBodyField(Response response, String field) {

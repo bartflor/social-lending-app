@@ -93,8 +93,8 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 						 double amount,
 						 double rate){
 		existsInRepositoryCheck(lenderName);
-		Auction auction = auctionRepository.findById(auctionId).
-				orElseThrow(() -> new AddOfferException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
+		Auction auction = auctionRepository.findById(auctionId)
+				.orElseThrow(() -> new AuctionNotFoundException(String.format(AUCTION_WITH_ID_NOT_FOUND, auctionId)));
 		if(amount<0 || rate<0){
 			throw new AddOfferException(String.format(NOT_ALLOWED_OFFER, rate, amount));
 		}
@@ -141,7 +141,7 @@ public class AuctionDomainServiceImpl implements AuctionDomainService {
 		auctionRepository.updateAuction(auctionId, auction);
 		auctionRepository.findAuctionOffers(auctionId)
 				.forEach(offer -> { offer.archive();
-									offerRepository.update(offer.getId(), offer);});
+					offerRepository.update(offer.getId(), offer);});
 		return endEvent;
 	}
 	
