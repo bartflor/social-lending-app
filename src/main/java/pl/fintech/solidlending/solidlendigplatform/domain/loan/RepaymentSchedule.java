@@ -3,8 +3,8 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentException;
 
 import java.time.Instant;
 import java.util.*;
@@ -13,6 +13,8 @@ import java.util.*;
 @Data
 public class RepaymentSchedule {
 	private static final String NO_REPAYMENT_TO_REPORT_TRANSFER = "Repayment for transaction report not found.";
+	private static final String SCHEDULE_REPAID = "No repayment left in schedule. %s with id: %s is repaid";
+	
 	Long id;
 	Long ownerId;
 	List<Repayment> schedule;
@@ -30,22 +32,15 @@ public class RepaymentSchedule {
 		schedule.add(Repayment.builder().date(date).value( value).build());
 	}
 	
-	public Optional<Repayment> findNextRepayment() {
+	public Repayment getNextRepayment() {
 		return schedule.stream()
 				.filter(repayment -> !repayment.getStatus().equals(Repayment.Status.PAID))
-				.min(Comparator.comparing(Repayment::getDate));
-	}
-	
-	public boolean hasLateRepayment(){
-		return schedule.stream()
-				.filter(repayment -> repayment.getStatus().equals(Repayment.Status.LATE))
-				.count() != 0;
+				.min(Comparator.comparing(Repayment::getDate))
+				.orElseThrow(() -> new RepaymentException(String.format(SCHEDULE_REPAID, type, ownerId)));
 	}
 
 	public boolean hasPaidAllScheduledRepayment() {
-		return schedule.stream()
-				.filter(repayment -> !repayment.getStatus().equals(Repayment.Status.PAID))
-				.count() == 0;
+		return schedule.stream().noneMatch(repayment -> !repayment.getStatus().equals(Repayment.Status.PAID));
 	}
 	
 	public void addRepayment(Repayment repayment) {
@@ -53,9 +48,7 @@ public class RepaymentSchedule {
 	}
 	
 	public void reportRepayment() {
-		Repayment repayment = findNextRepayment()
-				.orElseThrow(() -> new NoSuchElementException(NO_REPAYMENT_TO_REPORT_TRANSFER));
-		repayment.isPaid();
+		getNextRepayment().isPaid();
 	}
 	
 }

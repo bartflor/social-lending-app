@@ -4,27 +4,18 @@ import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
-
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationServiceImpl
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainServiceImpl
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicy
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicyUT
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.OffersSelectionPolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanTestHelper
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 
@@ -68,7 +59,7 @@ class AuctionsControllerTest extends Specification {
 	def "GET /api/auctions/{auctionId}/create-loan should return created loanDto"(){
 		given:
 			def randID = Gen.integer.first()
-			def loan = LoanDomainFactory.crateLoan(randID)
+			def loan = LoanTestHelper.crateLoan(randID)
 			def dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 					.withZone(ZoneId.systemDefault())
 

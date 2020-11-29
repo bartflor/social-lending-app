@@ -8,7 +8,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetail
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import spock.genesis.Gen
 
-class PaymentDomainFactory {
+class PaymentTestHelper {
 
 	static createTransferOrderEvent(String sourceUserName, String targetUserName, Money amount){
 		TransferOrderEvent.builder()

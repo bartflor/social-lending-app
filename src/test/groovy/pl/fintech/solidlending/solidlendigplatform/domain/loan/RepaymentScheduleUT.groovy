@@ -1,13 +1,14 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentException
 import spock.genesis.Gen
 import spock.lang.Specification
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
-class RepaymentScheduleTest extends Specification {
+class RepaymentScheduleUT extends Specification {
 
 	def "findNextRepayment should return repayment with the earliest date and EXPECTED status"(){
 		given:
@@ -23,7 +24,7 @@ class RepaymentScheduleTest extends Specification {
 			schedule.addRepayment(new Repayment(startDate.plus(90, ChronoUnit.DAYS),
 					repayment, Repayment.Status.EXPECTED))
 		expect:
-			schedule.findNextRepayment() == Optional.of(expectedResponse)
+			schedule.getNextRepayment() == expectedResponse
 	}
 
 	def "findNextRepayment should return repayment with the earliest date and LATE status"(){
@@ -40,21 +41,27 @@ class RepaymentScheduleTest extends Specification {
 			schedule.addRepayment(new Repayment(startDate.plus(90, ChronoUnit.DAYS),
 					repayment, Repayment.Status.EXPECTED))
 		expect:
-			schedule.findNextRepayment() == Optional.of(expectedResponse)
+			schedule.getNextRepayment() == expectedResponse
 	}
 
 	def "findNextRepayment should return empty Optional when all repayments have PAID status"(){
 		given:
+			def id = Gen.integer.first()
 			def startDate = Instant.ofEpochMilli(Gen.long.first())
 			def repayment = new Money(Gen.integer(0, Integer.MAX_VALUE).first() as double)
 			def schedule = new RepaymentSchedule()
+			schedule.setType(RepaymentSchedule.Type.LOAN)
+			schedule.setOwnerId(id)
 			schedule.addRepayment(new Repayment(startDate, repayment, Repayment.Status.PAID))
 			schedule.addRepayment(new Repayment(startDate.plus(30, ChronoUnit.DAYS),
 					repayment, Repayment.Status.PAID))
 			schedule.addRepayment(new Repayment(startDate.plus(90, ChronoUnit.DAYS),
 					repayment, Repayment.Status.PAID))
-		expect:
-			schedule.findNextRepayment() == Optional.empty()
+		when:
+			schedule.getNextRepayment()
+		then:
+			def ex = thrown(RepaymentException)
+			ex.getMessage() == "No repayment left in schedule. LOAN with id: "+id+" is repaid"
 	}
 
 	def "hasPaidAllScheduledRepayment should true when all repayments have PAID status"(){
@@ -97,16 +104,19 @@ class RepaymentScheduleTest extends Specification {
 
 	def "reportRepayment should throw exception when no  repayment with EXPECTED status found"(){
 		given:
+			def id = Gen.integer.first()
 			def startDate = Instant.ofEpochMilli(Gen.long.first())
 			def repayment = new Money(Gen.integer(0, Integer.MAX_VALUE).first() as double)
 			def schedule = new RepaymentSchedule()
+			schedule.setType(RepaymentSchedule.Type.LOAN)
+			schedule.setOwnerId(id)
 			schedule.addRepayment(new Repayment(startDate, repayment, Repayment.Status.PAID))
 			schedule.addRepayment(new Repayment(startDate.plus(30, ChronoUnit.DAYS),
 					repayment, Repayment.Status.PAID))
 		when:
 			schedule.reportRepayment()
 		then:
-			def exception = thrown(NoSuchElementException)
-			exception.getMessage() == "Repayment for transaction report not found."
+			def exception = thrown(RepaymentException)
+			exception.getMessage() == "No repayment left in schedule. LOAN with id: "+id+" is repaid"
 	}
 }

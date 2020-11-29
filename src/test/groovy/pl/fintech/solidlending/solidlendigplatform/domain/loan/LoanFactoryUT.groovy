@@ -11,7 +11,7 @@ import spock.lang.Subject
 import java.time.Instant
 import java.time.Period
 
-class LoanFactoryTest extends Specification {
+class LoanFactoryUT extends Specification {
 	@Subject
 	def loanFactory = new LoanFactory()
 
@@ -20,16 +20,15 @@ class LoanFactoryTest extends Specification {
 			def borrowerName = Gen.string(20).first()
 			def repaymentsNumber = 5
 			def investment1value = 100
+			def rate1Value = 12
 			def startDate = Instant.ofEpochMilli(Gen.long.first())
-			def schedule1 =	LoanDomainFactory.createRepaymentSchedule(repaymentsNumber, investment1value, startDate)
-			def investment1 = LoanDomainFactory.createInvestmentWithSchedule(schedule1)
-			def rate1Value = 10
-			investment1.setRate(Rate.fromPercentValue(rate1Value))
+			def schedule1 =	LoanTestHelper.createRepaymentSchedule(repaymentsNumber, investment1value, startDate)
+			def investment1 = LoanTestHelper.createInvestmentWith(schedule1, investment1value, rate1Value, repaymentsNumber)
+
 			def investment2value = 200
-			def schedule2 =	LoanDomainFactory.createRepaymentSchedule(repaymentsNumber,investment2value, startDate)
-			def investment2 = LoanDomainFactory.createInvestmentWithSchedule(schedule2)
-			def rate2Value = 10
-			investment2.setRate(Rate.fromPercentValue(rate2Value))
+			def rate2Value = 9
+			def schedule2 =	LoanTestHelper.createRepaymentSchedule(repaymentsNumber,investment2value, startDate)
+			def investment2 = LoanTestHelper.createInvestmentWith(schedule2, investment2value, rate2Value, repaymentsNumber)
 			def loanDurationMonths = Period.ofMonths(repaymentsNumber)
 			def newLoanParams = NewLoanParams.builder()
 					.borrowerUserName(borrowerName)
@@ -47,7 +46,7 @@ class LoanFactoryTest extends Specification {
 			loan.getInvestments().contains(investment2)
 			loan.getStatus() == Loan.LoanStatus.UNCONFIRMED
 			loan.getDuration() == loanDurationMonths
-			loan.getAverageRate() == Rate.fromPercentValue((rate1Value+rate2Value)/2)
+			loan.getAverageRate() == Rate.fromPercentValue((rate1Value*investment1value+rate2Value*investment2value)/(investment1value+investment2value))
 			loan.getStartDate() == startDate
 		and:
 			def schedule = loan.getSchedule()

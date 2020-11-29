@@ -4,7 +4,7 @@ import spock.genesis.Gen
 import spock.lang.Specification
 
 
-class MoneyTest extends Specification {
+class MoneyUT extends Specification {
 
 	def "IsMoreOrEqual should return true, given two equal numbers"() {
 		given:

@@ -9,7 +9,7 @@ import java.time.Instant
 import java.time.Period
 import java.time.temporal.ChronoUnit
 
-class LoanDomainFactory {
+class LoanTestHelper {
 
 	static Loan crateLoan(long id) {
 		Loan.builder()
@@ -34,7 +34,7 @@ class LoanDomainFactory {
 				.loanAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
-				.schedule(new RepaymentSchedule())
+				.schedule(createRepaymentSchedule(Gen.integer(2,10).first(), Gen.integer(10,100000).first()))
 				.build()
 	}
 
@@ -45,7 +45,7 @@ class LoanDomainFactory {
 				.investments(Set.of(investment))
 				.amount(investment.getReturnAmount())
 				.averageRate(investment.getRate())
-				.repayment(investment.getSchedule().findNextRepayment().get().getValue())
+				.repayment(investment.getSchedule().getNextRepayment().getValue())
 				.duration(investment.getDuration())
 				.startDate(Instant.now())
 				.schedule(schedule)
@@ -92,6 +92,19 @@ class LoanDomainFactory {
 				.returnAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))
+				.schedule(schedule)
+				.build()
+	}
+
+	static Investment createInvestmentWith(RepaymentSchedule schedule, double amount, double rate, int repayments){
+		schedule.setType(RepaymentSchedule.Type.INVESTMENT)
+		Investment.builder()
+				.investmentId(Gen.long.first())
+				.lenderName(Gen.string(20).first())
+				.loanAmount(new Money(amount))
+				.returnAmount(new Money(amount*(100+rate)/100))
+				.rate(Rate.fromPercentValue(rate))
+				.duration(Period.ofMonths(repayments))
 				.schedule(schedule)
 				.build()
 	}

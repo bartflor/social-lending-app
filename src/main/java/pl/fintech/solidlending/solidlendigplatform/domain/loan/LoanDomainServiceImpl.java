@@ -6,10 +6,10 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentException;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 @Component
 @AllArgsConstructor
@@ -18,6 +18,8 @@ class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
 	private static final String INVALID_ACTIVATION_LOAN_STATUS = "Can not activate loan with id: %s, loan status must be UNCONFIRMED";
 	private static final String INVALID_REJECTION_LOAN_STATUS = "Can not reject loan with id: %s, loan status must be UNCONFIRMED";
+	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
+	private static final String LOAN_NOT_ACTIVE = "Can not repay not ACTIVE loan with id: %s";
 	
 	private final LoanRepository loanRepository;
 	private final RepaymentScheduleRepository scheduleRepository;
@@ -35,8 +37,7 @@ class LoanDomainServiceImpl implements LoanDomainService {
 	public Long createLoan(NewLoanParams params){
 		Set<Investment> investments = investmentFactory.createInvestmentsFrom(params.getInvestmentsParams());
 		Loan loan = loanFactory.createLoan(params, investments);
-		Long loanId = loanRepository.save(loan);
-		return loanId;
+		return loanRepository.save(loan);
 	}
 	
 	/**
@@ -85,10 +86,15 @@ class LoanDomainServiceImpl implements LoanDomainService {
 	}
 	
 	@Override
-	public Optional<Repayment> findNextRepayment(Long loanId){
+	public Set<Investment> getLoanInvestmentsForRepayment(Long loanId){
 		Loan loan = findLoanById(loanId);
-		RepaymentSchedule loanRepaymentSchedule = loan.getSchedule();
-		return loanRepaymentSchedule.findNextRepayment();
+		if(!loan.isActive()){
+			throw new RepaymentException(String.format(LOAN_NOT_ACTIVE, loanId));
+		}
+		if(loan.getSchedule().hasPaidAllScheduledRepayment()){
+			throw new RepaymentException(String.format(LOAN_REPAID, loanId));
+		}
+		return loan.getInvestments();
 	}
 	
 	

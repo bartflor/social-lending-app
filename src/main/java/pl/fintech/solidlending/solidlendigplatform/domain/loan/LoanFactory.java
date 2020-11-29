@@ -18,13 +18,14 @@ class LoanFactory {
 	private static final String EMPTY_INVESTMENTS_SET_NOT_ALLOWED = "Empty investment set not allowed. Can not calculate average rate from empty investment set.";
 	
 	/**
-	 * Builds loan using provided parameters. Set of investments, that together create Loan, is build by Factory method.
+	 * Builds loan using provided parameters.
 	 * Loan RepaymentSchedule combines each Investment RepaymentSchedule.
 	 * @param params parameters of loan to create
+	 * @param investments Set of investments, that together make a Loan.
 	 * @return new loan with investments set and repayment schedule.
 	 */
 	public Loan createLoan(NewLoanParams params, Set<Investment> investments){
-		Rate avgLoanRate = calculateAvgRate(investments);
+		Rate avgLoanRate = calculateAvgRate(investments, params.getLoanAmount());
 		Money repayment = params.getLoanAmount().calculateValueWithReturnRate(avgLoanRate);
 		RepaymentSchedule schedule = prepareRepaymentSchedule(investments);
 		return Loan.builder()
@@ -65,16 +66,16 @@ class LoanFactory {
 		return loanSchedule;
 	}
 	
-	private static Rate calculateAvgRate(Set<Investment> investments) {
+	private static Rate calculateAvgRate(Set<Investment> investments, Money loanAmount) {
 		if(investments.isEmpty()){
 			throw new ValueNotAllowedException(EMPTY_INVESTMENTS_SET_NOT_ALLOWED);
 		}
-		BigDecimal rateValue = investments.stream()
-				.map(Investment::getRate)
-				.map(Rate::getPercentValue)
+		BigDecimal investmentsAmountSum = investments.stream()
+				.map(investment -> investment.getLoanAmount().getValue()
+						.multiply(investment.getRate().getPercentValue()))
 				.reduce(BigDecimal::add)
 				.orElse(BigDecimal.ZERO);
-		rateValue = rateValue.divide(BigDecimal.valueOf(investments.size()), MathContext.DECIMAL32);
+		BigDecimal rateValue = investmentsAmountSum.divide(loanAmount.getValue(), MathContext.DECIMAL32);
 		return Rate.fromPercentValue(rateValue.doubleValue());
 	}
 	

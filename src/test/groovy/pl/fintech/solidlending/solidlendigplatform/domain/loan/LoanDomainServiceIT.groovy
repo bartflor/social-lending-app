@@ -1,15 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.ScheduleNotFoundException
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class LoanDomainServiceImplTest extends Specification {
+class LoanDomainServiceIT extends Specification {
 	def loanRepository = Mock(LoanRepository)
 	def scheduleRepository = Mock(RepaymentScheduleRepository)
 	def loanFactory = Mock(LoanFactory)
@@ -27,8 +25,8 @@ class LoanDomainServiceImplTest extends Specification {
 			def params = NewLoanParams.builder()
 					.investmentsParams(investmentParams)
 					.build()
-			def loan = LoanDomainFactory.crateLoan(randId)
-			def investment = LoanDomainFactory.createInvestment()
+			def loan = LoanTestHelper.crateLoan(randId)
+			def investment = LoanTestHelper.createInvestment()
 			loan.setInvestments(Set.of(investment))
 
 		when:
@@ -44,7 +42,7 @@ class LoanDomainServiceImplTest extends Specification {
 		has proper status"(){
 		given:
 			def randId = Gen.long.first()
-			def loan = LoanDomainFactory.crateLoan(randId)
+			def loan = LoanTestHelper.crateLoan(randId)
 			loan.setStatus(Loan.LoanStatus.UNCONFIRMED)
 		when:
 			loanDomainSvc.activateLoan(randId)
@@ -70,7 +68,7 @@ class LoanDomainServiceImplTest extends Specification {
 	def "activateLoan should throw exception when loan with given id has not UNCONFIRMED status"(){
 		given:
 			def randId = Gen.long.first()
-			def loan = LoanDomainFactory.crateLoan(randId)
+			def loan = LoanTestHelper.crateLoan(randId)
 			loan.setStatus(Loan.LoanStatus.ACTIVE)
 		when:
 			loanDomainSvc.activateLoan(randId)
