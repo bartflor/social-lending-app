@@ -2,32 +2,27 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Transactional
 class LoanApplicationServiceImpl implements LoanApplicationService {
-	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
-	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
-	private static final String LOAN_NOT_ACTIVE = "Can not repay not ACTIVE loan with id: %s";
-	private LoanDomainService domainService;
-	private PaymentService paymentService;
-	private TimeService timeService;
+	private final LoanDomainService domainService;
+	private final PaymentService paymentService;
+	private final TimeService timeService;
 	
 	/**
-	 * this method create newLoanParams, combining auctionLoanParam - proposed by borrower
-	 * and selected offer params - proposed by lenders.
+	 * Map application common object: endAuctionEvent to domain specific: newLoanParams,
+	 * combining auctionLoanParam - proposed by borrower, and params of selected - proposed by lenders.
 	 * Domain service creates new loan using composed newLoanParams.
 	 * @return - new loan id
 	 */
@@ -57,8 +52,8 @@ class LoanApplicationServiceImpl implements LoanApplicationService {
 	}
 	
 	/**
-	 * Activate loan with @param loanId
-	 * request money transfer lenders -> borrower
+	 * build event object for money transfer request: lenders -> borrower, and call paymentService
+	 * If payment end successfully, domainService will activate loan with loanId.
 	 */
 	@Override
 	public Long activateLoan(Long loanId){
@@ -78,28 +73,22 @@ class LoanApplicationServiceImpl implements LoanApplicationService {
 	public void rejectLoanProposal(Long loanId){
 		domainService.rejectLoan(loanId);
 	}
-
+	
+	/**
+	 * build event object for money transfer request: borrower -> lenders, and call paymentService
+	 * If payment end successfully, domainService will report it in repayment schedule.
+	 */
 	@Override
 	public void repayLoan(Long loanId){
-		Loan loan = findLoanById(loanId);
-		if(!loan.isActive()){
-			throw new RepaymentNotExecuted(String.format(LOAN_NOT_ACTIVE, loanId));
-		}
-		if(loan.getSchedule().hasPaidAllScheduledRepayment()){
-			throw new RepaymentNotExecuted(String.format(LOAN_REPAID, loanId));
-		}
-		Set<Investment> investments = loan.getInvestments();
-		for(Investment investment : investments){
-			Repayment repayment = investment.getSchedule().findNextRepayment()
-					.orElseThrow(() -> new RepaymentNotExecuted(String.format(INVESTMENT_REPAID, investment.getInvestmentId())));
+    	for (Investment investment : domainService.getLoanInvestmentsForRepayment(loanId)) {
+			Repayment repayment = investment.getSchedule().getNextRepayment();
 			TransferOrderEvent transferOrder = TransferOrderEvent.builder()
 					.targetUserName(investment.lenderName)
-					.sourceUserName(loan.getBorrowerUserName())
+					.sourceUserName(investment.getBorrowerName())
 					.amount(repayment.getValue())
 					.build();
 			paymentService.execute(transferOrder);
 		}
-		//TODO:confirm repayment
 		domainService.reportRepayment(loanId);
 	}
 	

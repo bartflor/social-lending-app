@@ -4,7 +4,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.exceptio
 import spock.genesis.Gen
 import spock.lang.Specification
 
-class RateTest extends Specification {
+class RateUT extends Specification {
 
 	def "FromPercentValue should throw exception given too big input"() {
 		when:

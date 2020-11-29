@@ -33,7 +33,7 @@ class InvestmentFactory {
 		RepaymentSchedule schedule = new RepaymentSchedule();
 		long repaymentMonths = investmentDuration.toTotalMonths() == 0 ? 1 : investmentDuration.toTotalMonths();
 		Money singleRepaymentAmount = value.divide(repaymentMonths);
-		//Request repayment after 1 month;
+		//to request first repayment after 1 month set i=1;
 		for(int i=1; i<=repaymentMonths; i++){
 			schedule.addRepayment(startDay.plus(Period.ofDays(i*30)),
 					singleRepaymentAmount);

@@ -9,7 +9,7 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class PaymentServiceTest extends Specification {
+class PaymentServiceUT extends Specification {
 	def bankClientMock = Mock(BankClient)
 	def userSvc = Mock(UserService)
 
@@ -25,9 +25,9 @@ class PaymentServiceTest extends Specification {
 			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
-			def sourceUser = PaymentDomainFactory.createLender(sourceUserAccount, sourceUserName)
-			def targetUser = PaymentDomainFactory.createBorrower(targetUserAccount, targetUserName)
-			def event = PaymentDomainFactory
+			def sourceUser = PaymentTestHelper.createLender(sourceUserAccount, sourceUserName)
+			def targetUser = PaymentTestHelper.createBorrower(targetUserAccount, targetUserName)
+			def event = PaymentTestHelper
 					.createTransferOrderEvent(sourceUserName, targetUserName, amount)
 		when:
 			def result = paymentService.execute(event)
@@ -45,11 +45,11 @@ class PaymentServiceTest extends Specification {
 			def amount = new Money(Gen.integer(0, 10000).first() as double)
 			def sourceUserName = Gen.string(5,20).first()
 			def targetUserName = Gen.string(5,20).first()
-			def sourceUser = PaymentDomainFactory.createLender(null, sourceUserName)
-			def targetUser = PaymentDomainFactory.createBorrower(UUID.randomUUID(), targetUserName)
+			def sourceUser = PaymentTestHelper.createLender(null, sourceUserName)
+			def targetUser = PaymentTestHelper.createBorrower(UUID.randomUUID(), targetUserName)
 
 		when:
-			paymentService.execute(PaymentDomainFactory.createTransferOrderEvent(sourceUserName, targetUserName, amount))
+			paymentService.execute(PaymentTestHelper.createTransferOrderEvent(sourceUserName, targetUserName, amount))
 		then:
 			1 * userSvc.findUser(sourceUserName) >> sourceUser
 			1 * userSvc.findUser(targetUserName) >> targetUser
@@ -76,7 +76,7 @@ class PaymentServiceTest extends Specification {
 		when:
 			paymentService.executeExternal(event)
 		then:
-			1*userSvc.findUser(userName) >> PaymentDomainFactory.createUser(platformAccount, privateAccount)
+			1*userSvc.findUser(userName) >> PaymentTestHelper.createUser(platformAccount, privateAccount)
 			1*bankClientMock.transfer(privateAccount, platformAccount, amount)
 	}
 
@@ -95,7 +95,7 @@ class PaymentServiceTest extends Specification {
 		when:
 			paymentService.executeExternal(event)
 		then:
-			1*userSvc.findUser(userName) >> PaymentDomainFactory.createUser(platformAccount, privateAccount)
+			1*userSvc.findUser(userName) >> PaymentTestHelper.createUser(platformAccount, privateAccount)
 			1*bankClientMock.transfer(platformAccount, privateAccount, amount)
 	}
 

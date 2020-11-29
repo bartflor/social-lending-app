@@ -10,9 +10,9 @@
     </parent>
     <groupId>pl.fintech.solidlending.solidlendigplatform</groupId>
     <artifactId>solid-lendig-platform</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>demo-app</name>
-    <description>Demo project for Spring Boot</description>
+    <version>1.0.0</version>
+    <name>SolidLendingPlatform-app</name>
+    <description>SOLID_ers project for Fintech challenge</description>
 
     <properties>
         <java.version>11</java.version>
