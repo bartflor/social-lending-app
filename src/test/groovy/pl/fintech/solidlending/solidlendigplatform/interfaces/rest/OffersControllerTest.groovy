@@ -56,13 +56,12 @@ class OffersControllerTest extends Specification {
 			def lenderName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
 			def amount = Gen.integer.first()
 			def rate = Gen.integer.first()
-			def allowSplit = Gen.long.first() > 0 //random boolean
 		when:
 			def response = restClient.given()
-					.body(CommunicationDataFactory.createNewOfferRequest(auctionId, lenderName,	amount,	rate, allowSplit))
+					.body(CommunicationDataFactory.createNewOfferRequest(auctionId, lenderName,	amount,	rate))
 					.post("/api/offers")
 		then:
-			1* auctionAppSvcMock.addOffer(auctionId, lenderName, amount, rate, allowSplit)
+			1* auctionAppSvcMock.addOffer(auctionId, lenderName, amount, rate)
 		and:
 			response.statusCode() == 201
 	}

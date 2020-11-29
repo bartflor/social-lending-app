@@ -64,8 +64,4 @@ class InMemoryAuctionRepo implements AuctionRepository {
 		repo.clear()
 	}
 
-	@Override
-	List<Auction> findAllWithEndDateBefore(Instant now) {
-		return null
-	}
 }

@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.domain.common;
+package pl.fintech.solidlending.solidlendigplatform.domain.common.events;
 
 import lombok.Builder;
 import lombok.Value;

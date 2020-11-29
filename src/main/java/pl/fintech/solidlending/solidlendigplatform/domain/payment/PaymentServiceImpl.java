@@ -2,8 +2,8 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;

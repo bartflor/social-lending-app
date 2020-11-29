@@ -14,7 +14,7 @@ import java.util.Set;
 @Component
 @AllArgsConstructor
 @Transactional
-public class LoanDomainServiceImpl implements LoanDomainService {
+class LoanDomainServiceImpl implements LoanDomainService {
 	private static final String LOAN_WITH_ID_NOT_FOUND = "Loan with id:%s not found.";
 	private static final String INVALID_ACTIVATION_LOAN_STATUS = "Can not activate loan with id: %s, loan status must be UNCONFIRMED";
 	private static final String INVALID_REJECTION_LOAN_STATUS = "Can not reject loan with id: %s, loan status must be UNCONFIRMED";

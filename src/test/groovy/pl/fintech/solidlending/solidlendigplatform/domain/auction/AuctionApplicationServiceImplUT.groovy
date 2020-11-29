@@ -6,10 +6,11 @@ import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class AuctionApplicationServiceImplTest extends Specification {
+class AuctionApplicationServiceImplUT extends Specification {
 
 	def domainService = Mock(AuctionDomainService)
 	def loanService = Mock(LoanApplicationService)
+	def policyMock = Mock(OffersSelectionPolicy)
 
 	@Subject
 	def auctionApplicationService = new AuctionApplicationServiceImpl(domainService, loanService);
@@ -17,12 +18,11 @@ class AuctionApplicationServiceImplTest extends Specification {
 	def "createLoanFromEndingAuction should invoke domain services with proper args"(){
 		given:
 			def randId = Gen.integer.first()
-			def policy = new BestOffersRatePolicy()
-			def event = AuctionDomainFactory.createEndAuctionEvent()
+			def event = AuctionsTestsHelper.createEndAuctionEvent()
 		when:
-			auctionApplicationService.createLoanFromEndingAuction(randId, policy)
+			auctionApplicationService.createLoanFromEndingAuction(randId, policyMock)
 		then:
-			1*domainService.endAuction(randId, policy) >> event
+			1*domainService.endAuction(randId, policyMock) >> event
 			1*loanService.createLoan(event)
 	}
 }

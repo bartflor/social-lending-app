@@ -19,6 +19,8 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplica
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicy
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.BestOffersRatePolicyUT
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.OffersSelectionPolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanDomainFactory
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
@@ -49,6 +51,9 @@ class AuctionsControllerTest extends Specification {
 	LoanApplicationService loanServiceMock
 	@Autowired
 	AuctionApplicationService auctionServiceMock
+	@Autowired
+	OffersSelectionPolicy policyMock
+
 
 	RequestSpecification restClient
 
@@ -70,7 +75,7 @@ class AuctionsControllerTest extends Specification {
 		when:
 			def response = restClient.when().get("/api/auctions/"+randID+"/create-loan")
 		then:
-			1*auctionServiceMock.createLoanFromEndingAuction(randID, new BestOffersRatePolicy()) >> randID
+			1*auctionServiceMock.createLoanFromEndingAuction(randID, policyMock) >> randID
 			1*loanServiceMock.findLoanById(randID) >> loan
 		and:
 			response.statusCode() == 201

@@ -7,9 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.context.annotation.Import
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.*
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService

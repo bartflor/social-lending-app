@@ -18,8 +18,8 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 	private static final String USER_NOT_FOUND = "User with username:%s not found.";
 	
-	private LenderRepository lenderRepository;
-	private BorrowerRepository borrowerRepository;
+	private final LenderRepository lenderRepository;
+	private final BorrowerRepository borrowerRepository;
 	
 	@Override
 	public UserDetails getUserDetails(String userName){
@@ -55,6 +55,16 @@ public class UserServiceImpl implements UserService {
 	public Borrower findBorrower(String borrowerName) {
 		return borrowerRepository.findBorrowerByUserName(borrowerName)
 				.orElseThrow(()-> new UserNotFoundException(String.format(USER_NOT_FOUND, borrowerName)));
+	}
+	
+	@Override
+	public Boolean lenderExists(String lenderName) {
+		return lenderRepository.findLenderByUserName(lenderName).isPresent();
+	}
+	
+	@Override
+	public Boolean borrowerExists(String borrower) {
+		return borrowerRepository.findBorrowerByUserName(borrower).isPresent();
 	}
 	
 }

@@ -6,10 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -30,7 +27,6 @@ public class InvestmentEntity {
 	BigDecimal returnAmount;
 	BigDecimal loanAmount;
 	BigDecimal rate;
-	Integer risk;
 	Period duration;
 	@Enumerated(EnumType.STRING)
 	Investment.Status status;
@@ -46,7 +42,6 @@ public class InvestmentEntity {
         .returnAmount(investment.getReturnAmount().getValue())
         .loanAmount(investment.getLoanAmount().getValue())
         .rate(investment.getRate().getPercentValue())
-        .risk(investment.getRisk().getRisk())
         .duration(investment.getDuration())
         .status(investment.getStatus())
         .schedule(RepaymentScheduleEntity.from(investment.getSchedule()))
@@ -62,7 +57,6 @@ public class InvestmentEntity {
 				.returnAmount(new Money(returnAmount))
 				.loanAmount(new Money(loanAmount))
 				.rate(Rate.fromPercentValue(rate.doubleValue()))
-				.risk(new Risk(risk))
 				.duration(duration)
 				.status(status)
 				.schedule(schedule.toDomain())

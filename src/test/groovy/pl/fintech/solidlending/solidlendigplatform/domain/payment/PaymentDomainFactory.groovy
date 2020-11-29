@@ -1,6 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User

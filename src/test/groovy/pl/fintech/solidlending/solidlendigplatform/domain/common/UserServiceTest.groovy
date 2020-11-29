@@ -1,11 +1,13 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
+import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentDomainFactory
 import spock.genesis.Gen
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -55,4 +57,22 @@ class UserServiceTest extends Specification {
 			def exception = thrown(UserNotFoundException)
 			exception.getMessage() == "User with username:"+userName+" not found."
 	}
+	def "partial update should call repository with proper parameters"(){
+		given:
+			def lenderName = Gen.string(5,20).first()
+			def lender = PaymentDomainFactory.createLender(UUID.randomUUID(), lenderName)
+			Map<String, String> details = Map.of(Gen.string(10).first(), Gen.string(10).first())
+			lenderRepoMock.findLenderByUserName(lenderName) >> Optional.of(lender)
+			borrowerRepoMock.findBorrowerByUserName(lenderName) >> Optional.empty()
+		when:
+			userSvc.partialUpdateUserDetails(lenderName, details)
+		then:
+			lenderRepoMock.updateLenderDetails(_) >>
+					{args -> Lender argLender = args.get(0)
+					Map argDetails = args.get(1)
+					argLender == lender
+					argDetails == details}
+
+	}
+
 }

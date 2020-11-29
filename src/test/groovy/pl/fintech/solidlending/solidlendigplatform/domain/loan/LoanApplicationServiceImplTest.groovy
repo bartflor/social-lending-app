@@ -1,8 +1,8 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainFactory
+import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionsTestsHelper
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
@@ -23,22 +23,21 @@ class LoanApplicationServiceImplTest extends Specification {
 	def "createLoan should crate new loan from given endAuctionEvent"(){
 		given:
 			def loanStartDate = Instant.ofEpochMilli(Gen.long.first())
-			def event = AuctionDomainFactory.createEndAuctionEvent()
+			def event = AuctionsTestsHelper.createEndAuctionEvent()
 			def investParams = NewInvestmentParams.builder()
-					.LenderUserName(event.getOffers().first().getLenderName())
+					.LenderUserName(event.getOfferParamsSet().first().getLenderName())
 					.BorrowerName(event.getBorrowerUserName())
-					.investedMoney(event.getOffers().first().getAmount())
-					.returnRate(event.getOffers().first().getRate())
-					.risk(event.getAuctionLoanParams().getLoanRisk())
-					.investmentDuration(event.getAuctionLoanParams().getLoanDuration())
+					.investedMoney(event.getOfferParamsSet().first().getAmount())
+					.returnRate(event.getOfferParamsSet().first().getRate())
+					.investmentDuration(event.getLoanDuration())
 					.investmentStartDate(loanStartDate)
 					.build()
 			def loanParams = NewLoanParams.builder()
 					.borrowerUserName(event.getBorrowerUserName())
 					.investmentsParams(List.of(investParams))
-					.loanAmount(event.getAuctionLoanParams().getLoanAmount())
+					.loanAmount(event.getLoanAmount())
 					.loanStartDate(loanStartDate)
-					.loanDuration(event.getAuctionLoanParams().getLoanDuration())
+					.loanDuration(event.getLoanDuration())
 					.build()
 		when:
 			loanAppSvc.createLoan(event)

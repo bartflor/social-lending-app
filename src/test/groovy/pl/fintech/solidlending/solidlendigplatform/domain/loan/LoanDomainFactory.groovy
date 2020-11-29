@@ -2,7 +2,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan
 
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
+
 import spock.genesis.Gen
 
 import java.time.Instant
@@ -89,7 +89,6 @@ class LoanDomainFactory {
 				.investmentId(Gen.long.first())
 				.lenderName(Gen.string(20).first())
 				.loanAmount(new Money(Gen.double.first()))
-				.risk(new Risk(Gen.integer(0, 5).first()))
 				.returnAmount(new Money(Gen.double.first()))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.duration(Period.ofMonths(Gen.integer(0, 36).first()))

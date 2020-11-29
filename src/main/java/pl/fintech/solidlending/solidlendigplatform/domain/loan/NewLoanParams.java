@@ -12,7 +12,7 @@ import java.util.List;
 @Value
 @Builder
 @EqualsAndHashCode
-public class NewLoanParams {
+class NewLoanParams {
   String borrowerUserName;
   Money loanAmount;
   Period loanDuration;

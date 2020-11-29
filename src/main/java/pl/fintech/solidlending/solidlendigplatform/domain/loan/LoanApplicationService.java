@@ -1,6 +1,6 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 
 import java.util.Collection;

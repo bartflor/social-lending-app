@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Component
-public class InvestmentFactory {
+class InvestmentFactory {
 	public Set<Investment> createInvestmentsFrom(List<NewInvestmentParams> newInvestmentsParamsList){
 		Set<Investment> investments = new HashSet<>();
 		for(NewInvestmentParams params: newInvestmentsParamsList){
@@ -19,7 +19,6 @@ public class InvestmentFactory {
       	investments.add(Investment.builder()
 				.lenderName(params.getLenderUserName())
 				.borrowerName(params.getBorrowerName())
-				.risk(params.getRisk())
 				.loanAmount(params.getInvestedMoney())
 				.returnAmount(value)
 				.rate(params.getReturnRate())

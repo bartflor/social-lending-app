@@ -5,7 +5,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import java.util.List;
 import java.util.Optional;
 
-public interface LoanDomainService {
+interface LoanDomainService {
 	Long createLoan(NewLoanParams params);
 	
 	Long activateLoan(Long loanId);

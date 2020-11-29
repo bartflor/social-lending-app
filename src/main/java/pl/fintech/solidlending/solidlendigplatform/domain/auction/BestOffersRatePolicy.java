@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.EqualsAndHashCode;
+import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.OfferNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
@@ -11,19 +12,20 @@ import java.util.stream.Collectors;
 
 /**
  * Looking for Offers with lowest rate, and adding them to set of best offers. If added offer makes total offers sum
- * bigger than loan amount, it is reduced to meet requested value.
+ * bigger than loan amount, it is reduced to meet requested value. If two offers with same rate are found,
+ * first added offer (with lower id) will be selected.
  */
 @EqualsAndHashCode
-public class BestOffersRatePolicy implements OffersSelectionPolicy {
+@Component
+class BestOffersRatePolicy implements OffersSelectionPolicy {
 	private static final String NO_OFFERS_IN_AUCTION = "Can not select offer from auction - no offers provided!";
 	
 	@Override
-	public Set<Offer> selectOffers(Set<Offer> offers, AuctionLoanParams auctionLoanParams) {
+	public Set<Offer> selectOffers(Set<Offer> offers, Money loanAmount) {
 		Set<Offer> auctionOffers = offers.stream().map(Offer::new)
 				.collect(Collectors.toSet());
 		Set<Offer> bestOffersSet = new HashSet<>();
 		Comparator<Offer> comparator = new Offer.OfferAmountRateComparator();
-		Money loanAmount = auctionLoanParams.getLoanAmount();
 		while(!auctionOffers.isEmpty()){
 			Money bestOffersSum = bestOffersSet.stream()
 				.map(Offer::getAmount)

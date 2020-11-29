@@ -1,18 +1,19 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.BestOfferParams
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Risk
+
 import spock.genesis.Gen
 
 import java.time.Instant
 import java.time.Period
 
-class AuctionDomainFactory {
+class AuctionsTestsHelper {
 	static Auction createAuction(String borrowerName,
 	                             Period auctionDuration,
 	                             int amount,
@@ -25,32 +26,13 @@ class AuctionDomainFactory {
 				.borrower(createBorrower(borrowerName, rating))
 				.endDate(Instant.now())
 				.auctionDuration(auctionDuration)
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(amount))
-						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentValue(rate))
-						.loanRisk(new Risk(Gen.integer(1,5).first()))
-						.build())
+				.loanAmount(new Money(amount))
+				.loanDuration(loanDuration)
+				.loanRate(Rate.fromPercentValue(rate))
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
 	}
 
-	static Auction createAuction(long id) {
-		Auction.builder()
-				.id(id)
-				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
-				.endDate(Gen.date.first().toInstant())
-				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(Gen.double.first()))
-						.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-						.loanRate(Rate.fromPercentValue(Gen.integer(0..100).first()))
-						.build())
-				.offers(Collections.emptySet())
-				.status(Auction.AuctionStatus.ACTIVE)
-				.build()
-	}
-	
 	static Auction createAuction(String... borrowerName) {
 		def name = borrowerName.length==0? Gen.string(20).first() : borrowerName[0]
 		createAuction(name,
@@ -68,20 +50,13 @@ class AuctionDomainFactory {
 				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
 				.endDate(Gen.date.first().toInstant())
 				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.auctionLoanParams(createLoanAuctionParams(amount))
+				.loanAmount(new Money(amount))
+				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
+				.loanRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.offers(Set.of(createOfferWithAmount(amount, Gen.long.first())))
 				.status(Auction.AuctionStatus.ACTIVE_COMPLETE)
 				.build()
 	}
-
-	private static AuctionLoanParams createLoanAuctionParams(int amount) {
-		AuctionLoanParams.builder()
-				.loanAmount(new Money(amount))
-				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-				.loanRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
-				.build()
-	}
-
 
 	static Offer createOfferWithLenderNameAuctionId(String lenderName, Long auctionId){
 		Offer.builder()
@@ -105,7 +80,14 @@ class AuctionDomainFactory {
 				.lenderName(Gen.string(20).first())
 				.amount(new Money(amount))
 				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
-				.risk(new Risk(Gen.integer(1, 5).first()))
+				.build()
+	}
+
+	static BestOfferParams createOfferParamsAmount(int amount){
+		BestOfferParams.builder()
+				.lenderName(Gen.string(20).first())
+				.amount(new Money(amount))
+				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.build()
 	}
 
@@ -129,8 +111,9 @@ class AuctionDomainFactory {
 
 	static EndAuctionEvent createEndAuctionEvent(){
 		EndAuctionEvent.builder()
-			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.long.first())))
-			.auctionLoanParams(createLoanAuctionParams(Gen.integer.first()))
+			.offerParamsSet(Set.of(createOfferParamsAmount(Gen.integer.first())))
+			.loanAmount(new Money(Gen.integer.first() as double))
+			.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
 			.BorrowerUserName(Gen.string(20).first())
 			.build()
 	}
@@ -146,11 +129,9 @@ class AuctionDomainFactory {
 				.borrower(createBorrower(borrowerName, rating))
 				.endDate(now)
 				.auctionDuration(auctionDuration)
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(amount))
-						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentValue(rate))
-						.build())
+				.loanAmount(new Money(amount))
+				.loanDuration(loanDuration)
+				.loanRate(Rate.fromPercentValue(rate))
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
 	}

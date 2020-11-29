@@ -91,10 +91,5 @@ public class PersistentAuctionsRepository implements AuctionRepository {
 	public void deleteAll(){
 		jpaAuctionRepository.deleteAll();
 	}
-	
-	@Override
-	public List<Auction> findAllWithEndDateBefore(Instant date) {
-		return mapToDomainList(jpaAuctionRepository.findAllByAuctionEndDateAfter(date));
-	}
 
 }

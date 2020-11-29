@@ -14,6 +14,7 @@ public class UserDetailsDto {
 	String surname;
 	String email;
 	String phoneNumber;
+	String address;
 	BigDecimal accountBalance;
 	Boolean hasLinkedBankAccount;
 	
@@ -26,16 +27,18 @@ public class UserDetailsDto {
 				.phoneNumber(userDetails.getPhoneNumber())
 				.accountBalance(accountBalance)
 				.hasLinkedBankAccount(userDetails.getPrivateAccountNumber()!=null)
+				.address(userDetails.getAddress())
 				.build();
 	}
 	
 	public UserDetails toDomain() {
 		return UserDetails.builder()
-				.userName(userName)
-				.phoneNumber(phoneNumber)
-				.email(email)
-				.name(name)
-				.surname(surname)
+				.userName(getUserName())
+				.phoneNumber(getPhoneNumber())
+				.email(getEmail())
+				.name(getName())
+				.surname(getSurname())
+				.address(getAddress())
 				.build();
 	}
 }

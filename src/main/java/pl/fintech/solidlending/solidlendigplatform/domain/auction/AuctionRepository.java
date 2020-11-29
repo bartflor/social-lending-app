@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AuctionRepository {
+	
 	Long save(Auction auction);
 	
 	List<Auction> findAllByUsername(String userName);
@@ -20,6 +21,4 @@ public interface AuctionRepository {
 	void delete(Long auctionId);
 	
 	void deleteAll();
-	
-	List<Auction> findAllWithEndDateBefore(Instant now);
 }

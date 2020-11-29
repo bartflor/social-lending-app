@@ -24,10 +24,6 @@ public class Money {
 		return value.compareTo(amount.getValue()) >= 0;
 	}
 	
-	public boolean isMoreThan(Money amount) {
-		return value.compareTo(amount.getValue()) > 0;
-	}
-	
 	public boolean isEqual(Money amount) {
 		return value.compareTo(amount.getValue()) == 0;
 	}
