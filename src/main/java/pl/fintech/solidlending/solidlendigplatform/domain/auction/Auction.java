@@ -1,18 +1,15 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
 import lombok.*;
-import org.assertj.core.util.BigDecimalComparator;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanCreationException;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.Period;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,21 +29,26 @@ public class Auction {
 	private final Period auctionDuration;
 	@Builder.Default private Set<Offer> offers = new HashSet<>();
 	@Builder.Default private AuctionStatus status = AuctionStatus.ACTIVE;
-	private final AuctionLoanParams auctionLoanParams;
+	private final Money loanAmount;
+	private final Period loanDuration;
+	private final Rate loanRate;
 	
-	public void addNewOffer(Offer offer) {
+	public enum AuctionStatus {
+		ACTIVE, ARCHIVED, ACTIVE_COMPLETE
+	}
+	
+	void addNewOffer(Offer offer) {
 		offers.add(offer);
 		checkStatusUpdate();
 	}
 	
-	public void removeOffer(Offer offer) {
+	void removeOffer(Offer offer) {
 		offers.remove(offer);
 		checkStatusUpdate();
 	}
 	
-	public void checkStatusUpdate() {
-		
-		Money loanAmount = auctionLoanParams.getLoanAmount();
+	void checkStatusUpdate() {
+		Money loanAmount = getLoanAmount();
 		Money offersSum = offers.stream()
 				.map(Offer::getAmount)
 				.reduce(Money::sum)
@@ -58,20 +60,20 @@ public class Auction {
 		}
 	}
 	
-	public EndAuctionEvent end(OffersSelectionPolicy selectionPolicy) {
+	EndAuctionEvent end(OffersSelectionPolicy selectionPolicy) {
 		if(!status.equals(Auction.AuctionStatus.ACTIVE_COMPLETE))
 			throw new LoanCreationException(String.format(INCORRECT_AUCTION_STATUS, status));
-		Set<Offer> bestOffers = selectionPolicy.selectOffers(offers, auctionLoanParams);
+		Set<Offer> bestOffers = selectionPolicy.selectOffers(offers, loanAmount);
 		status = AuctionStatus.ARCHIVED;
 		return EndAuctionEvent.builder()
 				.BorrowerUserName(borrower.getUserDetails().getUserName())
-				.offers(bestOffers)
-				.auctionLoanParams(auctionLoanParams)
+				.offerParamsSet((bestOffers.stream()
+						.map(Offer::toOfferParams)
+						.collect(Collectors.toSet())))
+				.loanAmount(loanAmount)
+				.loanDuration(loanDuration)
 				.build();
 	}
 	
-	public enum AuctionStatus {
-		ACTIVE, ARCHIVED, SUSPENDED, ACTIVE_COMPLETE
-	}
-	
+
 }

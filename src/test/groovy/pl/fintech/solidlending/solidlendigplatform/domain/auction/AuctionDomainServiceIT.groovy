@@ -2,6 +2,8 @@ package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
@@ -23,6 +25,7 @@ class AuctionDomainServiceIT extends Specification {
 	AuctionRepository auctionRepo
 	BorrowerRepository borrowerRepo
 	LenderRepository lenderRepo
+	UserService userService
 	OfferRepository offerRepo
 	TimeService timeService
 	String lenderName
@@ -32,15 +35,15 @@ class AuctionDomainServiceIT extends Specification {
 		auctionRepo = new InMemoryAuctionRepo()
 		borrowerRepo = new InMemoryUserRepo()
 		lenderRepo = borrowerRepo
+		userService = new UserServiceImpl(lenderRepo, borrowerRepo)
 		offerRepo = new InMemoryOfferRepo()
 		timeService = Mock(TimeService)
 		lenderName = Gen.string(20).first()
 		borrowerName = Gen.string(20).first()
 		auctionService = new AuctionDomainServiceImpl(auctionRepo,
-				borrowerRepo,
 				offerRepo,
-				lenderRepo,
-				timeService)
+				timeService,
+				userService)
 		borrowerRepo.save(Borrower.builder()
 				.userDetails(UserDetails.builder()
 						.userName(borrowerName)
@@ -91,7 +94,7 @@ class AuctionDomainServiceIT extends Specification {
 		and:
 			addedOffer.getLenderName() == lenderName
 			addedOffer.getAuctionId() == auctionId
-			addedOffer.getDuration() == auction.getAuctionLoanParams().getLoanDuration()
+			addedOffer.getDuration() == auction.getLoanDuration()
 			addedOffer.getRate() == offer.getRate()
 			addedOffer.getAmount() == offer.getAmount()
 	}
@@ -110,14 +113,14 @@ class AuctionDomainServiceIT extends Specification {
 			thrown(UserNotFoundException)
 	}
 
-	def "crateNewAuction method should throw exception when Borrower with username not exists."() {
+	def "crateNewAuction method should throw exception when Borrower with given username not exists."() {
 		when:
 			auctionService.createNewAuction("non_existing_borrower_name",
 					Period.of(0, 1, 15),
 					1200.0, Period.ofYears(2),
 					15.4)
 		then:
-			thrown(AuctionCreationException)
+			thrown(UserNotFoundException)
 
 	}
 
@@ -163,4 +166,6 @@ class AuctionDomainServiceIT extends Specification {
 		and:
 			result.contains(offer1)
 	}
+
+
 }

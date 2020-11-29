@@ -8,7 +8,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 
 import java.util.Map;
 
-import static pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent.TransferType;
+import static pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent.TransferType;
 
 @RequestMapping("api/accounts")
 @RestController

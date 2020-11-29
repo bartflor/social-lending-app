@@ -1,11 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.payment
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.CommunicationDataFactory

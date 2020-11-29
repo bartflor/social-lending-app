@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 
 import java.time.Instant;
 import java.util.List;
@@ -29,14 +28,13 @@ public class AuctionDto {
     List<OfferDto> offers;
 
     public static AuctionDto fromAuction(Auction auction) {
-        AuctionLoanParams params = auction.getAuctionLoanParams();
     return AuctionDto.builder()
         .id(auction.getId())
         .borrower(auction.getBorrower().getUserDetails().getUserName())
         .borrowerRating(auction.getBorrower().getRating().getTotalRating())
-        .amount(params.getLoanAmount().getValue().doubleValue())
-        .rate(params.getLoanRate().getPercentValue().doubleValue())
-        .loanDuration((int) params.getLoanDuration().toTotalMonths())
+        .amount(auction.getLoanAmount().getValue().doubleValue())
+        .rate(auction.getLoanRate().getPercentValue().doubleValue())
+        .loanDuration((int) auction.getLoanDuration().toTotalMonths())
         .auctionEndDate(auction.getEndDate())
         .auctionDuration(auction.getAuctionDuration().getDays())
         .status(auction.getStatus().toString())

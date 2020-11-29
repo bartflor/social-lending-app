@@ -1,6 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.BestOfferParams
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
@@ -25,31 +26,13 @@ class AuctionsTestsHelper {
 				.borrower(createBorrower(borrowerName, rating))
 				.endDate(Instant.now())
 				.auctionDuration(auctionDuration)
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(amount))
-						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentValue(rate))
-						.build())
+				.loanAmount(new Money(amount))
+				.loanDuration(loanDuration)
+				.loanRate(Rate.fromPercentValue(rate))
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
 	}
 
-	static Auction createAuction(long id) {
-		Auction.builder()
-				.id(id)
-				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
-				.endDate(Gen.date.first().toInstant())
-				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(Gen.double.first()))
-						.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-						.loanRate(Rate.fromPercentValue(Gen.integer(0..100).first()))
-						.build())
-				.offers(Collections.emptySet())
-				.status(Auction.AuctionStatus.ACTIVE)
-				.build()
-	}
-	
 	static Auction createAuction(String... borrowerName) {
 		def name = borrowerName.length==0? Gen.string(20).first() : borrowerName[0]
 		createAuction(name,
@@ -67,20 +50,13 @@ class AuctionsTestsHelper {
 				.borrower(createBorrower(Gen.string(20).first(), Gen.integer(1,5).first() as double))
 				.endDate(Gen.date.first().toInstant())
 				.auctionDuration(Period.ofDays(Gen.integer(1..365).first()))
-				.auctionLoanParams(createLoanAuctionParams(amount))
+				.loanAmount(new Money(amount))
+				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
+				.loanRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
 				.offers(Set.of(createOfferWithAmount(amount, Gen.long.first())))
 				.status(Auction.AuctionStatus.ACTIVE_COMPLETE)
 				.build()
 	}
-
-	private static AuctionLoanParams createLoanAuctionParams(int amount) {
-		AuctionLoanParams.builder()
-				.loanAmount(new Money(amount))
-				.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
-				.loanRate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
-				.build()
-	}
-
 
 	static Offer createOfferWithLenderNameAuctionId(String lenderName, Long auctionId){
 		Offer.builder()
@@ -107,6 +83,14 @@ class AuctionsTestsHelper {
 				.build()
 	}
 
+	static BestOfferParams createOfferParamsAmount(int amount){
+		BestOfferParams.builder()
+				.lenderName(Gen.string(20).first())
+				.amount(new Money(amount))
+				.rate(Rate.fromPercentValue(Gen.integer(0, 100).first()))
+				.build()
+	}
+
 	static Auction createAuctionWithAmount(Integer amount) {
 		createAuction(Gen.string(30).first(),
 				Period.ofDays(Gen.integer.first()),
@@ -127,8 +111,9 @@ class AuctionsTestsHelper {
 
 	static EndAuctionEvent createEndAuctionEvent(){
 		EndAuctionEvent.builder()
-			.offers(Set.of(createOfferWithAmount(Gen.integer.first(), Gen.long.first())))
-			.auctionLoanParams(createLoanAuctionParams(Gen.integer.first()))
+			.offerParamsSet(Set.of(createOfferParamsAmount(Gen.integer.first())))
+			.loanAmount(new Money(Gen.integer.first() as double))
+			.loanDuration(Period.ofMonths(Gen.integer(1..36).first()))
 			.BorrowerUserName(Gen.string(20).first())
 			.build()
 	}
@@ -144,11 +129,9 @@ class AuctionsTestsHelper {
 				.borrower(createBorrower(borrowerName, rating))
 				.endDate(now)
 				.auctionDuration(auctionDuration)
-				.auctionLoanParams(AuctionLoanParams.builder()
-						.loanAmount(new Money(amount))
-						.loanDuration(loanDuration)
-						.loanRate(Rate.fromPercentValue(rate))
-						.build())
+				.loanAmount(new Money(amount))
+				.loanDuration(loanDuration)
+				.loanRate(Rate.fromPercentValue(rate))
 				.status(Auction.AuctionStatus.ACTIVE)
 				.build()
 	}

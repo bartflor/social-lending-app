@@ -1,12 +1,12 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 
 import java.time.Period;
 import java.util.List;
 
-public interface AuctionDomainService {
+interface AuctionDomainService {
 	Long createNewAuction(String username,
 						  Period auctionDuration,
 						  double loanAmount,

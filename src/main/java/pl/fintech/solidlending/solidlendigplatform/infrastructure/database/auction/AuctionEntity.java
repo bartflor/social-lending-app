@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Auction;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 
@@ -39,11 +38,6 @@ public class AuctionEntity {
 	private Double loanRate;
 	
 	public Auction toDomain() {
-		AuctionLoanParams auctionLoanParams = AuctionLoanParams.builder()
-				.loanAmount(new Money(loanAmount))
-				.loanDuration(loanDuration)
-				.loanRate(Rate.fromPercentValue(loanRate))
-				.build();
 		return Auction.builder()
 				.id(id)
 				.endDate(auctionEndDate)
@@ -52,7 +46,9 @@ public class AuctionEntity {
 				.offers(offers.stream()
 						.map(OfferEntity::toDomain)
 						.collect(Collectors.toSet()))
-				.auctionLoanParams(auctionLoanParams)
+				.loanAmount(new Money(loanAmount))
+				.loanDuration(loanDuration)
+				.loanRate(Rate.fromPercentValue(loanRate))
 				.build();
 	}
 	
@@ -68,9 +64,9 @@ public class AuctionEntity {
                 .map(OfferEntity::createFromOffer)
                 .collect(Collectors.toSet()))
         .status(auction.getStatus())
-        .loanAmount(auction.getAuctionLoanParams().getLoanAmount().getValue())
-        .loanDuration(auction.getAuctionLoanParams().getLoanDuration())
-        .loanRate(auction.getAuctionLoanParams().getLoanRate().getPercentValue().doubleValue())
+        .loanAmount(auction.getLoanAmount().getValue())
+        .loanDuration(auction.getLoanDuration())
+        .loanRate(auction.getLoanRate().getPercentValue().doubleValue())
         .build();
 	}
 }

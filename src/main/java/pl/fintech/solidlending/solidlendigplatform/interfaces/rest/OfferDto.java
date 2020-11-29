@@ -17,7 +17,6 @@ public class OfferDto {
     Long offerId;
     Long auctionId;
     String lenderUserName;
-    String borrowerName;
     double amount;
     double rate;
     Period loanDuration;
@@ -28,7 +27,6 @@ public class OfferDto {
                 .offerId(offer.getId())
                 .auctionId(offer.getAuctionId())
                 .lenderUserName(offer.getLenderName())
-                .borrowerName(offer.getBorrowerName())
                 .amount(offer.getAmount().getValue().doubleValue())
                 .rate(offer.getRate().getPercentValue().doubleValue())
                 .loanDuration(offer.getDuration())
@@ -41,7 +39,6 @@ public class OfferDto {
                 .auctionId(auctionId)
                 .id(offerId)
                 .lenderName(lenderUserName)
-                .borrowerName(borrowerName)
                 .amount(new Money(amount))
                 .rate(Rate.fromPercentValue(rate))
                 .duration(loanDuration)

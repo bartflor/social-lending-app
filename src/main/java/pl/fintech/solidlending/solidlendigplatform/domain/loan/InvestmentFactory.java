@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @Component
-public class InvestmentFactory {
+class InvestmentFactory {
 	public Set<Investment> createInvestmentsFrom(List<NewInvestmentParams> newInvestmentsParamsList){
 		Set<Investment> investments = new HashSet<>();
 		for(NewInvestmentParams params: newInvestmentsParamsList){

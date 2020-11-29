@@ -22,7 +22,6 @@ public class OfferEntity {
 	private Long id;
 	private Long auctionId;
 	private String lenderName;
-	private String borrowerName;
 	private Double amount;
 	private Double rate;
 	private Period duration;
@@ -34,7 +33,6 @@ public class OfferEntity {
 				.id(offer.getId())
 				.auctionId(offer.getAuctionId())
 				.lenderName(offer.getLenderName())
-				.borrowerName(offer.getBorrowerName())
 				.amount(offer.getAmount().getValue().doubleValue())
 				.rate(offer.getRate().getPercentValue().doubleValue())
 				.duration(offer.getDuration())
@@ -47,7 +45,6 @@ public class OfferEntity {
 				.id(id)
 				.auctionId(auctionId)
 				.lenderName(lenderName)
-				.borrowerName(borrowerName)
 				.amount(new Money(amount))
 				.rate(Rate.fromPercentValue(rate))
 				.duration(duration)

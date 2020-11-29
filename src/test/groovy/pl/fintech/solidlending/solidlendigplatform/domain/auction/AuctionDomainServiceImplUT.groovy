@@ -1,14 +1,14 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.LenderRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate
 import spock.genesis.Gen
+import spock.lang.Ignore
 import spock.lang.Specification
 import spock.lang.Subject
 
@@ -17,36 +17,33 @@ import java.time.temporal.ChronoUnit
 
 class AuctionDomainServiceImplUT extends Specification {
 	def auctionRepo = Mock(AuctionRepository)
-	def borrowerRepo = Mock(BorrowerRepository)
+	def userSvc = Mock(UserService)
 	def offerRepo = Mock(OfferRepository)
-	def lenderRepo = Mock(LenderRepository)
 	def timeSvc = Mock(TimeService)
 
 	@Subject
-	def auctionService = new AuctionDomainServiceImpl(auctionRepo, borrowerRepo, offerRepo, lenderRepo, timeSvc)
+	def auctionService = new AuctionDomainServiceImpl(auctionRepo, offerRepo, timeSvc, userSvc)
 
-	def "endAuction should call end() on auction with given id and \
-		update repository and\
-		return EndAuctionEvent with offers selected"(){
-		given:
+	def "endAuction should end auction with given id and return EndAuctionEvent with offers selected"(){
+		given: "auction to end in repository"
 			def randId = Gen.integer.first()
 			def auction = Mock(Auction)
 			auctionRepo.findById(randId) >> Optional.of(auction)
 			def policy = Mock(OffersSelectionPolicy)
 			def event = GroovyMock(EndAuctionEvent)
-		when:
+		when: "call endAuction() with given parameters"
 			def result = auctionService.endAuction(randId, policy)
-		then:
+		then: "should select auction with given id from repository, end auction and update repository"
 			1*auction.end(policy) >> event
 			1*auctionRepo.updateAuction(randId, auction)
 			1*auctionRepo.findAuctionOffers(randId) >> Collections.emptyList()
-		and:
+		and: "should return proper event object"
 			result == event
 
 	}
 
-	def "crateNewAuction method should save new Auction"() {
-		given:
+	def "crateNewAuction method should save new created Auction"() {
+		given: "any parameters"
 			def borrowerName = Gen.string.first()
 			def auctionDuration = Period.ofDays(Gen.integer.first())
 			def amount = Gen.integer.first()
@@ -56,7 +53,7 @@ class AuctionDomainServiceImplUT extends Specification {
 			def now = Gen.date.first().toInstant()
 			timeSvc.now() >> now
 			Borrower borrower = AuctionsTestsHelper.createBorrower(borrowerName, rating)
-			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.of(borrower)
+			userSvc.findBorrower(borrowerName) >> borrower
 			def auction = AuctionsTestsHelper.createAuction(borrowerName,
 					auctionDuration,
 					amount,
@@ -65,34 +62,15 @@ class AuctionDomainServiceImplUT extends Specification {
 					rating,
 					now.plus(auctionDuration.getDays(), ChronoUnit.DAYS))
 
-		when:
+		when: "call createNewAuction with given parameters"
 			auctionService.createNewAuction(borrowerName,
 					auctionDuration,
 					amount,
 					loanDuration,
 					rate)
-		then:
+		then:"should save proper object to repository"
 			1 * auctionRepo.save(_) >> { arguments -> Auction given = arguments.get(0)
 				assert given == (auction) }
-	}
-
-	def "crateNewAuction method should throw exception when Borrower with username not exists."() {
-		given:
-			def borrowerName = Gen.string.iterator().next()
-			def auctionDuration = Period.ofDays(Gen.integer.iterator().next())
-			def amount = Gen.integer.iterator().next()
-			def loanDuration = Period.ofDays(Gen.integer.iterator().next())
-			def rate = Gen.getDouble().iterator().next()
-			borrowerRepo.findBorrowerByUserName(borrowerName) >> Optional.empty()
-		when:
-			auctionService.createNewAuction(borrowerName,
-					auctionDuration,
-					amount,
-					loanDuration,
-					rate)
-		then:
-			thrown(AuctionCreationException)
-
 	}
 
 	def "addOffer should create new offer object from given parameters, add to auction and update repositories"(){
@@ -105,15 +83,11 @@ class AuctionDomainServiceImplUT extends Specification {
 			def rate = Gen.integer(0, 100).first()
 			def duration = Period.ofMonths(Gen.integer(0, Integer.MAX_VALUE).first())
 			def auction = Mock(Auction)
-			def loanParams = Mock(AuctionLoanParams)
-			loanParams.getLoanDuration() >> duration
 			auction.getBorrower() >> AuctionsTestsHelper.createBorrower(borrowerName, Gen.integer(0, 5).first() as double)
-			auction.getAuctionLoanParams() >> loanParams
-			auction.getAuctionLoanParams() >> duration
+			auction.getLoanDuration() >> duration
 			def expectedOffer = Offer.builder()
 					.auctionId(auctionId)
 					.lenderName(lenderName)
-					.borrowerName(borrowerName)
 					.amount(new Money(amount))
 					.rate(Rate.fromPercentValue(rate))
 					.duration(duration)
@@ -121,13 +95,14 @@ class AuctionDomainServiceImplUT extends Specification {
 		when:
 			def result = auctionService.addOffer(auctionId, lenderName, amount, rate)
 		then:
-			1 * lenderRepo.lenderExist(lenderName) >> true
+			1 * userSvc.lenderExists(lenderName) >> true
 			1 * auctionRepo.findById(auctionId) >> Optional.of(auction)
 			1 * auction.addNewOffer(_) >> { arguments -> Offer given = arguments.get(0)
-											assert given == (expectedOffer) }
+											assert given == expectedOffer }
 			1 * offerRepo.save(expectedOffer) >>  offerId
 			1 * auctionRepo.updateAuction(auctionId, auction)
 		and:
 			result == offerId
 	}
+
 }

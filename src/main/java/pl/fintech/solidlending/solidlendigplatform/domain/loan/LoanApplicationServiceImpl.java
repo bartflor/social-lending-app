@@ -2,10 +2,9 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionLoanParams;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TransferOrderEvent;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentNotExecuted;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 @Transactional
-public class LoanApplicationServiceImpl implements LoanApplicationService {
+class LoanApplicationServiceImpl implements LoanApplicationService {
 	private static final String LOAN_REPAID = "No repayment left in schedule. Loan with id: %s is repaid";
 	private static final String INVESTMENT_REPAID = "No repayment left in schedule. Investment with id: %s is repaid";
 	private static final String LOAN_NOT_ACTIVE = "Can not repay not ACTIVE loan with id: %s";
@@ -34,25 +33,24 @@ public class LoanApplicationServiceImpl implements LoanApplicationService {
 	 */
 	@Override
 	public Long createLoan(EndAuctionEvent endAuctionEvent) {
-		AuctionLoanParams auctionLoanParams = endAuctionEvent.getAuctionLoanParams();
 		Instant loanStartDate = timeService.now();
 		List<NewInvestmentParams> investmentsParamsList =
-			endAuctionEvent.getOffers().stream()
-				.map(offer ->
+			endAuctionEvent.getOfferParamsSet().stream()
+				.map(offerParams ->
 						NewInvestmentParams.builder()
-							.LenderUserName(offer.getLenderName())
+							.LenderUserName(offerParams.getLenderName())
 							.BorrowerName(endAuctionEvent.getBorrowerUserName())
-							.investedMoney(offer.getAmount())
-							.returnRate(offer.getRate())
-							.investmentDuration(auctionLoanParams.getLoanDuration())
+							.investedMoney(offerParams.getAmount())
+							.returnRate(offerParams.getRate())
+							.investmentDuration(endAuctionEvent.getLoanDuration())
 							.investmentStartDate(loanStartDate)
 							.build())
 				.collect(Collectors.toList());
 		NewLoanParams newLoanParams = NewLoanParams.builder()
 				.borrowerUserName(endAuctionEvent.getBorrowerUserName())
 				.investmentsParams(investmentsParamsList)
-				.loanAmount(auctionLoanParams.getLoanAmount())
-				.loanDuration(auctionLoanParams.getLoanDuration())
+				.loanAmount(endAuctionEvent.getLoanAmount())
+				.loanDuration(endAuctionEvent.getLoanDuration())
 				.loanStartDate(loanStartDate)
 				.build();
 		return domainService.createLoan(newLoanParams);

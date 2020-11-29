@@ -17,4 +17,8 @@ public interface UserService {
 	void giveOpinionOnBorrower(String userName, Opinion opinion);
 	
 	Borrower findBorrower(String borrowerName);
+	
+	Boolean lenderExists(String lenderName);
+	
+	Boolean borrowerExists(String borrower);
 }

@@ -1,7 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
+import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
+
 import java.util.Set;
 
-interface OffersSelectionPolicy {
-	Set<Offer> selectOffers(Set<Offer> offers, AuctionLoanParams auctionLoanParams);
+public interface OffersSelectionPolicy {
+	Set<Offer> selectOffers(Set<Offer> offers, Money loanAmount);
 }

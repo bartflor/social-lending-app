@@ -1,8 +1,10 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
-import pl.fintech.solidlending.solidlendigplatform.domain.common.EndAuctionEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent
 import spock.genesis.Gen
 import spock.lang.Specification
+
+import java.util.stream.Collectors
 
 class AuctionUT extends Specification {
 
@@ -52,8 +54,7 @@ class AuctionUT extends Specification {
 			auction.getStatus() == Auction.AuctionStatus.ACTIVE_COMPLETE
 	}
 
-	def "Auction.end() should change status to ARCHIVED, and \
-		return EndAuctionEvent"(){
+	def "Auction.end() should change status to ARCHIVED, and return EndAuctionEvent"(){
 		given:
 			def randInt = Gen.integer.first()
 			def auction = AuctionsTestsHelper.createActiveCompleteAuction(randInt)
@@ -62,13 +63,16 @@ class AuctionUT extends Specification {
 		when:
 			def result = auction.end(policy)
 		then:
-			1* policy.selectOffers(auction.getOffers(), auction.getAuctionLoanParams()) >> selectedOffers
+			1* policy.selectOffers(auction.getOffers(), auction.getLoanAmount()) >> selectedOffers
 			auction.getStatus() == Auction.AuctionStatus.ARCHIVED
 		and:
 			result == EndAuctionEvent.builder()
 					.BorrowerUserName(auction.getBorrower().getUserDetails().getUserName())
-					.offers(selectedOffers)
-					.auctionLoanParams(auction.getAuctionLoanParams())
+					.offerParamsSet(selectedOffers.stream()
+							.map({ offer -> offer.toOfferParams() })
+							.collect(Collectors.toSet()))
+					.loanAmount(auction.getLoanAmount())
+					.loanDuration(auction.getLoanDuration())
 					.build()
 	}
 

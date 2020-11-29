@@ -4,21 +4,17 @@ import io.restassured.RestAssured
 import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.annotation.Import
 import org.springframework.test.context.ActiveProfiles
-import pl.fintech.solidlending.solidlendigplatform.domain.common.ExternalTransferOrderEvent
+import pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 

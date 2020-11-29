@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.Period;
 @Builder
 @Value
-public class NewInvestmentParams {
+class NewInvestmentParams {
 	String LenderUserName;
 	String BorrowerName;
 	Money investedMoney;
