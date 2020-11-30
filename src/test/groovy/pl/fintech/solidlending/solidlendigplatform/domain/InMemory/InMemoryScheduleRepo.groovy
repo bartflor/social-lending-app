@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory
+package pl.fintech.solidlending.solidlendigplatform.domain.InMemory
 
 
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule

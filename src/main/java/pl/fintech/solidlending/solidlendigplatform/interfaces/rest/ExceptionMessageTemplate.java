@@ -1,4 +1,4 @@
-package pl.fintech.solidlending.solidlendigplatform;
+package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;

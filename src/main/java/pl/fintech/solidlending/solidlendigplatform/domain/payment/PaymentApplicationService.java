@@ -6,7 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 
 import java.util.List;
 
-public interface PaymentService {
+public interface PaymentApplicationService {
 	String execute(TransferOrderEvent transferOrderEvent);
 	
 	void execute(List<TransferOrderEvent> transferOrderEventsList);

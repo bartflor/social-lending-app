@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService;
 
 import java.util.Map;
 
@@ -15,13 +15,13 @@ import static pl.fintech.solidlending.solidlendigplatform.domain.common.events.E
 @AllArgsConstructor
 public class AccountController {
 	private UserService userService;
-	private PaymentService paymentService;
+	private PaymentApplicationService paymentApplicationService;
 	
 	@ResponseStatus(HttpStatus.OK)
 	@GetMapping("/{userName}")
 	public UserDetailsDto getUserDetails(@PathVariable String userName){
 		return UserDetailsDto.from(userService.getUserDetails(userName),
-				paymentService.checkUserBalance(userName).getValue());
+				paymentApplicationService.checkUserBalance(userName).getValue());
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -33,13 +33,13 @@ public class AccountController {
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/deposit")
 	public void depositAmountInPlatform(@RequestBody TransferDto depositTransfer){
-		paymentService.executeExternal(depositTransfer.createTransferOrderEvent(TransferType.DEPOSIT));
+		paymentApplicationService.executeExternal(depositTransfer.createTransferOrderEvent(TransferType.DEPOSIT));
 	}
 	
 	@ResponseStatus(HttpStatus.CREATED)
 	@PostMapping("/withdrawal")
 	public void withdrawalAmountFromPlatform(@RequestBody TransferDto withdrawalTransfer){
-		paymentService.executeExternal(withdrawalTransfer.createTransferOrderEvent(TransferType.WITHDRAWAL));
+		paymentApplicationService.executeExternal(withdrawalTransfer.createTransferOrderEvent(TransferType.WITHDRAWAL));
 	}
 	
 	@ResponseStatus(HttpStatus.OK)

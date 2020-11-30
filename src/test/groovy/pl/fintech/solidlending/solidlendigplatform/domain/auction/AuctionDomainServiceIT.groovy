@@ -1,5 +1,8 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction
 
+import pl.fintech.solidlending.solidlendigplatform.domain.InMemory.InMemoryAuctionRepo
+import pl.fintech.solidlending.solidlendigplatform.domain.InMemory.InMemoryOfferRepo
+import pl.fintech.solidlending.solidlendigplatform.domain.InMemory.InMemoryUserRepo
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
@@ -7,9 +10,6 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.UserServiceImpl
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryAuctionRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryOfferRepo
-import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.InMemory.InMemoryUserRepo
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject

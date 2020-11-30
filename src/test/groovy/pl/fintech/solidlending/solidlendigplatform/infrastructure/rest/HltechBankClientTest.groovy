@@ -40,7 +40,7 @@ class HltechBankClientTest extends Specification {
 		given:
 			def accountNumber = UUID.randomUUID()
 			def amount = BigDecimal.valueOf(Gen.double.first())
-			def response = ResponseEntity.ok(RestInfrastructureFactory.createAccountDetailsDto(accountNumber, amount))
+			def response = ResponseEntity.ok(RestCommunicationHelper.createAccountDetailsDto(accountNumber, amount))
 		when:
 			def result = hltechBankClient.getAccountBalance(accountNumber)
 		then:
@@ -56,11 +56,11 @@ class HltechBankClientTest extends Specification {
 			def accountNumber = UUID.randomUUID()
 			def refId1 = UUID.randomUUID()
 			def amount1 = BigDecimal.valueOf(Gen.double.first())
-			def transaction1 = RestInfrastructureFactory.createTransactionDto(amount1, refId1)
+			def transaction1 = RestCommunicationHelper.createTransactionDto(amount1, refId1)
 			def refId2 = UUID.randomUUID()
 			def amount2 = BigDecimal.valueOf(Gen.double.first())
-			def transaction2 = RestInfrastructureFactory.createTransactionDto(amount2, refId2)
-			def response = ResponseEntity.ok(RestInfrastructureFactory.createAccountDetailsDtoWithTransactions(
+			def transaction2 = RestCommunicationHelper.createTransactionDto(amount2, refId2)
+			def response = ResponseEntity.ok(RestCommunicationHelper.createAccountDetailsDtoWithTransactions(
 												accountNumber,
 												BigDecimal.valueOf(Gen.double.first()),
 												List.of(transaction1, transaction2)))
@@ -91,7 +91,7 @@ class HltechBankClientTest extends Specification {
 			def accountNumber = UUID.randomUUID()
 			def amount = BigDecimal.valueOf(Gen.double.first())
 			def response = ResponseEntity.badRequest().build()
-			def paymentRequest = RestInfrastructureFactory.createPaymentRequest(accountNumber, amount)
+			def paymentRequest = RestCommunicationHelper.createPaymentRequest(accountNumber, amount)
 		when:
 			hltechBankClient.payment(accountNumber, amount)
 		then:

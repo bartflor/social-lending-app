@@ -5,7 +5,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetail
 
 import java.util.regex.Pattern
 
-class CommunicationDataFactory {
+class CommunicationHelper {
 	public static final Pattern jsonAllowedString = Pattern.compile("[a-zA-Z]{2,20}+")
 
 	static String createAuctionRequestBody(String borrowerName, int auctionDuration, int amount,
