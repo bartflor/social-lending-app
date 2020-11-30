@@ -13,7 +13,7 @@ import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
 import spock.genesis.Gen
 import spock.lang.Specification
@@ -29,7 +29,7 @@ import static org.hamcrest.Matchers.equalTo
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebMvc
-class AccountControllerTest extends Specification {
+class AccountControllerApiT extends Specification {
 
 
 	@LocalServerPort
@@ -37,7 +37,7 @@ class AccountControllerTest extends Specification {
 	@Autowired
 	UserService userServiceMock
 	@Autowired
-	PaymentService paymentServiceMock
+	PaymentApplicationService paymentServiceMock
 
 	RequestSpecification restClient
 
@@ -51,13 +51,13 @@ class AccountControllerTest extends Specification {
 
 	def "GET /api/accounts/{userName} should response with user details given user name"() {
 		given:
-			def userName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def userName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def balance = Gen.integer.first()
-			def name = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
-			def surname = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
-			def phoneNumber = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
-			def email = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
-			def userDetails = CommunicationDataFactory.getUserDetailsFrom(userName, name, surname, phoneNumber, email)
+			def name = Gen.string(CommunicationHelper.jsonAllowedString).first()
+			def surname = Gen.string(CommunicationHelper.jsonAllowedString).first()
+			def phoneNumber = Gen.string(CommunicationHelper.jsonAllowedString).first()
+			def email = Gen.string(CommunicationHelper.jsonAllowedString).first()
+			def userDetails = CommunicationHelper.getUserDetailsFrom(userName, name, surname, phoneNumber, email)
 			def serviceResponse = new Money(balance)
 		when:
 			def response = restClient.when().get("/api/accounts/"+userName)
@@ -78,12 +78,12 @@ class AccountControllerTest extends Specification {
 	def "POST /api/account/deposit should call paymentService.depositMoneyIntoPlatform \
 		 with params from request body and return 201 response status"() {
 		given:
-			def userName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def userName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def amount = Gen.integer.first()
-			def transferDto = CommunicationDataFactory.createTransferDto(amount, userName)
+			def transferDto = CommunicationHelper.createTransferDto(amount, userName)
 			def event = transferDto.createTransferOrderEvent(ExternalTransferOrderEvent.TransferType.DEPOSIT)
 		when:
-			def response = restClient.body(CommunicationDataFactory.createTransferRequest(userName, amount))
+			def response = restClient.body(CommunicationHelper.createTransferRequest(userName, amount))
 					.post("api/accounts/deposit")
 
 		then:
@@ -97,12 +97,12 @@ class AccountControllerTest extends Specification {
 	def "POST /api/account/withdrawal should call paymentService.withdrawMoneyFromPlatform\
 		 with params from request body and return 201 response status"() {
 		given:
-			def userName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def userName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def amount = Gen.integer.first()
-			def transferDto = CommunicationDataFactory.createTransferDto(amount, userName)
+			def transferDto = CommunicationHelper.createTransferDto(amount, userName)
 			def event = transferDto.createTransferOrderEvent(ExternalTransferOrderEvent.TransferType.WITHDRAWAL)
 		when:
-			def response = restClient.body(CommunicationDataFactory.createTransferRequest(userName, amount))
+			def response = restClient.body(CommunicationHelper.createTransferRequest(userName, amount))
 					.post("api/accounts/withdrawal")
 
 		then:

@@ -11,7 +11,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.events.Transfer
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.BorrowerRepository
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.*
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.MockPaymentService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.PostgresContainerTestSpecification
 import spock.genesis.Gen
@@ -23,7 +23,7 @@ class LoanControllerFT extends PostgresContainerTestSpecification{
 	@LocalServerPort
 	int randomPort
 	@Autowired
-	PaymentService paymentSvcMock
+	PaymentApplicationService paymentSvcMock
 	@Autowired
 	LoanRepository loanRepository
 	@Autowired

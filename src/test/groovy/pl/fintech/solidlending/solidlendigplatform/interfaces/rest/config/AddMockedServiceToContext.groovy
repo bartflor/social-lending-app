@@ -7,7 +7,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplica
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.OffersSelectionPolicy
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.LoanApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService
 import spock.mock.DetachedMockFactory
 
 @TestConfiguration
@@ -35,8 +35,8 @@ class AddMockedServiceToContext {
 
 	@Primary
 	@Bean
-	PaymentService paymentService(){
-		mockFactory.Mock(PaymentService)
+	PaymentApplicationService paymentService(){
+		mockFactory.Mock(PaymentApplicationService)
 	}
 
 	@Primary

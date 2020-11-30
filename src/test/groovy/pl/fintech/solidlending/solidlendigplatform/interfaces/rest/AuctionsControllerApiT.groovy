@@ -34,7 +34,7 @@ import static org.hamcrest.Matchers.equalTo
 @ActiveProfiles("test")
 @AutoConfigureWebMvc
 
-class AuctionsControllerTest extends Specification {
+class AuctionsControllerApiT extends Specification {
 
 	@LocalServerPort
 	int serverPort
@@ -82,7 +82,7 @@ class AuctionsControllerTest extends Specification {
 		 return 201 status given proper request"(){
 		given:
 			def randID = Gen.integer.first()
-			def borrowerName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def borrowerName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def auctionDuration = Gen.integer.first()
 			def amount = Gen.integer.first()
 			def rate = Gen.integer.first()
@@ -91,7 +91,7 @@ class AuctionsControllerTest extends Specification {
 		when:
 			def response = restClient.given()
 					.contentType(ContentType.JSON)
-					.body(CommunicationDataFactory.createAuctionRequestBody(borrowerName, auctionDuration,
+					.body(CommunicationHelper.createAuctionRequestBody(borrowerName, auctionDuration,
 							amount, rate, loanDuration))
 					.post("/api/auctions")
 		then:

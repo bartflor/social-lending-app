@@ -7,7 +7,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.TemporalAccessor
 
-class RestInfrastructureFactory {
+class RestCommunicationHelper {
 
 	static String notEnoughBalanceResponse() {
 		new JSONObject("{\"code\": 404," +

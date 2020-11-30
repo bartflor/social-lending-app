@@ -27,7 +27,7 @@ import spock.lang.Specification
 		webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @AutoConfigureWebMvc
-class LoanControllerTest extends Specification {
+class LoanControllerApiT extends Specification {
 
 	@LocalServerPort
 	int serverPort

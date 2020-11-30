@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Component
 @AllArgsConstructor
-public class PaymentServiceImpl implements PaymentService {
+public class PaymentApplicationServiceImpl implements PaymentApplicationService {
 	private static final String USERS_HAVE_NO_ACCOUNT = "User with provided user names: %s, %s has no platform bank account number specified";
 	private static final String USER_HAVE_NO_LINKED_ACCOUNT = "User: %s has no linked bank account";
 	private BankClient bankClient;

@@ -6,7 +6,7 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService;
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService;
 
 import javax.transaction.Transactional;
 import java.time.Instant;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Transactional
 class LoanApplicationServiceImpl implements LoanApplicationService {
 	private final LoanDomainService domainService;
-	private final PaymentService paymentService;
+	private final PaymentApplicationService paymentApplicationService;
 	private final TimeService timeService;
 	
 	/**
@@ -65,7 +65,7 @@ class LoanApplicationServiceImpl implements LoanApplicationService {
 						.amount(investment.getLoanAmount())
 						.build())
 				.collect(Collectors.toList());
-		paymentService.execute(transferOrderEventsList);
+		paymentApplicationService.execute(transferOrderEventsList);
 		return domainService.activateLoan(loanId);
 	}
 	
@@ -87,7 +87,7 @@ class LoanApplicationServiceImpl implements LoanApplicationService {
 					.sourceUserName(investment.getBorrowerName())
 					.amount(repayment.getValue())
 					.build();
-			paymentService.execute(transferOrder);
+			paymentApplicationService.execute(transferOrder);
 		}
 		domainService.reportRepayment(loanId);
 	}

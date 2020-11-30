@@ -14,6 +14,4 @@ public interface JpaAuctionRepository extends JpaRepository<AuctionEntity, Long>
 	
 	List<AuctionEntity> findAllByBorrowerName(String userName);
 	
-	List<AuctionEntity> findAllByAuctionEndDateAfter(Instant date);
-	
 }

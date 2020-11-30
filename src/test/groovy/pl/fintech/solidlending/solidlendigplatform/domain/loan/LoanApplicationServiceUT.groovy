@@ -3,7 +3,7 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionsTestsHelper
 import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent
-import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentService
+import pl.fintech.solidlending.solidlendigplatform.domain.payment.PaymentApplicationService
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
@@ -13,7 +13,7 @@ import java.time.Instant
 class LoanApplicationServiceUT extends Specification {
 
 	def loanDomainSvcMock = Mock(LoanDomainService)
-	def paymentSvcMock = Mock(PaymentService)
+	def paymentSvcMock = Mock(PaymentApplicationService)
 	def timeSvcMock = Mock(TimeService)
 	@Subject
 	def loanAppSvc = new LoanApplicationServiceImpl(loanDomainSvcMock, paymentSvcMock, timeSvcMock)

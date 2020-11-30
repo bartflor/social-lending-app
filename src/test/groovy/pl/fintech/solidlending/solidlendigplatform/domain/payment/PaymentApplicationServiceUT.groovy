@@ -4,17 +4,17 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.events.External
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.CommunicationDataFactory
+import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.CommunicationHelper
 import spock.genesis.Gen
 import spock.lang.Specification
 import spock.lang.Subject
 
-class PaymentServiceUT extends Specification {
+class PaymentApplicationServiceUT extends Specification {
 	def bankClientMock = Mock(BankClient)
 	def userSvc = Mock(UserService)
 
 	@Subject
-	def paymentService = new PaymentServiceImpl(bankClientMock, userSvc)
+	def paymentService = new PaymentApplicationServiceImpl(bankClientMock, userSvc)
 
 	def "execute() should find users, call BankClient with parameters given with TransferOrderEvent \
 		 and return transfer reference id."() {
@@ -67,7 +67,7 @@ class PaymentServiceUT extends Specification {
 			def platformAccount = UUID.randomUUID()
 			def privateAccount = UUID.randomUUID()
 			def amount = Gen.integer.first()
-			def userName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def userName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def event = ExternalTransferOrderEvent.builder()
 					.amount(new Money(amount))
 					.userName(userName)
@@ -86,7 +86,7 @@ class PaymentServiceUT extends Specification {
 			def platformAccount = UUID.randomUUID()
 			def privateAccount = UUID.randomUUID()
 			def amount = Gen.integer.first()
-			def userName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def userName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def event = ExternalTransferOrderEvent.builder()
 					.amount(new Money(amount))
 					.userName(userName)

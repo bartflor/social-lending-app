@@ -1,25 +1,17 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest
 
 import io.restassured.RestAssured
-import io.restassured.config.EncoderConfig
 import io.restassured.http.ContentType
 import io.restassured.specification.RequestSpecification
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.actuate.autoconfigure.endpoint.EndpointAutoConfiguration
-import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.DispatcherServletAutoConfiguration
 import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
-import org.springframework.boot.test.autoconfigure.web.client.RestClientTest
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureWebMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.context.annotation.Import
-import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionApplicationService
-import pl.fintech.solidlending.solidlendigplatform.domain.auction.AuctionDomainService
 import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddMockedServiceToContext
-import pl.fintech.solidlending.solidlendigplatform.interfaces.rest.config.AddStubRepositoriesToContext
 import spock.genesis.Gen
 import spock.lang.Specification
 
@@ -32,7 +24,7 @@ import spock.lang.Specification
 @ActiveProfiles("test")
 @AutoConfigureWebMvc
 
-class OffersControllerTest extends Specification {
+class OffersControllerApiT extends Specification {
 
 	@LocalServerPort
 	int port
@@ -53,12 +45,12 @@ class OffersControllerTest extends Specification {
 	def "POST: /api/offers should call auctionDomainService with valid parameters"() {
 		given:
 			def auctionId = Gen.integer.first()
-			def lenderName = Gen.string(CommunicationDataFactory.jsonAllowedString).first()
+			def lenderName = Gen.string(CommunicationHelper.jsonAllowedString).first()
 			def amount = Gen.integer.first()
 			def rate = Gen.integer.first()
 		when:
 			def response = restClient.given()
-					.body(CommunicationDataFactory.createNewOfferRequest(auctionId, lenderName,	amount,	rate))
+					.body(CommunicationHelper.createNewOfferRequest(auctionId, lenderName,	amount,	rate))
 					.post("/api/offers")
 		then:
 			1* auctionAppSvcMock.addOffer(auctionId, lenderName, amount, rate)
