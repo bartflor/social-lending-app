@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
-
 
 import java.util.Map;
 import java.util.Optional;

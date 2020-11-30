@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.Offer;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.OfferRepository;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

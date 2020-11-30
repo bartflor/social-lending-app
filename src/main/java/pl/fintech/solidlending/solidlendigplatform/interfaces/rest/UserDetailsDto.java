@@ -1,6 +1,9 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
 
 import java.math.BigDecimal;

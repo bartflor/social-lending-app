@@ -1,13 +1,8 @@
 package pl.fintech.solidlending.solidlendigplatform.interfaces.rest;
 
-import io.swagger.models.auth.In;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
 import lombok.Value;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import java.util.List;

@@ -5,7 +5,6 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Getter
 public class ExceptionMessageTemplate {

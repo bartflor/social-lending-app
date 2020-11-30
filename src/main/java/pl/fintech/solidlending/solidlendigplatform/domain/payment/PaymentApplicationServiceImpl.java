@@ -2,9 +2,9 @@ package pl.fintech.solidlending.solidlendigplatform.domain.payment;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.ExternalTransferOrderEvent;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.TransferOrderEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.payment.exception.TransferFailException;
@@ -62,11 +62,6 @@ public class PaymentApplicationServiceImpl implements PaymentApplicationService 
 					user.getPrivateBankAccount(),
 					transferOrderEvent.getAmount().getValue().doubleValue());
 		}
-	}
-	
-	@Override
-	public boolean hasEnoughFundsToPay(String userName, Money amount){
-		return checkUserBalance(userName).isMoreOrEqual(amount);
 	}
 
 }

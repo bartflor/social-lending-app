@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentScheduleRepository;
 
-import java.util.Optional;
-
 @Component
 @AllArgsConstructor
 public class PersistentScheduleRepository implements RepaymentScheduleRepository {
