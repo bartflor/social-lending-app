@@ -2,10 +2,8 @@ package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.loan
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Repository;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.InvestmentRepository;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
 
 import javax.transaction.Transactional;
 import java.util.List;

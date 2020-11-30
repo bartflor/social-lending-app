@@ -11,11 +11,9 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.
 import pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user.PersistentUserRepo;
 
 import javax.transaction.Transactional;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Component
 @AllArgsConstructor

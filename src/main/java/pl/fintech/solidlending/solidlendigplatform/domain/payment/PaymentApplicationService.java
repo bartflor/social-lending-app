@@ -14,6 +14,4 @@ public interface PaymentApplicationService {
 	Money checkUserBalance(String userName);
 	
 	void executeExternal(ExternalTransferOrderEvent event);
-	
-	boolean hasEnoughFundsToPay(String userName, Money amount);
 }

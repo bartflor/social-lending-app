@@ -6,9 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rate;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Investment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

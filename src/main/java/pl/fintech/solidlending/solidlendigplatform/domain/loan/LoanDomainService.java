@@ -3,7 +3,6 @@ package pl.fintech.solidlending.solidlendigplatform.domain.loan;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 interface LoanDomainService {

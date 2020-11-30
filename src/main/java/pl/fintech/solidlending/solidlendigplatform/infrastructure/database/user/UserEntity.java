@@ -1,15 +1,16 @@
 package pl.fintech.solidlending.solidlendigplatform.infrastructure.database.user;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Lender;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.User;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.UserDetails;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Rating;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;

@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Repayment;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.RepaymentSchedule;
 
 import javax.persistence.*;

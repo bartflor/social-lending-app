@@ -7,7 +7,9 @@ import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;
 import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.RepaymentException;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 @Builder
 @AllArgsConstructor
 @Data

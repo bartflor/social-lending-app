@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.*;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Opinion;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.Loan;
-import pl.fintech.solidlending.solidlendigplatform.domain.loan.exception.LoanNotFoundException;
 
 import javax.transaction.Transactional;
 import java.util.Map;

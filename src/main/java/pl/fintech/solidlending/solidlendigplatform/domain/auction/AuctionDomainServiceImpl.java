@@ -7,9 +7,9 @@ import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AddO
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionCreationException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.AuctionNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.auction.exception.OfferNotFoundException;
+import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.UserService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.events.EndAuctionEvent;
-import pl.fintech.solidlending.solidlendigplatform.domain.common.TimeService;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.Borrower;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.user.exception.UserNotFoundException;
 import pl.fintech.solidlending.solidlendigplatform.domain.common.values.Money;

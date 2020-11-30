@@ -1,10 +1,7 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.common.values;
 
-import io.swagger.models.auth.In;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class Opinion {

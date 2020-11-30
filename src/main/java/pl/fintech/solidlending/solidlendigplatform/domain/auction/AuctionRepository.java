@@ -1,6 +1,5 @@
 package pl.fintech.solidlending.solidlendigplatform.domain.auction;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
