@@ -11,11 +11,8 @@ Application provides core function of lending platform. It allows platform users
 manage auctions and check its status, add offers to active auctions, end auctions and start a loan. Platform is wired
 to provided HLTechBank API, that makes all platform bank transactions. 
 
-Application is available here: (username: example, password: example)
-* SIT - https://solid-lendig-platform.kale-team.sit.fintechchallenge.pl/
-* UAT - https://solid-lendig-platform.kale-team.uat.fintechchallenge.pl/
-* PROD - https://solid-lendig-platform.kale-team.fintechchallenge.pl/
-
+Complete project consists of presented server side application and integrated frontend application,
+that is available here: https://github.com/unpolaco/social-lending-app
 
 ## Setup <a name="Setup"></a>
 Project can be managed with maven `mvn` command. Application based on Spring Framework and
@@ -128,7 +125,7 @@ service.
 ### Interface details
 Application provides REST interface for communication. `interfaces.rest` package contains all controllers and DTOs 
 with mapping methods.
-To check interface details, see swagger with application endpoints: https://solid-lendig-platform.kale-team.sit.fintechchallenge.pl/swagger-ui/
+To check interface details, see swagger with application endpoints.
 ## Tests structure and naming convention  <a name="Tests"></a>
 Test name suffixes depends on a test category:
 * `*UT` - unit tests
@@ -140,4 +137,4 @@ Test packages also contains `*Helper` classes used for test objects generation. 
 in memory repositories implementation. It can be used to run basic integration tests.  
 
 Tests created in Groovy with Spock framework. WireMock simulates bank API in infrastructure tests. Functional tests communication with
-the database is based on test containers - configured in `PostgresContainerTestSpecification`.
+the database is based on test containers - configured in `PostgresContainerTestSpecification`. 
